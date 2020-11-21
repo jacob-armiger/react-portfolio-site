@@ -4,13 +4,14 @@ import NavBar from '../components/navBar'
 
 export default function Home() {
   return (
-    <div className="">
+    <>
       <Head>
         <title>Armiger Portfolio</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
       <NavBar />
+
       <main>
         <Image
           src="/images/profile.jpg"
@@ -36,6 +37,6 @@ export default function Home() {
         </div>
       </main>
 
-    </div>
+    </>
   )
 }

@@ -7,14 +7,14 @@ export default function Resume() {
   return (
     <>
       <Head>
-        <title>Armiger Resume</title>
+        <title>Armiger Community</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <NavBar />
 
       <main>
-        <h1>Resume</h1>
+        <h1>Community</h1>
       </main>
     </>
   )
