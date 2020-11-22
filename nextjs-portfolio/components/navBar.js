@@ -21,8 +21,7 @@ function color(props) {
   
 }
 
-class NavBar extends React.Component {
-  render() {
+function NavBar() {
     return(
       <ul className={styles.navbar}>
         <li className={styles.tab} style={{background: color(0)}} onClick={() => {setActive(0)}}><Link href="/"><a>HOME</a></Link></li>
@@ -31,7 +30,6 @@ class NavBar extends React.Component {
         <li className={styles.tab} style={{background: color(3)}} onClick={() => {setActive(3)}}><Link href="/community"><a>COMMUNITY</a></Link></li>
       </ul>
     )
-  }
 }
 
 export default NavBar
