@@ -16,3 +16,12 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+main {
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  max-width: 300px;
+}

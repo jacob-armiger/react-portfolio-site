@@ -1,6 +1,11 @@
 import Link from 'next/link'
 import styles from './navBar.module.css'
 
+/*  ActiveTabs KEY
+    HOME - 0
+    RESUME - 1
+    PROJECTS  - 2
+    COMMUNITY - 3*/
 var activeTab = 0;
 
 function setActive(props) {
