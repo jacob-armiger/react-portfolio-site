@@ -18,7 +18,6 @@ function color(props) {
   } else {
     return "white";
   }
-  
 }
 
 function NavBar() {

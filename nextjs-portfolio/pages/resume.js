@@ -14,7 +14,9 @@ export default function Resume() {
       <NavBar />
 
       <main>
-        <h1>Resume</h1>
+        <iframe 
+        src="/final_resume.pdf" width="50%" height="1000px">
+        </iframe>
       </main>
     </>
   )

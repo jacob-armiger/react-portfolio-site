@@ -1,10 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Layout from '../components/layout'
 import NavBar from '../components/navBar'
 
 export default function Home() {
   return (
-    <>
+    <Layout>
       <Head>
         <title>Armiger Portfolio</title>
         <link rel="icon" href="/favicon.ico" />
@@ -17,26 +18,33 @@ export default function Home() {
           src="/images/profile.jpg"
           alt="Picture of me"
           quality={100}
-          width={480}
-          height={727}
+          width={360}
+          height={545}
         />
 
         <div className="content">
-          <h1 className="title">
+          <h1>
             Jacob Armiger
           </h1>
 
-          <p>
+          <i>
             Welcome to my portfolio!
-          </p>
+          </i>
+
           <p>
-            This is my short bio! jdklfjklsdfk  jdkslfjks jdi jidfj eifie jdklfjklsdfk
-            dfjksld fdks ljkd dkjfdfi eji foep klf i fep kofekf fjefepoe ke keo profilef
-            fejfiej feji efpe ekef kpe kef ifkeo feo pfoe pe jfope oekp ep keof ke
+          I'm a special operations veteran pursuing a career in computer science.
+          Looking to make meaningful changes in the lives of others in the world's 
+          most rapidly evolving industry. 
           </p>
+          
+          <div className = "horizontal_list">
+            <a target="_blank" href="https://github.com/jacob-armiger">Github</a>
+            <a target="_blank" href="https://www.linkedin.com/in/jacob-armiger-64189317a/">Linkedin</a>
+          </div>
+
         </div>
       </main>
 
-    </>
+    </Layout>
   )
 }
