@@ -1,6 +1,11 @@
 import Link from 'next/link'
 import styles from './navBar.module.css'
 
+/*  ActiveTabs KEY
+    HOME - 0
+    RESUME - 1
+    PROJECTS  - 2
+    COMMUNITY - 3*/
 var activeTab = 0;
 
 function setActive(props) {
@@ -13,11 +18,9 @@ function color(props) {
   } else {
     return "white";
   }
-  
 }
 
-class NavBar extends React.Component {
-  render() {
+function NavBar() {
     return(
       <ul className={styles.navbar}>
         <li className={styles.tab} style={{background: color(0)}} onClick={() => {setActive(0)}}><Link href="/"><a>HOME</a></Link></li>
@@ -26,7 +29,6 @@ class NavBar extends React.Component {
         <li className={styles.tab} style={{background: color(3)}} onClick={() => {setActive(3)}}><Link href="/community"><a>COMMUNITY</a></Link></li>
       </ul>
     )
-  }
 }
 
 export default NavBar

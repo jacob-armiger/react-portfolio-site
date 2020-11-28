@@ -8,6 +8,13 @@ body {
   font-size: 18px;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 a {
   color: black;
   text-decoration: none;
@@ -15,4 +22,29 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/*ENTRIES*/
+.entry {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.content {
+  max-width: 400px;
+  margin-left: 15px;
+}
+
+.horizontal_list {
+  display: flex;
+  margin-top: 50px;
+  justify-content: space-around;
+}
+
+.content > a {
+  color: blue;
+}
+
+.horizontal_list > a {
+  color: blue;
 }

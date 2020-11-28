@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import Layout from '../components/layout'
 import NavBar from '../components/navBar'
 
 export default function Resume() {
@@ -14,7 +13,9 @@ export default function Resume() {
       <NavBar />
 
       <main>
-        <h1>Resume</h1>
+        <iframe 
+        src="/final_resume.pdf" width="50%" height="1000px">
+        </iframe>
       </main>
     </>
   )
