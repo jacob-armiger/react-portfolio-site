@@ -17,7 +17,7 @@ export default function Resume() {
 
       <div className="entry">
           <Image
-            src="/images/devblog.png"
+            src="/images/ewb.jpg"
             alt="Picture of me"
             quality={100}
             width={717}
@@ -56,7 +56,7 @@ export default function Resume() {
               learn the MERN tech stack!
               </p>
 
-              <a target="_blank "href="https://github.com/hack4impact-utk">Chapter Repository</a>
+              <a target="_blank "href="https://github.com/hack4impact-utk">Chapter Github</a>
             </div>
           </div>
 
