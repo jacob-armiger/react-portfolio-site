@@ -28,7 +28,7 @@ export default function Resume() {
 
             <p>
             This project uses a web scraper to gather a comic book reading order from 
-            <a href="https://comicbookreadingorders.com/">this</a> website and 
+            <a href="https://comicbookreadingorders.com/"> this</a> website and 
             formats the data into a csv file. You can upload the csv file to Excel 
             and make a checklist of comics you've read.
             </p>
