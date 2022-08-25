@@ -40,7 +40,7 @@ export default function Resume() {
 
         <div className="entry">
             <Image
-              src="/images/hack4impact_logo.jfif"
+              src="/images/hack4impact_logo.png"
               alt="Picture of me"
               quality={100}
               width={717}
