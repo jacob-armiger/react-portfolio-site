@@ -1,6 +1,6 @@
-import Head from 'next/head'
-import Link from 'next/link'
-import NavBar from '../components/navBar'
+import Head from "next/head";
+import Link from "next/link";
+import NavBar from "../components/navBar";
 
 export default function Resume() {
   return (
@@ -13,10 +13,8 @@ export default function Resume() {
       <NavBar />
 
       <main>
-        <iframe 
-        src="/final_resume.pdf" width="50%" height="1000px">
-        </iframe>
+        <iframe src="/final_resume.pdf" width="50%" height="1000px"></iframe>
       </main>
     </>
-  )
+  );
 }
