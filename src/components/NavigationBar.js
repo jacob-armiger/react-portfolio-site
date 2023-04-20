@@ -2,13 +2,19 @@ import Link from "next/link";
 
 export default function NavBar() {
   return (
-    <div className="text-xl ">
-      <nav className="flex flex-row items-center border-black-500 rounded-b p-2 ">
+    <div className="mx-4 mt-4 text-xl md:mx-48 lg:mx-64">
+      <nav className="flex items-center justify-between">
         <div>
-          <input type="text" placeholder="Search.."></input>
-          <Link className="navbar-button" href="/">
-            Home
-          </Link>
+          <Link href="/">Home</Link>
+        </div>
+        <div>
+          <Link href="/resume">Resume</Link>
+        </div>
+        <div>
+          <Link href="/">Projects</Link>
+        </div>
+        <div>
+          <Link href="/">Community</Link>
         </div>
       </nav>
     </div>
