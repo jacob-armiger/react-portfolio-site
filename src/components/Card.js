@@ -1,18 +1,19 @@
-export default function Card() {
+export default function Card({ project }) {
   return (
-    <div className="flex flex-col rounded-lg border border-b-4 border-black md:w-8/12 md:flex-row md:h-52">
+    <div className="mx-4 flex flex-col rounded-lg border border-b-4 border-black lg:m-0 lg:h-52 lg:h-80 lg:w-10/12 lg:flex-row">
       <img
-        className="h-96 w-full rounded-t-lg object-cover md:h-auto md:w-48 md:rounded-none md:rounded-l-lg"
-        src="/comic_list.png"
-        alt=""
+        className="h-96 rounded-t-lg object-cover lg:h-auto lg:rounded-none lg:rounded-l-lg"
+        src={project.image}
+        alt="Screenshot of project"
       />
-      <div className="flex flex-col justify-start p-6">
-        <h5 className="mb-2 text-xl font-medium">Card title</h5>
-        <p className="mb-4 text-base">
-          This is a wider card with supporting text below as a natural lead-in
-          to additional content. This content is a little bit longer.
-        </p>
-        <p className="text-xs">Last updated 3 mins ago</p>
+      <div className="flex flex-col justify-start justify-between p-6">
+        <p className="mb-2 text-xl font-medium">{project.name}</p>
+        <p className="mb-4 text-base lg:mb-28">{project.description}</p>
+        <div className="flex flex-row space-x-6 text-xs ">
+          {project.technologies.map((tech) => (
+            <p key={tech}>{tech}</p>
+          ))}
+        </div>
       </div>
     </div>
   );
