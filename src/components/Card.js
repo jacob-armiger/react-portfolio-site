@@ -1,8 +1,8 @@
 export default function Card({ project }) {
   return (
-    <div className="mx-4 flex flex-col rounded-lg border border-b-4 border-black lg:m-0 lg:h-52 lg:h-80 lg:w-10/12 lg:flex-row">
+    <a href={project.link} target="_blank" className="mx-4 flex flex-col rounded-lg hover:cursor-pointer hover:border-1 border border-b-4 border-black lg:m-0 lg:h-52 lg:h-80 lg:w-10/12 lg:flex-row">
       <img
-        className="h-96 rounded-t-lg object-cover lg:h-auto lg:rounded-none lg:rounded-l-lg"
+        className="h-96 rounded-t-lg object-cover lg:max-w-md lg:h-auto lg:rounded-none lg:rounded-l-lg"
         src={project.image}
         alt="Screenshot of project"
       />
@@ -15,6 +15,6 @@ export default function Card({ project }) {
           ))}
         </div>
       </div>
-    </div>
+    </a>
   );
 }

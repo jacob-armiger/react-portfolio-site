@@ -6,17 +6,17 @@ export default function Projects() {
       name: "comic-list-webscraper",
       image: "/comic_list.png",
       description:
-        "This project uses a web scraper to gather a comic book reading order from this website and formats the data into a csv file. You can upload the csv file to Excel and make a checklist of comics you've read.",
+        "A web application that dynamically wrangles data from pages on comicbookreadingorders.com to provide users a method to track reading progress.",
       technologies: ["Python", "Flask", "Web Scraping"],
-      link: "",
+      link: "https://www.comicbookreadingordersdownload.com/",
     },
     {
-      name: "Django dev-blog",
+      name: "DevBlog",
       image: "/devblog.png",
       description:
-        "This is a blog website that can be used to give your users updates on project development! There are page tabs for each project team and a comment system.",
+        "A blog for developers that gives them a platform to inform users of product updates.",
       technologies: ["Python", "Django", "bootstrap", "Heroku"],
-      link: "",
+      link: "https://github.com/jacob-armiger/django-devblog/tree/master",
     },
   ];
 
