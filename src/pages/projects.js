@@ -12,7 +12,7 @@ export default function Projects() {
     },
     {
       name: "comic-list-webscraper",
-      image: "/comic_list.png",
+      image: "/comic_list2.png",
       description:
         "A web application that dynamically wrangles data from pages on comicbookreadingorders.com to provide users a method to track reading progress.",
       technologies: ["Python", "Flask", "Web Scraping"],
