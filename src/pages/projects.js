@@ -3,6 +3,14 @@ export default function Projects() {
 
   let projects = [
     {
+      name: "rendering-engine",
+      image: "/graphic_render.png",
+      description:
+        "A rendering engine I built with WebGL 2.0",
+      technologies: ["WebGL 2.0", "GLSL", "JavaScript"],
+      link: "https://github.com/jacob-armiger/rendering-engine",
+    },
+    {
       name: "comic-list-webscraper",
       image: "/comic_list.png",
       description:
