@@ -11,9 +11,15 @@
     @apply text-2xl;
   }
 
-  a {
-    @apply border border-0 hover:border-b-2 border-b-black;
+  a.rich-link {
+    @apply border border-black border-2 rounded p-4 w-2/6 m-2
   }
+}
+
+@layer components {
+  a.nav-link {
+    @apply border border-0 hover:border-b-2 border-b-black;
+  } 
 }
 
 /* :root {
