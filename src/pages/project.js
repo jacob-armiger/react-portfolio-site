@@ -8,15 +8,10 @@ export default function Project() {
 
     useEffect(() => {
         const scriptMain = document.createElement("script");
-        scriptMain.src = "rendering-engine/js/main.js";
+        scriptMain.src = "rendering-engine/bundle.js";
         scriptMain.async = true;
         scriptMain.type = "module";
         document.body.appendChild(scriptMain);
-
-        // const scriptMatrixLib = document.createElement("script");
-        // scriptMatrixLib.type = "module";
-        // scriptMatrixLib.src = "/rendering-engine/js/gl-matrix-lib-min.js";
-        // document.body.appendChild(scriptMatrixLib);
 
         scriptMain.addEventListener("load", () => setLoaded(true));
     }, []);
