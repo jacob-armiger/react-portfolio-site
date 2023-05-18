@@ -29,7 +29,7 @@ export default function Projects() {
   ];
 
   return (
-    <div className="mt-12 flex flex-col items-center space-y-6">
+        <div className="my-12 flex flex-col items-center gap-5">
       {projects.map((project_data) => (
         <Card key={project_data.name} project={project_data} />
       ))}
