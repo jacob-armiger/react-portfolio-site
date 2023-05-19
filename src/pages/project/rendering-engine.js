@@ -1,14 +1,17 @@
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Project() {
-    let markdown = "# *This is markdown*";
+    let router = useRouter();
+    let project = JSON.parse(router.query.object);
+    let markdown = `# *This is markdown*`;
 
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         const scriptMain = document.createElement("script");
-        scriptMain.src = "rendering-engine/bundle.js";
+        scriptMain.src = "/rendering-engine/bundle.js";
         scriptMain.async = true;
         scriptMain.type = "module";
         document.body.appendChild(scriptMain);
@@ -22,7 +25,7 @@ export default function Project() {
 
     return (
         <>
-            <div className="mt-8 flex flex-col items-center">
+            <div className="flex flex-col items-center">
                 {loaded ? "Script loaded" : "script not loaded"}
                 <canvas id="glCanvas" width="640" height="480"></canvas>
                 <br />
@@ -192,6 +195,7 @@ export default function Project() {
                 </div>
             </div>
 
+            <h1 className="mt-12">{project.name}</h1>
             <ReactMarkdown className="markdown" children={markdown} />
             <div className="flex flex-col">
                 <h1>Further Reading</h1>

@@ -1,8 +1,11 @@
+import Link from "next/link";
 export default function Card({ project }) {
     return (
-        <a
-            href={project.link}
-            target="_blank"
+        <Link
+            href={{
+                pathname: `/project/${project.name}`,
+                query: { object: JSON.stringify(project) },
+            }}
             className="flex h-[35rem] w-11/12 flex-col rounded-lg border border-b-[5px] border-black transition-all duration-150 hover:mb-0 hover:translate-y-[5px] hover:cursor-pointer hover:border md:w-8/12 lg:h-80 lg:w-10/12 lg:flex-row"
         >
             <img
@@ -19,6 +22,6 @@ export default function Card({ project }) {
                     ))}
                 </div>
             </div>
-        </a>
+        </Link>
     );
 }
