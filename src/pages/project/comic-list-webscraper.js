@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 export default function Project() {
     let router = useRouter();
-    let project = router.query;
+    let project = JSON.parse(router.query.object);
     console.log(project);
 
     return (
