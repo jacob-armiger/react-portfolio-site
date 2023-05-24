@@ -4,7 +4,13 @@ import { useRouter } from "next/router";
 
 export default function Project() {
     let router = useRouter();
-    let project = JSON.parse(router.query.object);
+
+    let project = null;
+    if (router.query.object) {
+        // Conditional is needed for build error
+        project = JSON.parse(router.query.object);
+    }
+
     let markdown = `# *This is markdown*`;
 
     const [loaded, setLoaded] = useState(false);
@@ -195,7 +201,7 @@ export default function Project() {
                 </div>
             </div>
 
-            <h1 className="mt-12">{project.name}</h1>
+            <h1 className="mt-12">{project?.name}</h1>
             <ReactMarkdown className="markdown" children={markdown} />
             <div className="flex flex-col">
                 <h1>Further Reading</h1>
