@@ -31,6 +31,8 @@ export default function Project() {
 
     return (
         <>
+        <h1 className="text-center font-bold my-4">{project?.name}</h1>
+            {/* CANVAS AND SLIDERS */}
             <div className="flex flex-col items-center">
                 {loaded ? "Script loaded" : "script not loaded"}
                 <canvas id="glCanvas" width="640" height="480"></canvas>
@@ -200,10 +202,21 @@ export default function Project() {
                     </div>
                 </div>
             </div>
+            {/* PROJECT LINKS */}
+            <div className="flex flex-row justify-center">
+                <a
+                    className="rich-link"
+                    target="_blank"
+                    href="https://github.com/jacob-armiger/rendering-engine"
+                >
+                    Github
+                </a>
+            </div>
 
-            <h1 className="mt-12">{project?.name}</h1>
-            <ReactMarkdown className="markdown" children={markdown} />
-            <div className="flex flex-col">
+            <p className="font-bold text-center">*Under Construction*</p>
+
+            {/* FURTHER READING */}
+            <div className="flex flex-col mt-24">
                 <h1>Further Reading</h1>
                 <a
                     className="rich-link"
