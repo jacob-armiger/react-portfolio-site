@@ -1,4 +1,3 @@
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -31,7 +30,7 @@ export default function Project() {
 
     return (
         <>
-        <h1 className="text-center font-bold my-4">{project?.name}</h1>
+            <h1 className="my-4 text-center font-bold">{project?.name}</h1>
             {/* CANVAS AND SLIDERS */}
             <div className="flex flex-col items-center">
                 {loaded ? "Script loaded" : "script not loaded"}
@@ -213,10 +212,10 @@ export default function Project() {
                 </a>
             </div>
 
-            <p className="font-bold text-center">*Under Construction*</p>
+            <p className="text-center font-bold">*Under Construction*</p>
 
             {/* FURTHER READING */}
-            <div className="flex flex-col mt-24">
+            <div className="mt-24 flex flex-col">
                 <h1>Further Reading</h1>
                 <a
                     className="rich-link"
