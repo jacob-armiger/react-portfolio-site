@@ -1,6 +1,7 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect } from "react";
 import { useState } from 'react';
+import Book from "@/components/Book";
 
 export default function Books() {
     const [books, setBooks] = useState([])
@@ -18,7 +19,7 @@ export default function Books() {
 
     return (
         <div className="my-12 flex flex-col items-left gap-5">
-            {books?.map(book => <p key={book.Title}> {book.Title}</p>)}
+            {books?.map(book => <Book key={book.Title} book={book}/>)}
         </div>
     );
 }
