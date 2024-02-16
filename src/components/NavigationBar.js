@@ -13,6 +13,9 @@ export default function NavBar() {
         <div>
           <Link className="nav-link" href="/projects">Projects</Link>
         </div>
+        <div>
+          <Link className="nav-link" href="/books">Books</Link>
+        </div>
       </nav>
     </div>
   );
