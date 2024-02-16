@@ -1,10 +1,10 @@
 export default function Book({ book }) {
     return (
-        <div className="mb-6 block max-w-lg break-inside-avoid-column rounded-lg border border-gray-200 bg-white p-6 shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-            <h5 className="mb-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <div className="mb-6 block max-w-lg break-inside-avoid-column rounded-lg border border-gray-200 bg-white p-6 shadow hover:bg-gray-100 ">{/* dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 */}
+            <h5 className="mb-1 text-2xl font-bold tracking-tight text-gray-900 "> {/* dark:text-white */}
                 {book.Title}
             </h5>
-            <p className="font-normal text-gray-500 dark:text-gray-400">
+            <p className="font-normal text-gray-500 "> {/*  dark:text-gray-400*/}
                 {book.Author}
             </p>
             <div className="flex">
