@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Button from "@/components/Button";
 
 export default function Project() {
     let router = useRouter();
@@ -31,13 +32,17 @@ export default function Project() {
     return (
         <>
             <h1 className="my-4 text-center font-bold">{project?.name}</h1>
+            <p className="text-center font-bold">
+                *Warning*: this page may not work on your mobile device
+            </p>
+
             {/* CANVAS AND SLIDERS */}
-            <div className="flex flex-col items-center">
-                {loaded ? "Script loaded" : "script not loaded"}
+            <div className="m-auto flex flex-col lg:w-9/12">
+                {/* {loaded ? "Script loaded" : "script not loaded"} */}
                 <canvas id="glCanvas" width="640" height="480"></canvas>
                 <br />
-                <div className="w-1/2">
-                    <div className="float-left w-1/2">
+                <div className="mb-8 sm:flex sm:flex-row">
+                    <div className="float-left w-1/2 ">
                         <p>Camera Position:</p>
                         <div>
                             <label htmlFor="camX">X:</label>
@@ -202,42 +207,46 @@ export default function Project() {
                 </div>
             </div>
             {/* PROJECT LINKS */}
-            <div className="flex flex-row justify-center">
-                <a
-                    className="rich-link"
-                    target="_blank"
-                    href="https://github.com/jacob-armiger/rendering-engine"
-                >
-                    Github
-                </a>
+            <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:mx-auto sm:items-start">
+                <div className="flex w-min flex-row space-x-4">
+                    <Button
+                        url="https://github.com/jacob-armiger/rendering-engine"
+                        title="Project Github"
+                    />
+                </div>
+                <p>
+                    This is a project I did for school, but I went above and
+                    beyond the requirements. We were required to implement a
+                    certain number objects and shaders, but I architected my
+                    program so that I could render as many objects with as many
+                    shaders as I want. I do this via data-driven programming (I
+                    give my program a list of objects). I had a lot of fun doing
+                    this and, in the future, it would be cool to implement
+                    object shadows!
+                    <br />
+                    <br />
+                    Getting my WebGL script running in this react project was a
+                    whole other problem to solve. I ended up bundling the whole
+                    script with webpack and then using raw JavaScript to create
+                    a script element.
+                </p>
             </div>
 
-            <p className="text-center font-bold">*Under Construction*</p>
-
             {/* FURTHER READING */}
-            <div className="mt-24 flex flex-col">
-                <h1>Further Reading</h1>
-                <a
-                    className="rich-link"
-                    target="_blank"
-                    href="https://webpack.js.org/guides/getting-started/"
-                >
-                    Webpack Docs
-                </a>
-                <a
-                    className="rich-link"
-                    target="_blank"
-                    href="https://dev.to/antonmelnyk/how-to-configure-webpack-from-scratch-for-a-basic-website-46a5#:~:text=As%20you%20may%20know%2C%20configuring,which%20is%20a%20good%20thing."
-                >
-                    Dev Article
-                </a>
-                <a
-                    className="rich-link"
-                    target="_blank"
-                    href="https://medium.com/the-node-js-collection/modern-javascript-explained-for-dinosaurs-f695e9747b70"
-                >
-                    History of JavaScript Modules
-                </a>
+            <h1>Further Reading</h1>
+            <div className="justify-left mt-4 flex flex-row">
+                <Button
+                    url="https://webpack.js.org/guides/getting-started/"
+                    title="Webpack Docs"
+                />
+                <Button
+                    url="https://dev.to/antonmelnyk/how-to-configure-webpack-from-scratch-for-a-basic-website-46a5#:~:text=As%20you%20may%20know%2C%20configuring,which%20is%20a%20good%20thing."
+                    title="Article on Webpack"
+                />
+                <Button
+                    url="https://medium.com/the-node-js-collection/modern-javascript-explained-for-dinosaurs-f695e9747b70"
+                    title="History of Javascript Modules"
+                />
             </div>
         </>
     );
