@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Card({ project }) {
+export default function Project({ project }) {
     return (
         <Link
             href={{

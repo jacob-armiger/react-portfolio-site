@@ -1,4 +1,4 @@
-import Card from "@/components/Card";
+import Project from "@/components/Project";
 export default function Projects() {
     let projects = [
         {
@@ -29,7 +29,7 @@ export default function Projects() {
     return (
         <div className="my-12 flex flex-col items-center gap-5">
             {projects.map((project_data) => (
-                <Card key={project_data.name} project={project_data} />
+                <Project key={project_data.name} project={project_data} />
             ))}
         </div>
     );
