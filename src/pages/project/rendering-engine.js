@@ -11,7 +11,7 @@ export default function Project() {
         project = JSON.parse(router.query.object);
     }
 
-    let markdown = `# *This is markdown*`;
+    // let markdown = `# *This is markdown*`;
 
     const [loaded, setLoaded] = useState(false);
 
@@ -30,15 +30,15 @@ export default function Project() {
     }, [loaded]);
 
     return (
-        <>
+        <div>
             <h1 className="my-4 text-center font-bold">{project?.name}</h1>
             <p className="text-center font-bold">
                 *Warning*: this page may not work on your mobile device
+                {/* {loaded ? "Script loaded" : "script not loaded"} */}
             </p>
 
             {/* CANVAS AND SLIDERS */}
             <div className="m-auto flex flex-col lg:w-9/12">
-                {/* {loaded ? "Script loaded" : "script not loaded"} */}
                 <canvas id="glCanvas" width="640" height="480"></canvas>
                 <br />
                 <div className="mb-8 sm:flex sm:flex-row">
@@ -206,7 +206,7 @@ export default function Project() {
                     </div>
                 </div>
             </div>
-            {/* PROJECT LINKS */}
+            {/* Content */}
             <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:mx-auto sm:items-start">
                 <div className="flex w-min flex-row space-x-4">
                     <Button
@@ -248,6 +248,6 @@ export default function Project() {
                     title="History of Javascript Modules"
                 />
             </div>
-        </>
+        </div>
     );
 }
