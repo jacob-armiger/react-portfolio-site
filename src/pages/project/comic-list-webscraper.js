@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Button from "@/components/Button";
 
 export default function Project() {
@@ -14,7 +15,7 @@ export default function Project() {
             <h1 className="my-4 text-center font-bold">{project?.name}</h1>
             <img className="" src={project?.image} />
 
-            <div className="mx-1 sm:mx-auto my-4 flex max-w-prose flex-col items-center sm:items-start">
+            <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:mx-auto sm:items-start">
                 <div className="flex w-min flex-row space-x-4">
                     <Button
                         url="https://github.com/jacob-armiger/comic-list-web-scraper"
@@ -28,15 +29,17 @@ export default function Project() {
                 <p>
                     This web app allows readers to keep track of things they’ve
                     read from{" "}
-                    <a href="https://comicbookreadingorders.com">
+                    <Link
+                        className="text-cyan-700"
+                        href="https://comicbookreadingorders.com"
+                    >
                         comicbookreadingorders.com
-                    </a>
+                    </Link>
                     . Each reading order is on its own page, so readers just
                     need to copy the URL and paste it into the prompt on my web
                     app.
-                </p>
-                <br />
-                <p>
+                    <br />
+                    <br />
                     Originally this project started as a single Python script. I
                     didn’t think I would be creating a tool that other people
                     would use. Then I had the idea to contact the site owner and
@@ -44,13 +47,15 @@ export default function Project() {
                     he’s had users request similar features. My first idea was
                     to create a distributable executable, but after
                     multi-platform and signature issues I pivoted to a web app.
-                </p>
-                <br />
-                <p>
+                    <br />
+                    <br />
                     My own web app has the same theme as{" "}
-                    <a href="comicbookreadingorders.com">
+                    <Link
+                        className="text-cyan-700"
+                        href="comicbookreadingorders.com"
+                    >
                         comicbookreadingorders.com
-                    </a>
+                    </Link>
                     , but it’s hosted separately and on a different domain name.
                     I’m not sure what the site owner is using for his website,
                     and it seems like they would be most happy with a hands off
