@@ -20,7 +20,7 @@ export default function Books() {
     };
 
     return (
-        <div className="mx-6 my-12 columns-2 md:columns-3 lg:columns-4">
+        <div className="mx-2 my-12 columns-2 gap-2 sm:mx-6 sm:gap-6 md:columns-3 lg:columns-4">
             {books?.map((book) => (
                 <Book key={book.Title} book={book} />
             ))}
