@@ -10,11 +10,11 @@ export default function Project() {
     }
 
     return (
-        <div className="m-auto w-full content-center lg:w-8/12">
+        <div className="m-auto w-full lg:w-8/12">
             <h1 className="my-4 text-center font-bold">{project?.name}</h1>
             <img className="" src={project?.image} />
 
-            <div className="m-auto my-4 max-w-prose mx-1">
+            <div className="mx-1 sm:mx-auto my-4 flex max-w-prose flex-col items-center sm:items-start">
                 <div className="flex w-min flex-row space-x-4">
                     <Button
                         url="https://github.com/jacob-armiger/comic-list-web-scraper"
@@ -22,7 +22,7 @@ export default function Project() {
                     />
                     <Button
                         url="https://www.comicbookreadingordersdownload.com"
-                        title="Website"
+                        title="Project Website"
                     />
                 </div>
                 <p>
