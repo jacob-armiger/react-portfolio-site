@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Button from "@/components/Button";
 
 export default function Project() {
     let router = useRouter();
@@ -9,28 +10,21 @@ export default function Project() {
     }
 
     return (
-        <div className="m-auto lg:w-8/12 w-full content-center">
+        <div className="m-auto w-full content-center lg:w-8/12">
             <h1 className="my-4 text-center font-bold">{project?.name}</h1>
             <img className="" src={project?.image} />
 
-            <div className="flex flex-col justify-center items-center sm:flex-row">
-                <a
-                    className="rich-link"
-                    target="_blank"
-                    href="https://github.com/jacob-armiger/comic-list-web-scraper"
-                >
-                    Github
-                </a>
-                <a
-                    className="rich-link"
-                    target="_blank"
-                    href="https://www.comicbookreadingordersdownload.com"
-                >
-                    Website
-                </a>
-            </div>
-
-            <div className="m-auto my-4 max-w-prose">
+            <div className="m-auto my-4 max-w-prose mx-1">
+                <div className="flex w-min flex-row space-x-4">
+                    <Button
+                        url="https://github.com/jacob-armiger/comic-list-web-scraper"
+                        title="Github Project"
+                    />
+                    <Button
+                        url="https://www.comicbookreadingordersdownload.com"
+                        title="Website"
+                    />
+                </div>
                 <p>
                     This web app allows readers to keep track of things they’ve
                     read from{" "}
