@@ -39,7 +39,12 @@ export default function Project() {
 
             {/* CANVAS AND SLIDERS */}
             <div className="m-auto flex flex-col lg:w-9/12 2xl:w-1/2">
-                <canvas id="glCanvas" width="640" height="480"></canvas>
+                <canvas
+                    className="rounded-md"
+                    id="glCanvas"
+                    width="640"
+                    height="480"
+                />
                 <br />
                 <div className="mb-8 sm:flex sm:flex-row">
                     <div className="float-left w-1/2 ">
@@ -206,7 +211,7 @@ export default function Project() {
                     </div>
                 </div>
             </div>
-            {/* Content */}
+            {/* CONTENT */}
             <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:mx-auto sm:items-start">
                 <div className="mb-2 flex w-min flex-row  space-x-4">
                     <Button
@@ -233,20 +238,22 @@ export default function Project() {
             </div>
 
             {/* FURTHER READING */}
-            <h1>Further Reading</h1>
-            <div className="justify-left mt-4 flex flex-row">
-                <Button
-                    url="https://webpack.js.org/guides/getting-started/"
-                    title="Webpack Docs"
-                />
-                <Button
-                    url="https://dev.to/antonmelnyk/how-to-configure-webpack-from-scratch-for-a-basic-website-46a5#:~:text=As%20you%20may%20know%2C%20configuring,which%20is%20a%20good%20thing."
-                    title="Article on Webpack"
-                />
-                <Button
-                    url="https://medium.com/the-node-js-collection/modern-javascript-explained-for-dinosaurs-f695e9747b70"
-                    title="History of Javascript Modules"
-                />
+            <div className="mt-10 flex w-full flex-col items-center">
+                <h1 className="mb-2">Further Reading</h1>
+                <div className="mt-4 flex flex-row flex-wrap space-x-4">
+                    <Button
+                        url="https://webpack.js.org/guides/getting-started/"
+                        title="Webpack Docs"
+                    />
+                    <Button
+                        url="https://dev.to/antonmelnyk/how-to-configure-webpack-from-scratch-for-a-basic-website-46a5#:~:text=As%20you%20may%20know%2C%20configuring,which%20is%20a%20good%20thing."
+                        title="Article on Webpack"
+                    />
+                    <Button
+                        url="https://medium.com/the-node-js-collection/modern-javascript-explained-for-dinosaurs-f695e9747b70"
+                        title="History of Javascript Modules"
+                    />
+                </div>
             </div>
         </div>
     );
