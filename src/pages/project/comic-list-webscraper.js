@@ -11,12 +11,12 @@ export default function Project() {
     }
 
     return (
-        <div className="m-auto w-full lg:w-8/12">
-            <h1 className="my-4 text-center font-bold">{project?.name}</h1>
-            <img className="" src={project?.image} />
+        <div className="m-auto flex w-full flex-col items-center justify-center ">
+            <h1 className="my-4 font-bold">{project?.name}</h1>
+            <img src={project?.image} />
 
             <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:mx-auto sm:items-start">
-                <div className="flex w-min flex-row space-x-4">
+                <div className="mb-2 flex w-min flex-row space-x-4">
                     <Button
                         url="https://github.com/jacob-armiger/comic-list-web-scraper"
                         title="Github Project"
