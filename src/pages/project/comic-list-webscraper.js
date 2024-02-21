@@ -11,11 +11,11 @@ export default function Project() {
     }
 
     return (
-        <div className="m-auto flex w-full flex-col items-center justify-center ">
+        <div className="flex w-full flex-col items-center justify-center ">
             <h1 className="my-4 font-bold">{project?.name}</h1>
             <img src={project?.image} />
 
-            <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:mx-auto sm:items-start">
+            <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:items-start">
                 <div className="mb-2 flex w-min flex-row space-x-4">
                     <Button
                         url="https://github.com/jacob-armiger/comic-list-web-scraper"
