@@ -7,7 +7,7 @@ export default function Project({ project }) {
                 pathname: `/project/${project.name}`,
                 query: { object: JSON.stringify(project) },
             }}
-            className="flex h-[35rem] w-11/12 flex-col rounded-lg border border-b-[5px] border-black transition-all duration-150 hover:mb-0 hover:translate-y-[5px] hover:cursor-pointer hover:border md:w-8/12 lg:h-80 lg:w-10/12 lg:flex-row"
+            className="flex h-[35rem] w-11/12 flex-col rounded-lg border border-b-[5px] border-black transition-all duration-150 hover:mb-0 hover:cursor-pointer focus:border sm:hover:translate-y-[5px] sm:hover:border md:w-8/12 lg:h-80 lg:w-10/12 lg:flex-row"
         >
             <img
                 className="h-96 rounded-t-lg object-cover lg:h-auto lg:w-5/12 lg:rounded-none lg:rounded-l-lg"
