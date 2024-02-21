@@ -38,7 +38,7 @@ export default function Project() {
             </p>
 
             {/* CANVAS AND SLIDERS */}
-            <div className="m-auto flex flex-col lg:w-9/12">
+            <div className="m-auto flex flex-col lg:w-9/12 2xl:w-1/2">
                 <canvas id="glCanvas" width="640" height="480"></canvas>
                 <br />
                 <div className="mb-8 sm:flex sm:flex-row">
