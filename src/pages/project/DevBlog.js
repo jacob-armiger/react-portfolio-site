@@ -14,7 +14,7 @@ export default function Project() {
             <img className="" src={project?.image} />
             {/* Content */}
             <div className="mx-1 my-4 flex max-w-prose flex-col items-center sm:mx-auto sm:items-start">
-                <div className="flex w-min flex-row space-x-4 mb-2">
+                <div className="mb-2 flex w-min flex-row space-x-4">
                     <Button
                         url="https://github.com/jacob-armiger/django-devblog"
                         title="Project Github"
