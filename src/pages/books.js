@@ -1,10 +1,12 @@
 import { supabase } from "@/utils/supabase";
 import { useEffect } from "react";
-import { useState } from 'react';
+import { useState } from "react";
 import Book from "@/components/Book";
 
 export default function Books() {
     const [books, setBooks] = useState([]);
+    const [sorted, setSorted] = useState(false);
+    const [sortType, setTypeSelected] = useState(false);
 
     useEffect(() => {
         fetchBooks();
@@ -19,11 +21,82 @@ export default function Books() {
         setBooks(data.data);
     };
 
+    let compareTitle = (a, b) => {
+        if (a?.Title > b?.Title) {
+            return 1;
+        } else {
+            return -1;
+        }
+    };
+    let compareStars = (a, b) => {
+        if (a["My Rating"] > b["My Rating"]) {
+            return -1;
+        } else {
+            return 1;
+        }
+    };
+
+    let handleClick = async (e) => {
+        let type = e?.target.value;
+        
+        if (type == "title") {
+            await books.sort(compareTitle);
+            setTypeSelected("title");
+        } else if (type == "stars") {
+            setTypeSelected("stars");
+            await books.sort(compareStars);
+        }
+        setSorted(true);
+    };
+
     return (
-        <div className="mx-2 my-12 columns-2 gap-2 sm:mx-6 sm:gap-6 md:columns-3 lg:columns-4">
-            {books?.map((book) => (
-                <Book key={book.Title} book={book} />
-            ))}
+        <div className="mx-auto sm:mx-24 mt-12 flex flex-row">
+            <aside
+                className="fixed left-0 top-48 z-40 h-3/4 w-64 -translate-x-full transition-transform sm:left-2 sm:translate-x-0"
+                aria-label="Sidebar"
+            >
+                <div className="h-full overflow-y-auto rounded-lg border border-black px-3 py-4">
+                    <p className="font-bold">Sort By</p>
+                    <button
+                        onClick={handleClick}
+                        className="rounded-full px-4 py-2 hover:bg-gray-400"
+                        value="title"
+                    >
+                        Title
+                    </button>
+                    <button
+                        onClick={handleClick}
+                        className="rounded-full px-4 py-2 hover:bg-gray-400"
+                        value="stars"
+                    >
+                        Stars
+                    </button>
+                </div>
+            </aside>
+
+            <div className="mt-8 sm:ml-64">
+                {!sorted ? (
+                    <div className="mx-2 mb-12 columns-2 gap-2 sm:mx-6 sm:gap-6 md:columns-2 lg:columns-4">
+                        {books?.map((book) => (
+                            <Book
+                                key={book.Title}
+                                book={book}
+                                sorted={sorted}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mx-4 mb-12 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                        {books?.map((book) => (
+                            <Book
+                                key={book.Title}
+                                book={book}
+                                sorted={sorted}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
