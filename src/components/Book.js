@@ -1,7 +1,7 @@
 export default function Book({ book, sorted = false }) {
     if (sorted) {
         return (
-            <div className="mb-6 max-w-lg overflow-auto max-h-44 break-inside-avoid rounded-lg border border-slate-500 p-2 sm:p-5 sm:pt-3">
+            <div className="mb-6 max-h-44 max-w-lg break-inside-avoid overflow-auto rounded-lg border border-black p-2 sm:p-5 sm:pt-3">
                 {/* dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 */}
                 <h5 className="mb-1 text-2xl font-bold tracking-tight text-gray-900 ">
                     {/* dark:text-white */}

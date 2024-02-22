@@ -38,7 +38,7 @@ export default function Books() {
 
     let handleClick = async (e) => {
         let type = e?.target.value;
-        
+
         if (type == "title") {
             await books.sort(compareTitle);
             setTypeSelected("title");
@@ -50,9 +50,9 @@ export default function Books() {
     };
 
     return (
-        <div className="mx-auto sm:mx-24 mt-12 flex flex-row">
+        <div className="mx-auto mt-16 flex flex-row sm:mx-16">
             <aside
-                className="fixed left-0 top-48 z-40 h-3/4 w-64 -translate-x-full transition-transform sm:left-2 sm:translate-x-0"
+                className="fixed top-64 h-3/5 w-64 -translate-x-full transition-transform sm:left-2 sm:translate-x-0"
                 aria-label="Sidebar"
             >
                 <div className="h-full overflow-y-auto rounded-lg border border-black px-3 py-4">
@@ -74,9 +74,9 @@ export default function Books() {
                 </div>
             </aside>
 
-            <div className="mt-8 sm:ml-64">
+            <div className="mt-8 w-full sm:ml-64 sm:w-3/4">
                 {!sorted ? (
-                    <div className="mx-2 mb-12 columns-2 gap-2 sm:mx-6 sm:gap-6 md:columns-2 lg:columns-4">
+                    <div className="mx-2 mb-12 columns-2 gap-2 sm:mx-6 sm:columns-1 sm:gap-6 md:columns-2 lg:columns-3">
                         {books?.map((book) => (
                             <Book
                                 key={book.Title}
@@ -86,7 +86,7 @@ export default function Books() {
                         ))}
                     </div>
                 ) : (
-                    <div className="mx-4 mb-12 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    <div className="mx-4 mb-12 grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                         {books?.map((book) => (
                             <Book
                                 key={book.Title}
