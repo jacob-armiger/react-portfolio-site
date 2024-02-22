@@ -96,7 +96,7 @@ export default function Books() {
                         ))}
                     </div>
                 ) : (
-                    <div className="mx-4 mb-12 grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    <div className="mx-4 mb-12 grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
                         {books?.map((book) => (
                             <Book
                                 key={book.Title}
