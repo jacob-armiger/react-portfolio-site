@@ -50,9 +50,9 @@ export default function Books() {
     };
 
     return (
-        <div className="mx-auto mt-16 flex flex-row sm:mx-16">
+        <div className="mx-auto mt-16 flex flex-row sm:mx-16 2xl:mx-48">
             <aside
-                className="fixed top-64 h-3/5 w-64 -translate-x-full transition-transform sm:left-2 sm:translate-x-8"
+                className="fixed top-64 h-3/5 w-64 -translate-x-full transition-transform sm:left-2 sm:translate-x-8 2xl:translate-x-40"
                 aria-label="Sidebar"
             >
                 <div className="h-full overflow-y-auto rounded-lg border border-black px-3 py-4">
