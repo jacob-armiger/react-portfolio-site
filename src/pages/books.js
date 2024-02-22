@@ -6,7 +6,7 @@ import Book from "@/components/Book";
 export default function Books() {
     const [books, setBooks] = useState([]);
     const [sorted, setSorted] = useState(false);
-    const [sortType, setTypeSelected] = useState(false);
+    const [sortType, setSortType] = useState("none");
 
     useEffect(() => {
         fetchBooks();
@@ -37,14 +37,20 @@ export default function Books() {
     };
 
     let handleClick = async (e) => {
-        let type = e?.target.value;
+        let selection = e?.target.value;
 
-        if (type == "title") {
-            await books.sort(compareTitle);
-            setTypeSelected("title");
-        } else if (type == "stars") {
-            setTypeSelected("stars");
-            await books.sort(compareStars);
+        if (sortType == selection) {
+            setSortType("none");
+            setSorted(false);
+            return;
+        }
+
+        if (selection == "title") {
+            books.sort(compareTitle);
+            setSortType("title");
+        } else if (selection == "stars") {
+            books.sort(compareStars);
+            setSortType("stars");
         }
         setSorted(true);
     };
@@ -55,18 +61,22 @@ export default function Books() {
                 className="fixed top-64 h-3/5 w-64 -translate-x-full transition-transform sm:left-2 sm:translate-x-8 2xl:translate-x-40"
                 aria-label="Sidebar"
             >
-                <div className="h-full overflow-y-auto rounded-lg border border-black px-3 py-4">
+                <div className="h-full space-x-1 overflow-y-auto rounded-lg border border-black px-3 py-4">
                     <p className="font-bold">Sort By</p>
                     <button
                         onClick={handleClick}
-                        className="rounded-full px-4 py-2 hover:bg-gray-400"
+                        className={`rounded-full px-4 py-2 hover:bg-gray-300 ${
+                            sortType === "title" ? "bg-gray-400" : null
+                        }`}
                         value="title"
                     >
                         Title
                     </button>
                     <button
                         onClick={handleClick}
-                        className="rounded-full px-4 py-2 hover:bg-gray-400"
+                        className={`rounded-full px-4 py-2 hover:bg-gray-300 ${
+                            sortType === "stars" ? "bg-gray-400" : null
+                        }`}
                         value="stars"
                     >
                         Stars
