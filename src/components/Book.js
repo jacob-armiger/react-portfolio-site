@@ -3,7 +3,7 @@ export default function Book({ book, sorted = false }) {
         return (
             <div className="mb-6 max-h-44 max-w-lg break-inside-avoid overflow-auto rounded-lg border border-black p-2 sm:p-5 sm:pt-3">
                 {/* dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 */}
-                <h5 className="mb-1 text-2xl font-bold tracking-tight text-gray-900 ">
+                <h5 className="mb-1 text-xl font-bold tracking-tight text-gray-900 ">
                     {/* dark:text-white */}
                     {book.Title}
                 </h5>
