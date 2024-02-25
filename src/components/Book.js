@@ -5,23 +5,12 @@ export default function Book({ book, sorted = false }) {
 
     if (sorted) {
         return (
-            <div className="mb-6 flex max-h-60 max-w-lg flex-row overflow-y-scroll rounded-lg border border-black p-2 pb-0 sm:px-2 sm:pt-2">
-                <div className="mb-1 flex grow flex-col">
-                    <h5 className="text-xl font-bold tracking-tight text-gray-900 md:text-2xl ">
-                        {book.Title}
-                    </h5>
-                    <p
-                        className={`font-normal text-gray-500 ${
-                            book["My Review"] === "No review written!"
-                                ? "flex-1"
-                                : null
-                        }`}
-                    >
-                        {book.Author}
-                    </p>
-                    <p>{book["My Review"]}</p>
-                </div>
-                <div className="mb-1 flex self-end sticky bottom-0">
+            <div className="mb-6 flex h-48 flex-col overflow-auto rounded-lg border border-black p-2 pb-0 sm:px-2 sm:pt-2">
+                <h5 className="mb-1 text-xl font-bold tracking-tight text-gray-900 ">
+                    {book.Title}
+                </h5>
+                <p className="font-normal text-gray-500">{book.Author}</p>
+                <div className="flex flex-1 right-2 bottom-1">
                     <svg
                         className="me-1 h-4 w-4 text-yellow-300"
                         aria-hidden="true"
@@ -33,6 +22,7 @@ export default function Book({ book, sorted = false }) {
                     </svg>
                     <p>{book["My Rating"]}</p>
                 </div>
+                <p>{book["My Review"]}</p>
             </div>
         );
     } else {
