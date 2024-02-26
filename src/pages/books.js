@@ -2,7 +2,6 @@ import { supabase } from "@/utils/supabase";
 import { useEffect } from "react";
 import { useState } from "react";
 import Book from "@/components/Book";
-import Sidebar from "@/components/Sidebar";
 
 export default function Books() {
     const [books, setBooks] = useState([]);
@@ -64,12 +63,14 @@ export default function Books() {
 
     return (
         <>
-            <button
-                onClick={handleSortClick}
-                className="h-8 border border-black"
-            >
-                Sort
-            </button>
+            <div className="ml-6 mt-2 hidden h-8 w-8 sm:block">
+                <button
+                    onClick={handleSortClick}
+                    className="rounded border border-b-4 border-black px-4 py-1 hover:border hover:bg-gray-400"
+                >
+                    Search
+                </button>
+            </div>
             <div className="flex">
                 <aside
                     aria-label="Sidebar"
@@ -77,7 +78,7 @@ export default function Books() {
                         browsing ? "sm:ml-4" : "sm:-ml-48"
                     }`}
                 >
-                    <div className="h-64 w-48 rounded-lg border border-black px-3 py-4">
+                    <div className="h-64 w-48 rounded-lg border border-b-4 border-l-2 border-black px-3 py-4">
                         <p className="font-bold">Sort By</p>
                         <button
                             onClick={handleClick}
@@ -103,7 +104,7 @@ export default function Books() {
                         </button>
                     </div>
                 </aside>
-                <div className="mx-2 my-8 columns-2 gap-2 sm:mx-6 sm:gap-6 md:columns-3 lg:columns-4">
+                <div className="mx-2 mb-8 mt-10 columns-2 gap-2 sm:mx-6 sm:mt-4 sm:gap-6 md:columns-3 lg:columns-4">
                     {books?.map((book) => (
                         <Book key={book.Title} book={book} sorting={sortType} />
                     ))}
