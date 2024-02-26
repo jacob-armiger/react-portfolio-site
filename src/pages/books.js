@@ -104,9 +104,15 @@ export default function Books() {
                         </button>
                     </div>
                 </aside>
-                <div className="mx-2 mb-8 mt-10 columns-2 gap-2 sm:mx-6 sm:mt-4 sm:gap-6 md:columns-3 lg:columns-4">
+                <div
+                    className={`${
+                        !browsing
+                            ? "mx-2 mb-8 mt-10 columns-2 gap-2 sm:mx-6 sm:mt-4 sm:gap-6 md:columns-3 lg:columns-4"
+                            : "mx-4 mt-10 sm:mt-4 mb-8 grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5"
+                    }`}
+                >
                     {books?.map((book) => (
-                        <Book key={book.Title} book={book} sorting={sortType} />
+                        <Book key={book.Title} book={book} browsing={browsing} />
                     ))}
                 </div>
             </div>

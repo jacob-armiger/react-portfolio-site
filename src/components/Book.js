@@ -1,9 +1,9 @@
-export default function Book({ book, sorted = false }) {
+export default function Book({ book, browsing = true }) {
     if (!book["My Review"]) {
         book["My Review"] = "No review written!";
     }
 
-    if (sorted) {
+    if (browsing) {
         return (
             <div className="mb-2 flex h-48 flex-col overflow-auto rounded-lg border border-black p-2 pb-0 sm:px-2 sm:pt-2">
                 <h5 className="mb-1 text-xl font-bold tracking-tight leading-tight text-gray-900 ">
