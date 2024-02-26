@@ -35,6 +35,13 @@ export default function Books() {
             return 1;
         }
     };
+    let compareAuthor = (a, b) => {
+        if (a.Author > b.Author) {
+            return 1;
+        } else {
+            return -1;
+        }
+    };
 
     let handleClick = async (e) => {
         let selection = e?.target.value;
@@ -50,6 +57,9 @@ export default function Books() {
         } else if (selection == "stars") {
             books.sort(compareStars);
             setSortType("stars");
+        } else if (selection == "author") {
+            books.sort(compareAuthor);
+            setSortType("author");
         }
     };
 
@@ -78,7 +88,7 @@ export default function Books() {
                         browsing ? "sm:ml-4" : "sm:-ml-48"
                     }`}
                 >
-                    <div className="h-64 w-48 rounded-lg border border-b-4 border-l-2 border-black px-3 py-4">
+                    <div className="h-64 w-48 space-x-1 space-y-1 rounded-lg border border-b-4 border-l-2 border-black px-3 py-4">
                         <p className="font-bold">Sort By</p>
                         <button
                             onClick={handleClick}
@@ -101,6 +111,17 @@ export default function Books() {
                             }`}
                         >
                             Stars
+                        </button>
+                        <button
+                            onClick={handleClick}
+                            value="author"
+                            className={`rounded-full px-4 py-2 hover:bg-gray-300 ${
+                                sortType === "author"
+                                    ? "border border-black"
+                                    : null
+                            }`}
+                        >
+                            Author
                         </button>
                     </div>
                 </aside>
