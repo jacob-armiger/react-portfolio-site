@@ -2,12 +2,13 @@ import { supabase } from "@/utils/supabase";
 import { useEffect } from "react";
 import { useState } from "react";
 import Book from "@/components/Book";
+import Sidebar from "@/components/Sidebar";
 
 export default function Books() {
     const [books, setBooks] = useState([]);
     const [browsing, setBrowsing] = useState(false);
     const [sortType, setSortType] = useState(null);
-
+    
     useEffect(() => {
         fetchBooks();
     }, []);
@@ -17,7 +18,6 @@ export default function Books() {
             .from("book_data2")
             .select()
             .eq("Exclusive Shelf", "read");
-        console.log(data.data);
         setBooks(data.data);
     };
 
@@ -43,27 +43,7 @@ export default function Books() {
         }
     };
 
-    let handleClick = async (e) => {
-        let selection = e?.target.value;
-
-        if (sortType == selection) {
-            setSortType(null);
-            return;
-        }
-
-        if (selection == "title") {
-            books.sort(compareTitle);
-            setSortType("title");
-        } else if (selection == "stars") {
-            books.sort(compareStars);
-            setSortType("stars");
-        } else if (selection == "author") {
-            books.sort(compareAuthor);
-            setSortType("author");
-        }
-    };
-
-    let handleSortClick = () => {
+    let handleSearchClick = () => {
         if (browsing) {
             setBrowsing(false);
         } else {
@@ -71,60 +51,30 @@ export default function Books() {
         }
     };
 
+    let updateSortType = (type) => {
+        setSortType(type);
+
+        if (type == "title") {
+            books.sort(compareTitle);
+        } else if (type == "stars") {
+            books.sort(compareStars);
+        } else if (type == "author") {
+            books.sort(compareAuthor);
+        }
+    };
+
     return (
         <>
             <div className="ml-6 mt-2 hidden h-8 w-8 sm:block">
                 <button
-                    onClick={handleSortClick}
+                    onClick={handleSearchClick}
                     className="rounded border border-b-4 border-black px-4 py-1 hover:border hover:bg-gray-400"
                 >
                     Search
                 </button>
             </div>
             <div className="flex">
-                <aside
-                    aria-label="Sidebar"
-                    className={`sticky top-64 -ml-48 h-full transition-all ${
-                        browsing ? "sm:ml-4" : "sm:-ml-48"
-                    }`}
-                >
-                    <div className="h-64 w-48 space-x-1 space-y-1 rounded-lg border border-b-4 border-l-2 border-black px-3 py-4">
-                        <p className="font-bold">Sort By</p>
-                        <button
-                            onClick={handleClick}
-                            value="title"
-                            className={`rounded-full px-4 py-2 hover:bg-gray-300 ${
-                                sortType === "title"
-                                    ? "border border-black"
-                                    : null
-                            }`}
-                        >
-                            Title
-                        </button>
-                        <button
-                            onClick={handleClick}
-                            value="stars"
-                            className={`rounded-full px-4 py-2 hover:bg-gray-300 ${
-                                sortType === "stars"
-                                    ? "border border-black"
-                                    : null
-                            }`}
-                        >
-                            Stars
-                        </button>
-                        <button
-                            onClick={handleClick}
-                            value="author"
-                            className={`rounded-full px-4 py-2 hover:bg-gray-300 ${
-                                sortType === "author"
-                                    ? "border border-black"
-                                    : null
-                            }`}
-                        >
-                            Author
-                        </button>
-                    </div>
-                </aside>
+                <Sidebar onSortChange={updateSortType} browsing={browsing}/>
                 <div
                     className={`${
                         !browsing
