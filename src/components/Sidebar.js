@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+import { compareAuthor, compareTitle, compareStars } from "@/utils/helper";
 
 export default function Sidebar({ updateBooks, browsing, books }) {
     const [sortType, setSortType] = useState(null);
 
     useEffect(() => {
+        // Shallow copy array so state can be updated in parent
+        let sorted_books = [...books];
+
         if (sortType == "title") {
             sorted_books.sort(compareTitle);
         } else if (sortType == "stars") {
@@ -16,29 +20,6 @@ export default function Sidebar({ updateBooks, browsing, books }) {
         updateBooks(sorted_books);
     }, [sortType]);
 
-    let compareTitle = (a, b) => {
-        if (a?.Title > b?.Title) {
-            return 1;
-        } else {
-            return -1;
-        }
-    };
-    let compareStars = (a, b) => {
-        if (a["My Rating"] > b["My Rating"]) {
-            return -1;
-        } else {
-            return 1;
-        }
-    };
-    let compareAuthor = (a, b) => {
-        if (a.Author > b.Author) {
-            return 1;
-        } else {
-            return -1;
-        }
-    };
-
-    let sorted_books = [...books];
     const handleClick = (e) => {
         setSortType(e?.target.value);
     };
