@@ -27,7 +27,7 @@ export default function Book({ book, browsing = true }) {
         );
     } else {
         return (
-            <div className="mb-6 max-h-96 break-inside-avoid overflow-auto rounded-lg border border-black p-2 sm:p-5 sm:pt-3">
+            <div className="mb-6 max-h-[50rem] break-inside-avoid overflow-auto rounded-lg border border-black p-2 sm:p-5 sm:pt-3">
                 <h5 className="mb-1 text-xl sm:text-2xl font-bold tracking-tight text-gray-900 ">
                     {book.Title}
                 </h5>
