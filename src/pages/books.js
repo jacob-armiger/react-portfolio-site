@@ -7,8 +7,7 @@ import Sidebar from "@/components/Sidebar";
 export default function Books() {
     const [books, setBooks] = useState([]);
     const [browsing, setBrowsing] = useState(false);
-    const [sortType, setSortType] = useState(null);
-    
+
     useEffect(() => {
         fetchBooks();
     }, []);
@@ -21,26 +20,8 @@ export default function Books() {
         setBooks(data.data);
     };
 
-    let compareTitle = (a, b) => {
-        if (a?.Title > b?.Title) {
-            return 1;
-        } else {
-            return -1;
-        }
-    };
-    let compareStars = (a, b) => {
-        if (a["My Rating"] > b["My Rating"]) {
-            return -1;
-        } else {
-            return 1;
-        }
-    };
-    let compareAuthor = (a, b) => {
-        if (a.Author > b.Author) {
-            return 1;
-        } else {
-            return -1;
-        }
+    let updateBooks = (book_list) => {
+        setBooks(book_list);
     };
 
     let handleSearchClick = () => {
@@ -48,18 +29,6 @@ export default function Books() {
             setBrowsing(false);
         } else {
             setBrowsing(true);
-        }
-    };
-
-    let updateSortType = (type) => {
-        setSortType(type);
-
-        if (type == "title") {
-            books.sort(compareTitle);
-        } else if (type == "stars") {
-            books.sort(compareStars);
-        } else if (type == "author") {
-            books.sort(compareAuthor);
         }
     };
 
@@ -74,16 +43,24 @@ export default function Books() {
                 </button>
             </div>
             <div className="flex">
-                <Sidebar onSortChange={updateSortType} browsing={browsing}/>
+                <Sidebar
+                    updateBooks={updateBooks}
+                    browsing={browsing}
+                    books={books}
+                />
                 <div
                     className={`${
                         !browsing
                             ? "mx-2 mb-8 mt-10 columns-2 gap-2 sm:mx-6 sm:mt-4 sm:gap-6 md:columns-3 lg:columns-4"
-                            : "mx-4 mt-10 sm:mt-4 mb-8 grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5"
+                            : "mx-4 mb-8 mt-10 grid grid-cols-2 gap-4 sm:mt-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5"
                     }`}
                 >
                     {books?.map((book) => (
-                        <Book key={book.Title} book={book} browsing={browsing} />
+                        <Book
+                            key={book.Title}
+                            book={book}
+                            browsing={browsing}
+                        />
                     ))}
                 </div>
             </div>

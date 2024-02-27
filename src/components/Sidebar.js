@@ -1,11 +1,46 @@
 import { useState, useEffect } from "react";
 
-export default function Sidebar({ onSortChange, browsing }) {
+export default function Sidebar({ updateBooks, browsing, books }) {
     const [sortType, setSortType] = useState(null);
 
+    useEffect(() => {
+        if (sortType == "title") {
+            sorted_books.sort(compareTitle);
+        } else if (sortType == "stars") {
+            sorted_books.sort(compareStars);
+        } else if (sortType == "author") {
+            sorted_books.sort(compareAuthor);
+        }
+
+        // Call parent function when sort type changes
+        updateBooks(sorted_books);
+    }, [sortType]);
+
+    let compareTitle = (a, b) => {
+        if (a?.Title > b?.Title) {
+            return 1;
+        } else {
+            return -1;
+        }
+    };
+    let compareStars = (a, b) => {
+        if (a["My Rating"] > b["My Rating"]) {
+            return -1;
+        } else {
+            return 1;
+        }
+    };
+    let compareAuthor = (a, b) => {
+        if (a.Author > b.Author) {
+            return 1;
+        } else {
+            return -1;
+        }
+    };
+
+    let sorted_books = [...books];
     const handleClick = (e) => {
-        setSortType(e?.target.value)
-        onSortChange(e?.target.value)
+        setSortType(e?.target.value);
     };
 
     return (
