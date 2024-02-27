@@ -7,21 +7,37 @@ import Sidebar from "@/components/Sidebar";
 export default function Books() {
     const [books, setBooks] = useState([]);
     const [browsing, setBrowsing] = useState(false);
+    const [filters, setFilters] = useState([true, false]);
 
     useEffect(() => {
-        fetchBooks();
-    }, []);
+        fetchBooks(filters);
+    }, [filters]);
 
-    let fetchBooks = async () => {
-        let data = await supabase
-            .from("book_data2")
-            .select()
-            .eq("Exclusive Shelf", "read");
-        setBooks(data.data);
+    let fetchBooks = async (filters) => {
+        let data;
+        if (filters[0] && !filters[1]) {
+            console.log("TEST");
+            data = await supabase
+                .from("book_data2")
+                .select()
+                .eq("Exclusive Shelf", "read");
+        } else if (filters[0] && filters[1]) {
+            data = await supabase.from("book_data2").select();
+        } else if (!filters[0] && filters[1]) {
+            data = await supabase
+                .from("book_data2")
+                .select()
+                .eq("Exclusive Shelf", "to-read");
+        }
+        setBooks(data?.data);
     };
 
     let updateBooks = (book_list) => {
         setBooks(book_list);
+    };
+
+    let updateFilters = (filters) => {
+        setFilters(filters);
     };
 
     let handleSearchClick = () => {
@@ -45,8 +61,10 @@ export default function Books() {
             <div className="flex">
                 <Sidebar
                     updateBooks={updateBooks}
+                    updateFilters={updateFilters}
                     browsing={browsing}
                     books={books}
+                    filters={filters}
                 />
                 <div
                     className={`${

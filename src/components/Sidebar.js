@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { compareAuthor, compareTitle, compareStars } from "@/utils/helper";
 
-export default function Sidebar({ updateBooks, browsing, books }) {
+export default function Sidebar({ updateBooks, updateFilters, browsing, books, filters }) {
     const [sortType, setSortType] = useState(null);
-    const [filters, setFilters] = useState([true, false]);
 
     useEffect(() => {
         // Shallow copy array so state can be updated in parent
@@ -31,14 +30,15 @@ export default function Sidebar({ updateBooks, browsing, books }) {
         if (box == "read") {
             // Logic to keep at least one box checked
             if ((filters[0] && filters[1]) || filters[1]) {
-                setFilters([!filters[0], filters[1]]);
+                filters = [!filters[0], filters[1]];
             }
         } else {
             if ((filters[0] && filters[1]) || filters[0]) {
-                setFilters([filters[0], !filters[1]]);
+                filters = [filters[0], !filters[1]];
             }
         }
-    }
+        updateFilters(filters);
+    };
 
     return (
         <aside
@@ -53,7 +53,7 @@ export default function Sidebar({ updateBooks, browsing, books }) {
                     <button
                         onClick={handleSortClick}
                         value="title"
-                        className={`rounded-md px-4 py-2 hover:bg-gray-300 ${
+                        className={`rounded-md px-4 py-2 hover:bg-gray-400 ${
                             sortType === "title" ? "border border-black" : null
                         }`}
                     >
@@ -62,7 +62,7 @@ export default function Sidebar({ updateBooks, browsing, books }) {
                     <button
                         onClick={handleSortClick}
                         value="stars"
-                        className={`rounded-md px-4 py-2 hover:bg-gray-300 ${
+                        className={`rounded-md px-4 py-2 hover:bg-gray-400 ${
                             sortType === "stars" ? "border border-black" : null
                         }`}
                     >
@@ -71,7 +71,7 @@ export default function Sidebar({ updateBooks, browsing, books }) {
                     <button
                         onClick={handleSortClick}
                         value="author"
-                        className={`rounded-md px-4 py-2 hover:bg-gray-300 ${
+                        className={`rounded-md px-4 py-2 hover:bg-gray-400 ${
                             sortType === "author" ? "border border-black" : null
                         }`}
                     >
