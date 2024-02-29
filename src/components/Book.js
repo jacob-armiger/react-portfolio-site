@@ -10,7 +10,7 @@ export default function Book({ book, browsing = true }) {
                     {book.Title}
                 </h5>
                 <p className="font-normal text-gray-500">{book.Author}</p>
-                <div className="flex flex-1">
+                <div className={`flex ${book["My Review"] === "No review written!" ? "flex-1": null}`}>
                     <svg
                         className="me-1 h-4 w-4 text-yellow-300"
                         aria-hidden="true"
