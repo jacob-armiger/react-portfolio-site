@@ -3,6 +3,18 @@ import { useRouter } from "next/router";
 import Button from "@/components/Button";
 
 export default function Project() {
+    const [camX, setCamX] = useState(0)
+    const [camY, setCamY] = useState(3)
+    const [camZ, setCamZ] = useState(-10)
+
+    const [lookX, setLookX] = useState(0)
+    const [lookY, setLookY] = useState(-1)
+    const [lookZ, setLookZ] = useState(0)
+
+    const [lightX, setLightX] = useState(1)
+    const [lightY, setLightY] = useState(4)
+    const [lightZ, setLightZ] = useState(-4)
+
     let router = useRouter();
 
     let project = null;
@@ -55,14 +67,15 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="0"
+                                defaultValue={camX}
                                 step="0.1"
                                 id="camX"
+                                onChange={(e) => setCamX(e.target.value)}
                             />
                             <input
                                 id="camXVal"
                                 name="camXVal"
-                                value="0"
+                                value={camX}
                                 className="w-5"
                             />
                         </div>
@@ -72,14 +85,15 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="3"
+                                defaultValue={camY}
                                 step="0.1"
                                 id="camY"
+                                onChange={(e) => setCamY(e.target.value)}
                             />
                             <input
                                 id="camYVal"
                                 name="camYVal"
-                                value="3"
+                                value={camY}
                                 className="w-5"
                             />
                         </div>
@@ -89,14 +103,15 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="-10"
+                                defaultValue={camZ}
                                 step="0.1"
                                 id="camZ"
+                                onChange={(e) => setCamZ(e.target.value)}
                             />
                             <input
                                 id="camZVal"
                                 name="camZVal"
-                                value="-10"
+                                value={camZ}
                                 className="w-5"
                             />
                         </div>
@@ -109,14 +124,15 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="0"
+                                defaultValue={lookX}
                                 step="0.1"
                                 id="lookX"
+                                onChange={(e) => setLookX(e.target.value)}
                             />
                             <input
                                 id="lookXVal"
                                 name="lookXVal"
-                                value="0"
+                                value={lookX}
                                 className="w-5"
                             />
                         </div>
@@ -126,31 +142,33 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="-1"
+                                defaultValue={lookY}
                                 step="0.1"
                                 id="lookY"
+                                onChange={(e) => setLookY(e.target.value)}
                             />
                             <input
                                 id="lookYVal"
                                 name="lookYVal"
-                                value="-1"
+                                value={lookY}
                                 className="w-5"
                             />
                         </div>
                         <div>
-                            <label htmlFor="lookZs">Z:</label>
+                            <label htmlFor="lookZ">Z:</label>
                             <input
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="0"
+                                defaultValue={lookZ}
                                 step="0.1"
                                 id="lookZ"
+                                onChange={(e) => setLookZ(e.target.value)}
                             />
                             <input
                                 id="lookZVal"
                                 name="lookZVal"
-                                value="0"
+                                value={lookZ}
                                 className="w-5"
                             />
                         </div>
@@ -163,14 +181,15 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="1"
+                                defaultValue={lightX}
                                 step="0.1"
                                 id="lightX"
+                                onChange={(e) => setLightX(e.target.value)}
                             />
                             <input
                                 id="lightXVal"
                                 name="lightXVal"
-                                value="1"
+                                value={lightX}
                                 className="w-5"
                             />
                         </div>
@@ -180,14 +199,15 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="4"
+                                defaultValue={lightY}
                                 step="0.1"
                                 id="lightY"
+                                onChange={(e) => setLightY(e.target.value)}
                             />
                             <input
                                 id="lightYVal"
                                 name="lightYVal"
-                                value="4"
+                                value={lightY}
                                 className="w-5"
                             />
                         </div>
@@ -197,14 +217,15 @@ export default function Project() {
                                 type="range"
                                 min="-30"
                                 max="30"
-                                value="-4"
+                                defaultValue={lightZ}
                                 step="0.1"
                                 id="lightZ"
+                                onChange={(e) => setLightZ(e.target.value)}
                             />
                             <input
                                 id="lightZVal"
                                 name="lightZVal"
-                                value="-4"
+                                value={lightZ}
                                 className="w-5"
                             />
                         </div>
