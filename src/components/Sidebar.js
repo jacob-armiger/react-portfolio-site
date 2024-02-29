@@ -86,6 +86,7 @@ export default function Sidebar({ updateBooks, updateFilters, browsing, books, f
                             value="read"
                             checked={filters[0]}
                             onChange={handleFilterClick}
+                            className="h-3 w-3 appearance-none border border-b-2 border-black checked:border checked:bg-gray-400"
                         />
                         <label className="">Read</label>
                     </div>
@@ -96,6 +97,7 @@ export default function Sidebar({ updateBooks, updateFilters, browsing, books, f
                             value="want-to-read"
                             checked={filters[1]}
                             onChange={handleFilterClick}
+                            className="h-3 w-3 appearance-none border border-b-2 border-black checked:border checked:bg-gray-400"
                         />
                         <label>Want to Read</label>
                     </div>

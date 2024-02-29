@@ -53,7 +53,9 @@ export default function Books() {
             <div className="ml-6 mt-2 hidden h-8 w-8 sm:block">
                 <button
                     onClick={handleSearchClick}
-                    className="rounded border border-b-4 border-black px-4 py-1 hover:border hover:bg-gray-400"
+                    className={`h-10 w-16 rounded border border-black hover:border hover:bg-gray-400 ${
+                        browsing ? "border" : "border-b-4"
+                    }`}
                 >
                     Search
                 </button>
