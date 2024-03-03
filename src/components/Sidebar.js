@@ -11,20 +11,23 @@ export default function Sidebar({ updateBooks, browsing, books }) {
     }, [filters]);
 
     useEffect(() => {
-        // Shallow copy array so state can be updated in parent
-        let sorted_books = [...books];
-
-        if (sortType == "title") {
-            sorted_books.sort(compareTitle);
-        } else if (sortType == "stars") {
-            sorted_books.sort(compareStars);
-        } else if (sortType == "author") {
-            sorted_books.sort(compareAuthor);
-        }
-
-        // Call parent function when sort type changes
+        let sorted_books = sortBooks(books);
+        
+        // Call function passed from parent when sort type changes
         updateBooks(sorted_books);
     }, [sortType]);
+
+    let sortBooks = (book_list) => {
+        if (sortType == "title") {
+            book_list.sort(compareTitle);
+        } else if (sortType == "stars") {
+            book_list.sort(compareStars);
+        } else if (sortType == "author") {
+            book_list.sort(compareAuthor);
+        }
+        // Shallow copy array so state can be updated in parent
+        return [...book_list]
+    }
 
     let fetchBooks = async (filters) => {
         let data;
@@ -43,15 +46,10 @@ export default function Sidebar({ updateBooks, browsing, books }) {
                 .eq("Exclusive Shelf", "to-read");
         }
 
-        if (sortType == "title") {
-            data?.data.sort(compareTitle);
-        } else if (sortType == "stars") {
-            data?.data.sort(compareStars);
-        } else if (sortType == "author") {
-            data?.data.sort(compareAuthor);
-        }
+        let sorted_books = sortBooks(data?.data)
 
-        updateBooks(data?.data);
+        // Call function passed from parent when sort type changes
+        updateBooks(sorted_books);
     };
     
     const handleSortClick = (e) => {

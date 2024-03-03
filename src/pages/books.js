@@ -11,11 +11,7 @@ export default function Books() {
     };
 
     let handleSearchClick = () => {
-        if (browsing) {
-            setBrowsing(false);
-        } else {
-            setBrowsing(true);
-        }
+        setBrowsing(!browsing);
     };
 
     return (
