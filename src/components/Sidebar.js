@@ -1,25 +1,57 @@
 import { useState, useEffect } from "react";
 import { compareAuthor, compareTitle, compareStars } from "@/utils/helper";
+import { supabase } from "@/utils/supabase";
 
-export default function Sidebar({ updateBooks, updateFilters, browsing, books, filters }) {
+export default function Sidebar({ updateBooks, browsing, books }) {
     const [sortType, setSortType] = useState(null);
+    const [filters, setFilters] = useState([true, false]);
 
     useEffect(() => {
-        // Shallow copy array so state can be updated in parent
-        let sorted_books = [...books];
+        fetchBooks(filters);
+    }, [filters]);
 
-        if (sortType == "title") {
-            sorted_books.sort(compareTitle);
-        } else if (sortType == "stars") {
-            sorted_books.sort(compareStars);
-        } else if (sortType == "author") {
-            sorted_books.sort(compareAuthor);
-        }
-
-        // Call parent function when sort type changes
+    useEffect(() => {
+        let sorted_books = sortBooks(books);
+        
+        // Call function passed from parent when sort type changes
         updateBooks(sorted_books);
     }, [sortType]);
 
+    let sortBooks = (book_list) => {
+        if (sortType == "title") {
+            book_list.sort(compareTitle);
+        } else if (sortType == "stars") {
+            book_list.sort(compareStars);
+        } else if (sortType == "author") {
+            book_list.sort(compareAuthor);
+        }
+        // Shallow copy array so state can be updated in parent
+        return [...book_list]
+    }
+
+    let fetchBooks = async (filters) => {
+        let data;
+        if (filters[0] && !filters[1]) {
+            console.log("TEST");
+            data = await supabase
+                .from("book_data2")
+                .select()
+                .eq("Exclusive Shelf", "read");
+        } else if (filters[0] && filters[1]) {
+            data = await supabase.from("book_data2").select();
+        } else if (!filters[0] && filters[1]) {
+            data = await supabase
+                .from("book_data2")
+                .select()
+                .eq("Exclusive Shelf", "to-read");
+        }
+
+        let sorted_books = sortBooks(data?.data)
+
+        // Call function passed from parent when sort type changes
+        updateBooks(sorted_books);
+    };
+    
     const handleSortClick = (e) => {
         setSortType(e?.target.value);
     };
@@ -30,14 +62,13 @@ export default function Sidebar({ updateBooks, updateFilters, browsing, books, f
         if (box == "read") {
             // Logic to keep at least one box checked
             if ((filters[0] && filters[1]) || filters[1]) {
-                filters = [!filters[0], filters[1]];
+                setFilters([!filters[0], filters[1]]);
             }
         } else {
             if ((filters[0] && filters[1]) || filters[0]) {
-                filters = [filters[0], !filters[1]];
+                setFilters([filters[0], !filters[1]]);
             }
         }
-        updateFilters(filters);
     };
 
     return (
