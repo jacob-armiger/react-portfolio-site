@@ -1,8 +1,34 @@
 import { useState, useEffect } from "react";
 import { compareAuthor, compareTitle, compareStars } from "@/utils/helper";
+import { supabase } from "@/utils/supabase";
 
-export default function Sidebar({ updateBooks, updateFilters, browsing, books, filters }) {
+export default function Sidebar({ updateBooks, browsing, books }) {
     const [sortType, setSortType] = useState(null);
+    const [filters, setFilters] = useState([true, false]);
+
+    useEffect(() => {
+        fetchBooks(filters);
+    }, [filters]);
+
+    let fetchBooks = async (filters) => {
+        let data;
+        if (filters[0] && !filters[1]) {
+            console.log("TEST");
+            data = await supabase
+                .from("book_data2")
+                .select()
+                .eq("Exclusive Shelf", "read");
+        } else if (filters[0] && filters[1]) {
+            data = await supabase.from("book_data2").select();
+        } else if (!filters[0] && filters[1]) {
+            data = await supabase
+                .from("book_data2")
+                .select()
+                .eq("Exclusive Shelf", "to-read");
+        }
+
+        updateBooks(data?.data);
+    };
 
     useEffect(() => {
         // Shallow copy array so state can be updated in parent
@@ -30,14 +56,13 @@ export default function Sidebar({ updateBooks, updateFilters, browsing, books, f
         if (box == "read") {
             // Logic to keep at least one box checked
             if ((filters[0] && filters[1]) || filters[1]) {
-                filters = [!filters[0], filters[1]];
+                setFilters([!filters[0], filters[1]]);
             }
         } else {
             if ((filters[0] && filters[1]) || filters[0]) {
-                filters = [filters[0], !filters[1]];
+                setFilters([filters[0], !filters[1]]);
             }
         }
-        updateFilters(filters);
     };
 
     return (
