@@ -11,7 +11,7 @@ export default function Home() {
 
   let test = async () => {
     try {
-      let res = await fetch("https://my-express-backend.fly.dev/users", {
+      let res = await fetch("http://localhost:8080/users", {
         method: "GET",
       });
 
