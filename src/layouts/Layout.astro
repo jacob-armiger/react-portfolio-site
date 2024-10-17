@@ -17,13 +17,15 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body class="flex">
-        <div class="h-screen w-64 text-center">
-            <nav class="flex flex-col mt-8">
-                <a href="/">Link 1</a>
-                <a href="/">Link 2</a>
-                <a href="/">Link 3</a>
+        <div class="h-screen text-center w-64 border border-solid">
+            <nav class="flex flex-col h-1/4 mt-8">
+                <a href="/">Books</a>
+                <a href="/">Art</a>
+                <a href="/">Projects</a>
             </nav>
         </div>
+        <div class="mt-8 ml-16">
             <slot/>
+        </div>
 	</body>
 </html>
