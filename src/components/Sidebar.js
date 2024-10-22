@@ -34,14 +34,14 @@ export default function Sidebar({ updateBooks, browsing, books }) {
         if (filters[0] && !filters[1]) {
             console.log("TEST");
             data = await supabase
-                .from("book_data2")
+                .from("books")
                 .select()
                 .eq("Exclusive Shelf", "read");
         } else if (filters[0] && filters[1]) {
-            data = await supabase.from("book_data2").select();
+            data = await supabase.from("books").select();
         } else if (!filters[0] && filters[1]) {
             data = await supabase
-                .from("book_data2")
+                .from("books")
                 .select()
                 .eq("Exclusive Shelf", "to-read");
         }
