@@ -17,9 +17,10 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body class="flex">
-        <div class="h-screen text-center w-64 border border-solid">
+        <div class="h-screen text-center min-w-32 border border-solid">
             <nav class="flex flex-col h-1/4 mt-8">
-                <a href="/">Books</a>
+                <a href="/" class="text-xl font-bold">Jacob Armiger</a>
+                <a href="/books">Books</a>
                 <a href="/">Art</a>
                 <a href="/">Projects</a>
             </nav>

@@ -1,12 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import books from "../bookData/books.json"
+import Card from '../components/Card.astro';
 
-
-
-
+const read = books.filter(book => book['Exclusive Shelf'] == "read")
+console.log(read)
 ---
 
 <Layout title="Books">
-	<main>
+	<main class="flex flex-row flex-wrap justify-between">
+        {read.map((book: any) => {
+            return(
+                <Card title={book.Title} author={book.Author}/>
+            )
+        })}
 	</main>
 </Layout>
