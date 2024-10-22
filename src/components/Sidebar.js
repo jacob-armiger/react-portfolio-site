@@ -48,6 +48,8 @@ export default function Sidebar({ updateBooks, browsing, books }) {
 
         let sorted_books = sortBooks(data?.data)
 
+        console.log(data?.data)
+
         // Call function passed from parent when sort type changes
         updateBooks(sorted_books);
     };
