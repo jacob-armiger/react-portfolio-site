@@ -1,7 +1,7 @@
 import Papa from "papaparse";
 import fs from "fs";
 
-let file = fs.createReadStream('book.csv')
+let file = fs.createReadStream('books.csv')
 // console.log(file)
 
 Papa.parse(file, {
