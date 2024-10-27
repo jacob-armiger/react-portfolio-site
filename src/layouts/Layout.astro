@@ -16,16 +16,16 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="flex">
-        <div class="h-screen text-center min-w-32 border border-solid">
-            <nav class="flex flex-col h-1/4 mt-8">
+	<body class="sm:flex">
+        <div class="sm:h-screen text-center min-w-32 border border-solid">
+            <nav class="flex justify-between sm:flex-col h-1/4 mt-8">
                 <a href="/" class="text-xl font-bold">Jacob Armiger</a>
                 <a href="/books">Books</a>
                 <a href="/">Art</a>
                 <a href="/">Projects</a>
             </nav>
         </div>
-        <div class="mt-8 ml-16">
+        <div class="mt-8 mx-2 sm:ml-8">
             <slot/>
         </div>
 	</body>
