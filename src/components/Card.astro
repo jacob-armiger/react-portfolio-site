@@ -6,15 +6,13 @@ interface Props {
 const { book } = Astro.props;
 ---
 
-<!-- TODO: add onclick event to use either apply either height or spans
-    TODO: get prettier -->
 <div
-    id="main"
-    class="grid border border-solid border-black text-xl  p-4 h-36 m-5 rounded-mdtransition-all duration-600 active:row-span-2 active:col-span-2 active:h-auto overflow-y-clip hover:cursor-pointer"
+    class={`${book["My Review"] ? "row-span-2 max-h-[20.75rem] overflow-y-scroll" : "h-36"}
+                grid cursor-default border border-solid border-black text-xl p-4 m-5 rounded-md overflow-y-clip `}
 >
     <div>
         <p class="font-bold">{book.Title}</p>
         <p class="italic pb-3 text-sm">by {book.Author}</p>
-        <p>{book["My Review"]}</p>
+        <p class="whitespace-pre-line">{book["My Review"]}</p>
     </div>
 </div>
