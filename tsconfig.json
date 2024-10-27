@@ -1,6 +1,8 @@
 {
-    "compilerOptions": {
-        "allowSyntheticDefaultImports": true
-    },
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
   "extends": "astro/tsconfigs/strict"
 }
