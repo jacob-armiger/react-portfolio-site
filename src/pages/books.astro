@@ -1,7 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import books from "../bookData/books.json"
-import Card from '../components/Card.astro';
+
+import BookCard from "../components/BookCard.tsx"
 
 const read = books.filter(book => book['Exclusive Shelf'] == "read")
 const currentBook = books.filter(book => book['Exclusive Shelf'] == "currently-reading")[0]
@@ -10,15 +11,16 @@ const currentBook = books.filter(book => book['Exclusive Shelf'] == "currently-r
 <Layout title="Books">
 	<main>
         <div class="w-full m-auto content-center">
-            <p>Currently reading</p>
-            <Card book={currentBook}/>
+            <p class="text-lg font-bold">Currently reading</p>
+            <BookCard book={currentBook} client:load/>
         </div>
 
-        <p>Read</p>
-        <div class="lg:grid-cols-4 inline-grid grid-cols-2 md:grid-cols-3">
-            {read.map((book: any) => {
+        <p class="text-lg font-bold">Read</p>
+        <div class="inline-grid grid-cols-2 md:grid-cols-3">
+            {read.map((book: any, index: number) => {
                 return(
-                    <Card book={book}/>
+                    // <Card book={book}/>
+                    <BookCard key={index} book={book} client:load/>
                 )
             })}
         </div>
