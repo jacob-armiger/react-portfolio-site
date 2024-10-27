@@ -12,7 +12,7 @@ export default function BookCard({ book }: any) {
             <div>
                 <p className="font-bold">{book.Title}</p>
                 <p className="italic pb-3 text-sm">by {book.Author}</p>
-                <p>{book["My Review"]}</p>
+                <p className="whitespace-pre-line">{book["My Review"]}</p>
             </div>
         </div>
     )

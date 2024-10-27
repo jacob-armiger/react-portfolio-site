@@ -6,7 +6,13 @@ let file = fs.createReadStream('book.csv')
 
 Papa.parse(file, {
     header:true,
-    complete: results => {
-        fs.writeFileSync("../src/bookData/books.json", JSON.stringify(results.data, null, 4))
+    complete: (results) => {
+        let books = results.data;
+        
+        for(const book of results.data) {
+            book["My Review"] = book["My Review"].replaceAll("<br/><br/>", "\n\n")
+        }
+
+        fs.writeFileSync("../src/bookData/books.json", JSON.stringify(books, null, 4))
     },
 })
