@@ -1,19 +1,20 @@
 ---
 interface Props {
-	title: string;
-	author: string;
+    book: any;
 }
 
-const { title, author } = Astro.props;
-console.log(title)
+const { book } = Astro.props;
 ---
 
-<div class="border border-solid border-black w-32 h-32 m-5">
-    <h2>
-        {title}
-        <!-- <span>&rarr;</span> -->
-    </h2>
-    <p>
-        by {author}
-    </p>
+<!-- TODO: add onclick event to use either apply either height or spans
+    TODO: get prettier -->
+<div
+    id="main"
+    class="grid border border-solid border-black text-xl  p-4 h-36 m-5 rounded-mdtransition-all duration-600 active:row-span-2 active:col-span-2 active:h-auto overflow-y-clip hover:cursor-pointer"
+>
+    <div>
+        <p class="font-bold">{book.Title}</p>
+        <p class="italic pb-3 text-sm">by {book.Author}</p>
+        <p>{book["My Review"]}</p>
+    </div>
 </div>
