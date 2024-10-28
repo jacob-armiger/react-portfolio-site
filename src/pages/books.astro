@@ -21,7 +21,7 @@ const isbn = currentBook.ISBN13.replace(/\D/g,'');
         </div>
 
         <p class="text-2xl font-bold mb-4">Recent Readings and Impressions</p>
-        <div class="inline-grid crid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="inline-grid crid-cols-1 sm:grid-cols-2 2xl:grid-cols-3">
             {readings.map((book: any, index: number) => {
                 return(
                     <Card book={book}/>

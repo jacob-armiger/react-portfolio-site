@@ -5,14 +5,26 @@ interface Props {
 
 const { book } = Astro.props;
 ---
-
-<div
-    class={`${book["My Review"] ? "row-span-2 max-h-[20.75rem] overflow-y-scroll" : "h-36"}
-            cursor-default border border-solid border-black text-xl px-4 pb-4 m-4 rounded-md overflow-y-clip sm:hover:scale-105 transition-transform duration-150`}
->
-    <div>
-        <p class="font-bold pt-4 sticky top-0 bg-white">{book.Title}</p>
-        <p class="italic pb-3 text-sm">by {book.Author}</p>
-        <p class="whitespace-pre-line">{book["My Review"]}</p>
+<div class={`${book["My Review"] ? "row-span-2" : ""}
+            cursor-default m-4 `}>
+    
+    <div
+        class={`${book["My Review"] ? "h-[20rem]" : "h-[8.225rem]"}
+         text-xl overflow-y-scroll border border-solid border-black border-b-0 rounded-t-md px-4 pb-4`}
+    >
+        <div>
+            <p class="font-bold pt-4 sticky top-0 bg-white">{book.Title}</p>
+            <p class="italic pb-3 text-sm">by {book.Author}</p>
+            <p class="whitespace-pre-line">{book["My Review"]}</p>
+        </div>
     </div>
+    { book["Date Read"] ?
+        <div class="bottom-0 flex border border-black border-solid rounded-b-md">
+            <p class="pl-2 grow">Read {book["Date Read"]}</p>
+            <p class="pr-2 text-right">{book["My Rating"]}/5</p>
+        </div> :
+        <div class="bottom-0 border border-black border-solid border-t-0 rounded-b-md">
+            <p class="pl-2 h-6 grow"></p>
+        </div> 
+    }
 </div>
