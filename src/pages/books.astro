@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import books from "../bookData/books.json"
-import Card from "../components/BookCard.tsx"
+import Card from "../components/Card.astro"
 
 const readings = books.filter(book => book['Exclusive Shelf'] == "read").sort((a,b) => b['Date Read'].localeCompare(a['Date Read']))
 

@@ -8,10 +8,10 @@ const { book } = Astro.props;
 
 <div
     class={`${book["My Review"] ? "row-span-2 max-h-[20.75rem] overflow-y-scroll" : "h-36"}
-                grid cursor-default border border-solid border-black text-xl p-4 m-5 rounded-md overflow-y-clip `}
+            cursor-default border border-solid border-black text-xl px-4 pb-4 m-4 rounded-md overflow-y-clip sm:hover:scale-105 transition-transform duration-150`}
 >
     <div>
-        <p class="font-bold">{book.Title}</p>
+        <p class="font-bold pt-4 sticky top-0 bg-white">{book.Title}</p>
         <p class="italic pb-3 text-sm">by {book.Author}</p>
         <p class="whitespace-pre-line">{book["My Review"]}</p>
     </div>
