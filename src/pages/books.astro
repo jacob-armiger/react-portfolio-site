@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import books from "../bookData/books.json"
 import Card from "../components/BookCard.tsx"
 
-const readings = books.filter(book => book['Exclusive Shelf'] == "read")
+const readings = books.filter(book => book['Exclusive Shelf'] == "read").sort((a,b) => b['Date Read'].localeCompare(a['Date Read']))
 
 const currentBook = books.filter(book => book['Exclusive Shelf'] == "currently-reading")[0]
 const isbn = currentBook.ISBN13.replace(/\D/g,'');
