@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image, type ImgAttributes } from "astro:assets";
+import type { ImageFunction } from "astro:content";
+
+const art: any[] = await Astro.glob("../data/art/*").then((files) => {
+    return files.map((file) => file.default);
+});
+console.log(art[0]);
+---
+
+<Layout title="Art">
+    <main>
+        <div class="flex flex-row flex-wrap justify-between w-3/4 mx-auto">
+            <!-- <div class="grid grid-cols-2 w-full gap-20"> -->
+            {art.map((img) => <Image src={img} alt="fsd" width="400" class="self-start"/>)}
+        </div>
+    </main>
+</Layout>
