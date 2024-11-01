@@ -2,6 +2,7 @@
 import Card from "../components/Card.astro"
 import books from "../data/books.json"
 import Layout from "../layouts/Layout.astro"
+import { Image } from "astro:assets"
 
 const readings = books
     .filter((book) => book["Exclusive Shelf"] == "read")
@@ -21,7 +22,13 @@ const isbn = currentBook.ISBN13.replace(/\D/g, "")
                 <p class="text-xl font-bold">{currentBook.Title}</p>
                 <p class="pb-3 italic">by {currentBook.Author}</p>
             </div>
-            <img src=`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg` />
+            <Image
+                src=`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
+                alt="Book cover"
+                width={193}
+                height={286}
+                loading="eager"
+            />
         </div>
 
         <p class="mb-4 text-2xl font-bold">Recent Readings and Impressions</p>
