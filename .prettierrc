@@ -1,0 +1,10 @@
+{
+    "tailwindConfig": "./tailwind.config.mjs",
+    "trailingComma": "none",
+    "semi": false,
+    "printWidth": 100,
+    "prettier.useTabs": false,
+    "prettier.tabWidth": 4,
+    "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
+    "pluginSearchDirs": false
+ }
