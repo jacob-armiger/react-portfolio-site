@@ -22,12 +22,9 @@ const isbn = currentBook.ISBN13.replace(/\D/g, "")
                 <p class="text-xl font-bold">{currentBook.Title}</p>
                 <p class="pb-3 italic">by {currentBook.Author}</p>
             </div>
-            <Image
+            <img
                 src=`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
                 alt="Book cover"
-                width={193}
-                height={286}
-                loading="eager"
             />
         </div>
 
