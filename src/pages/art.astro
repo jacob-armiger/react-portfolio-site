@@ -1,20 +1,25 @@
 ---
-import { Image } from "astro:assets"
+// https://jankraus.net/2024/04/05/how-to-build-a-simple-photo-gallery-with-astro/
+// https://markjames.dev/blog/dynamically-importing-images-astro
+// https://vite.dev/guide/features.html#glob-import
+import { Image, imageConfig } from "astro:assets"
 import Layout from "../layouts/Layout.astro"
 
-const art: any[] = await Astro.glob("../data/art/*").then((files) => {
-    return files.map((file) => file.default)
-})
+const art: ImageMetadata[] = await Promise.all(
+    Object.values(import.meta.glob<{ default: ImageMetadata }>("../data/art/*")).map((image) =>
+        image().then((mod) => mod.default)
+    )
+)
 ---
 
 <Layout title="Art">
     <main>
         <div class="mx-auto flex w-3/4 flex-row flex-wrap justify-between">
             {
-                art.map((img) => (
+                art.map((img: ImageMetadata) => (
                     <Image
                         src={img}
-                        alt="fsd"
+                        alt="Art image"
                         width="400"
                         class="self-start shadow-md shadow-stone-500"
                     />
