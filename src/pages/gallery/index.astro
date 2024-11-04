@@ -5,23 +5,38 @@
 import { Image, imageConfig } from "astro:assets"
 import Layout from "../../layouts/Layout.astro"
 
-const art: ImageMetadata[] = await Promise.all(
-    Object.values(import.meta.glob<{ default: ImageMetadata }>("../../data/art/*"))
-    .map((image) => image()
-    .then((mod) => mod.default)
+interface art {
+    name: string
+    image: ImageMetadata
+}
+
+const images: ImageMetadata[] = await Promise.all(
+    Object.values(import.meta.glob<{ default: ImageMetadata }>("../../data/art/*")).map((image) =>
+        image().then((mod) => mod.default)
     )
 )
+
+const names: string[] = Object.keys(import.meta.glob("../../data/art/*")).map((name) =>
+    name.replace("../../data/art/", "").replace(".jpeg", "")
+)
+
+let art: art[] = []
+for (let i = 0; i < names.length; i++) {
+    art.push({ name: names[i], image: images[i] })
+}
 ---
 
 <Layout title="Art">
     <main>
-        <div class="mx-auto flex w-3/4 flex-row flex-wrap justify-between">
+        <div
+            class="m-auto flex w-full flex-row flex-wrap justify-center md:w-10/12 xl:justify-between 2xl:justify-around"
+        >
             {
-                art.map((img: ImageMetadata) => (
-                    <a href={""}>
+                art.map((art: art) => (
+                    <a href={"/gallery/" + art.name} class="my-2 sm:m-2">
                         <Image
-                            src={img}
-                            alt="Art image"
+                            src={art.image}
+                            alt="Gallery image"
                             width="400"
                             class="self-start shadow-md shadow-stone-500"
                         />
