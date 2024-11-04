@@ -3,11 +3,12 @@
 // https://markjames.dev/blog/dynamically-importing-images-astro
 // https://vite.dev/guide/features.html#glob-import
 import { Image, imageConfig } from "astro:assets"
-import Layout from "../layouts/Layout.astro"
+import Layout from "../../layouts/Layout.astro"
 
 const art: ImageMetadata[] = await Promise.all(
-    Object.values(import.meta.glob<{ default: ImageMetadata }>("../data/art/*")).map((image) =>
-        image().then((mod) => mod.default)
+    Object.values(import.meta.glob<{ default: ImageMetadata }>("../../data/art/*"))
+    .map((image) => image()
+    .then((mod) => mod.default)
     )
 )
 ---
@@ -17,12 +18,14 @@ const art: ImageMetadata[] = await Promise.all(
         <div class="mx-auto flex w-3/4 flex-row flex-wrap justify-between">
             {
                 art.map((img: ImageMetadata) => (
-                    <Image
-                        src={img}
-                        alt="Art image"
-                        width="400"
-                        class="self-start shadow-md shadow-stone-500"
-                    />
+                    <a href={""}>
+                        <Image
+                            src={img}
+                            alt="Art image"
+                            width="400"
+                            class="self-start shadow-md shadow-stone-500"
+                        />
+                    </a>
                 ))
             }
         </div>
