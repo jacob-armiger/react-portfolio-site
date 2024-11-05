@@ -3,30 +3,10 @@
 // https://markjames.dev/blog/dynamically-importing-images-astro
 // https://vite.dev/guide/features.html#glob-import
 import { Image } from "astro:assets"
+import { getCollection } from "astro:content"
 import Layout from "../../layouts/Layout.astro"
-import { getCollection, getEntry } from 'astro:content';
 
-// interface art {
-//     name: string
-//     image: ImageMetadata
-// }
-
-// const images: ImageMetadata[] = await Promise.all(
-//     Object.values(import.meta.glob<{ default: ImageMetadata }>("../../data/art/*")).map((image) =>
-//         image().then((mod) => mod.default)
-//     )
-// )
-
-// const names: string[] = Object.keys(import.meta.glob("../../data/art/*")).map((name) =>
-//     name.replace("../../data/art/", "").replace(".jpeg", "")
-// )
-
-// let art: art[] = []
-// for (let i = 0; i < names.length; i++) {
-//     art.push({ name: names[i], image: images[i] })
-// }
-
-const allArt = await getCollection('art');
+const allArt = await getCollection("art")
 ---
 
 <Layout title="Art">

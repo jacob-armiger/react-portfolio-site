@@ -7,24 +7,12 @@ export async function getStaticPaths() {
         params: { art: entry.slug },
         props: { entry }
     }))
-    // return [
-    //     {params: {art: '7A0725E1-7D46-44ED-A23A-D71C79EC57F6_1_105_c'.toLowerCase()}},
-    //     {params: {art: '89EA1DE5-A9B0-4F37-A857-B2B6123D5F8C_1_105_c'.toLowerCase()}},
-    //     {params: {art: 'cb8fc4a0-d099-4567-9552-831bfbaf9468_1_105_c'}},
-    // ];
 }
 const { art } = Astro.params
 
 import { Image } from "astro:assets"
-import { getEntry } from "astro:content"
-import Layout from "../../layouts/Layout.astro"
 import Prose from "../../components/Prose.astro"
-
-// const images = import.meta.glob<{ default: ImageMetadata }>('../../data/art/*.{jpeg,jpg,png,gif}')
-// const imagePath = `../../data/art/${art}.jpeg`
-
-// const thisArt = await getEntry('art', art);
-// const { Content } = await thisArt.render()
+import Layout from "../../layouts/Layout.astro"
 
 const { entry } = Astro.props
 const { Content } = await entry.render()
