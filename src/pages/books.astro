@@ -1,22 +1,21 @@
 ---
-import Card from "../components/Card.astro"
-import books from "../data/books.json"
-import Layout from "../layouts/Layout.astro"
+import Card from "../components/Card.astro";
+import books from "../data/books.json";
+import Layout from "../layouts/Layout.astro";
 
 const readings = books
     .filter((book) => book["Exclusive Shelf"] == "read")
-    .sort((a, b) => b["Date Read"].localeCompare(a["Date Read"]))
+    .sort((a, b) => b["Date Read"].localeCompare(a["Date Read"]));
 
-const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0]
-const isbn = currentBook.ISBN13.replace(/\D/g, "")
+const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0];
+const isbn = currentBook.ISBN13.replace(/\D/g, "");
 ---
 
 <Layout title="Books">
     <main>
         <p class="mb-4 text-2xl font-bold">Currently Reading</p>
         <div
-            class="mx-5 mb-8 flex rounded-md border border-solid border-black lg:mx-auto lg:h-72 lg:w-1/2"
-        >
+            class="mx-5 mb-8 flex rounded-md border border-solid border-black lg:mx-auto lg:h-72 lg:w-1/2">
             <div class="grow content-center text-center">
                 <p class="text-xl font-bold">{currentBook.Title}</p>
                 <p class="pb-3 italic">by {currentBook.Author}</p>
@@ -28,7 +27,7 @@ const isbn = currentBook.ISBN13.replace(/\D/g, "")
         <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3">
             {
                 readings.map((book: any, index: number) => {
-                    return <Card book={book} />
+                    return <Card book={book} />;
                 })
             }
         </div>

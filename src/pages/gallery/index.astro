@@ -2,18 +2,17 @@
 // https://jankraus.net/2024/04/05/how-to-build-a-simple-photo-gallery-with-astro/
 // https://markjames.dev/blog/dynamically-importing-images-astro
 // https://vite.dev/guide/features.html#glob-import
-import { Image } from "astro:assets"
-import { getCollection } from "astro:content"
-import Layout from "../../layouts/Layout.astro"
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
 
-const allArt = await getCollection("art")
+const allArt = await getCollection("art");
 ---
 
 <Layout title="Art">
     <main>
         <div
-            class="m-auto flex w-full flex-row flex-wrap justify-center md:w-10/12 xl:justify-between 2xl:justify-around"
-        >
+            class="m-auto flex w-full flex-row flex-wrap justify-center md:w-10/12 xl:justify-between 2xl:justify-around">
             {
                 allArt.map((art) => (
                     <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">

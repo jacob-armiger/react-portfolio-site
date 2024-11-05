@@ -1,19 +1,14 @@
 ---
 interface Props {
-    book: any
+    book: any;
 }
 
-const { book } = Astro.props
+const { book } = Astro.props;
 ---
 
-<div
-    class={`${book["My Review"] ? "row-span-2" : ""}
-            cursor-default m-4 `}
->
+<div class={`${book["My Review"] ? "row-span-2" : ""} cursor-default m-4 `}>
     <div
-        class={`${book["My Review"] ? "h-[20rem]" : "h-[8.225rem]"}
-         text-xl overflow-y-scroll border border-solid border-black border-b-0 rounded-t-md px-4 pb-4`}
-    >
+        class={`${book["My Review"] ? "h-[20rem]" : "h-[8.225rem]"} text-xl overflow-y-scroll border border-solid border-black border-b-0 rounded-t-md px-4 pb-4`}>
         <div>
             <p class="sticky top-0 bg-white pt-4 font-serif text-3xl font-bold">{book.Title}</p>
             <p class="pb-3 text-sm italic">by {book.Author}</p>
