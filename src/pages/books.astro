@@ -2,7 +2,6 @@
 import Card from "../components/Card.astro"
 import books from "../data/books.json"
 import Layout from "../layouts/Layout.astro"
-import { Image } from "astro:assets"
 
 const readings = books
     .filter((book) => book["Exclusive Shelf"] == "read")
