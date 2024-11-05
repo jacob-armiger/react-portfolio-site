@@ -12,7 +12,7 @@ const allArt = await getCollection("art");
 <Layout title="Art">
     <main>
         <div
-            class="m-auto flex w-full flex-row flex-wrap justify-center md:w-10/12 xl:justify-between 2xl:justify-around">
+            class="m-auto flex w-full flex-row flex-wrap justify-center md:w-11/12 xl:justify-between 2xl:justify-around">
             {
                 allArt.map((art) => (
                     <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">

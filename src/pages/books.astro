@@ -14,8 +14,8 @@ const isbn = currentBook.ISBN13.replace(/\D/g, "");
 <Layout title="Books">
     <main>
         <p class="mb-4 text-2xl font-bold">Currently Reading</p>
-        <div
-            class="mx-5 mb-8 flex rounded-md border border-solid border-black lg:mx-auto lg:h-72 lg:w-1/2">
+        <div class="mx-5 mb-8 flex rounded-md border border-solid border-black lg:mx-auto lg:h-72 lg:w-1/2">
+            <!-- <p class="fixed ml-1 mt-1 rounded bg-zinc-400 p-1 text-xs text-white">Current Read</p> -->
             <div class="grow content-center text-center">
                 <p class="text-xl font-bold">{currentBook.Title}</p>
                 <p class="pb-3 italic">by {currentBook.Author}</p>
