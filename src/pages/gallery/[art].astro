@@ -31,8 +31,8 @@ const { Content } = await entry.render()
 ---
 
 <Layout title="art post">
-    <main class="m-0">
-        <div class="flex h-screen w-full items-center justify-center">
+    <main>
+        <div class="m-auto w-fit">
             <Image
                 src={entry?.data.image}
                 alt="Large image of art"
@@ -40,7 +40,7 @@ const { Content } = await entry.render()
                 class="self-start shadow-md shadow-stone-500"
             />
         </div>
-        <div class="w-full lg:w-2/3 m-auto">
+        <div class="w-full lg:w-2/3 m-auto mt-4">
             <Prose>
                 <Content />
             </Prose>
