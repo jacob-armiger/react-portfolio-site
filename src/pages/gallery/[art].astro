@@ -8,9 +8,7 @@ export async function getStaticPaths() {
         props: { entry },
     }));
 }
-const { art } = Astro.params;
 
-import { Image } from "astro:assets";
 import Prose from "../../components/Prose.astro";
 import Layout from "../../layouts/Layout.astro";
 
@@ -21,8 +19,8 @@ const { Content } = await entry.render();
 <Layout title="art post">
     <main>
         <div class="m-auto w-fit">
-            <Image
-                src={entry?.data.image}
+            <img
+                src={entry?.data.image.src}
                 alt="Large image of art"
                 width={600}
                 class="self-start shadow-md shadow-stone-500"
