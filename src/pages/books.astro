@@ -11,18 +11,24 @@ const isbn = currentBook.ISBN13.replace(/\D/g, "");
 
 <Layout title="Books">
     <main>
-        <p class="mb-4 text-2xl font-bold">Currently Reading</p>
-        <div class="mx-5 mb-8 flex rounded-md border border-solid border-black lg:mx-auto lg:h-72 lg:w-1/2">
-            <!-- <p class="fixed ml-1 mt-1 rounded bg-zinc-400 p-1 text-xs text-white">Current Read</p> -->
-            <div class="grow content-center text-center">
-                <p class="text-xl font-bold">{currentBook.Title}</p>
+        <!-- <p class="mb-4 text-center text-2xl font-bold">Currently Reading</p> -->
+        <div class="mx-auto mb-8 mt-2 flex h-72 rounded-md border border-solid border-black sm:w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-1/3">
+            <p class="bg-accent sticky ml-1 mt-1 h-6 text-nowrap rounded p-1 text-xs text-black">
+                Current Read
+            </p>
+            <div class="grow content-center text-left">
+                <p class="font-serif text-xl font-bold">{currentBook.Title}</p>
                 <p class="pb-3 italic">by {currentBook.Author}</p>
             </div>
-            <img src=`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg` alt="Book cover" />
+            <img
+                src=`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
+                alt="Book cover"
+                loading="eager"
+            />
         </div>
 
-        <p class="mb-4 text-2xl font-bold">Recent Readings and Impressions</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3">
+        <p class="mb-4 text-center text-2xl font-bold">Recent Readings and Impressions</p>
+        <div class="m-auto grid grid-cols-1 sm:w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-1/3">
             {
                 readings.map((book: any, index: number) => {
                     return <Card book={book} />;

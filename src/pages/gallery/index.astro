@@ -17,7 +17,7 @@ const allArt = (await getCollection("art")).sort((a: CollectionEntry<"art">, b: 
         <div
             class="m-auto flex w-full flex-row flex-wrap justify-center sm:justify-evenly md:w-11/12 2xl:justify-around">
             {
-                allArt.map((art) => (
+                allArt.map((art: any) => (
                     <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">
                         <Image
                             src={art.data.image}

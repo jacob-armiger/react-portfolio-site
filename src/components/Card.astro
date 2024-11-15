@@ -6,18 +6,20 @@ interface Props {
 const { book } = Astro.props;
 ---
 
-<div class={`${book["My Review"] ? "row-span-2" : ""} cursor-default m-4 `}>
+<div class="my-4 cursor-default">
     <div
-        class={`${book["My Review"] ? "h-[20rem]" : "h-[8.225rem]"} text-xl overflow-y-scroll border border-solid border-black border-b-0 rounded-t-md px-4 pb-4`}>
+        class="h-fit max-h-96 overflow-y-scroll rounded-t-md border border-b-0 border-solid border-black px-4 pb-4 text-xl">
         <div>
-            <p class="sticky top-0 bg-white pt-4 font-serif text-3xl font-bold">{book.Title}</p>
+            <p class="sticky top-0 bg-white bg-opacity-95 pt-4 font-serif text-3xl font-bold">
+                {book.Title}
+            </p>
             <p class="pb-3 text-sm italic">by {book.Author}</p>
             <p class="whitespace-pre-line">{book["My Review"]}</p>
         </div>
     </div>
     {
         book["Date Read"] ? (
-            <div class="text-mono bottom-0 flex rounded-b-md border border-solid border-black">
+            <div class="text-mono bg-accent bottom-0 flex rounded-b-md border border-solid border-black text-black">
                 <p class="grow pl-2">Read {book["Date Read"]}</p>
                 <p class="pr-2 text-right">{book["My Rating"]}/5</p>
             </div>
