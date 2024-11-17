@@ -19,12 +19,12 @@ const { book } = Astro.props;
     </div>
     {
         book["Date Read"] ? (
-            <div class="text-mono bg-accent bottom-0 mx-4 flex border border-x-0 border-b-0 border-solid border-fade text-fade">
+            <div class="bottom-0 mx-4 flex border border-x-0 border-b-0 border-solid border-fade text-fade">
                 <p class="grow">Read {book["Date Read"]}</p>
                 <p class="pr-2 text-right">{book["My Rating"]}/5</p>
             </div>
         ) : (
-            <div class="bottom-0 rounded-b-md border border-t-0 border-solid border-black">
+            <div class="bottom-0 mx-4 border border-x-0 border-b-0 border-solid border-fade">
                 <p class="h-6 grow pl-2" />
             </div>
         )
