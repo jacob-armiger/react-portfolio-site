@@ -13,7 +13,18 @@ const artCollection = defineCollection({
   }),
 });
 
+const projectCollection = defineCollection({
+    type: 'content', // v2.5.0 and later
+    schema: ({ image }) => z.object({
+      title: z.string(),
+      image: image(),
+      description: z.string(),
+      tags: z.array(z.string()),
+    }),
+  });
+
 // 3. Export a single `collections` object to register your collection(s)
 export const collections = {
-  'art': artCollection,
+    'art': artCollection,
+    'projects': projectCollection,
 };

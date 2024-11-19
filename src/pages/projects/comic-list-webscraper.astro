@@ -1,0 +1,26 @@
+---
+import { getEntry } from "astro:content";
+
+import Prose from "../../components/Prose.astro";
+import Layout from "../../layouts/Layout.astro";
+
+const entry = await getEntry("projects", "comic-list-webscraper");
+const { Content, headings } = await entry.render();
+---
+
+<Layout title="art post">
+    <main class="mb-8 mt-2">
+        <div class="mb-8 w-fit">
+            <img
+                src={entry.data.image.src}
+                alt="Large image of art"
+                class="self-start shadow-md shadow-stone-500"
+            />
+        </div>
+        <div class="m-auto mt-4 w-full">
+            <Prose>
+                <Content />
+            </Prose>
+        </div>
+    </main>
+</Layout>
