@@ -8,8 +8,8 @@ const entry = await getEntry("projects", "comic-list-webscraper");
 const { Content, headings } = await entry.render();
 ---
 
-<Layout title="art post">
-    <main class="mb-8 mt-2">
+<Layout title="comic-list-webscraper">
+    <main>
         <div class="mb-8 w-fit">
             <img
                 src={entry.data.image.src}

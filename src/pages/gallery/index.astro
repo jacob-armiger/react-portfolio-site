@@ -7,27 +7,25 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 
-const allArt = (await getCollection("art")).sort((a: CollectionEntry<"art">, b: any) => {
-    return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
-});
+const allArt = (await getCollection("art")).sort(
+    (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
+        return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
+    }
+);
 ---
 
 <Layout title="Art">
-    <main>
-        <div
-            class="m-auto flex w-full flex-row flex-wrap justify-center sm:justify-evenly md:w-11/12 2xl:justify-around">
-            {
-                allArt.map((art: any) => (
-                    <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">
-                        <Image
-                            src={art.data.image}
-                            alt="Gallery image"
-                            width="300"
-                            class="self-start shadow-md shadow-stone-500"
-                        />
-                    </a>
-                ))
-            }
-        </div>
+    <main
+        class="flex w-full flex-row flex-wrap justify-center sm:justify-evenly 2xl:justify-around">
+        {allArt.map((art: any) => (
+            <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">
+                <Image
+                    src={art.data.image}
+                    alt="Gallery image"
+                    width="300"
+                    class="self-start shadow-md shadow-stone-500"
+                />
+            </a>
+        ))}
     </main>
 </Layout>
