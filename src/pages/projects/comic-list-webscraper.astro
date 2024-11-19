@@ -1,5 +1,6 @@
 ---
 import { getEntry } from "astro:content";
+import { Image } from "astro:assets";
 
 import Prose from "../../components/Prose.astro";
 import Layout from "../../layouts/Layout.astro";
@@ -11,10 +12,10 @@ const { Content, headings } = await entry.render();
 <Layout title="comic-list-webscraper">
     <main>
         <div class="mb-8 w-fit">
-            <img
-                src={entry.data.image.src}
+            <Image
+                src={entry.data.image}
                 alt="Large image of art"
-                class="self-start shadow-md shadow-stone-500"
+                class="self-start rounded-md shadow-md shadow-stone-500"
             />
         </div>
         <div class="m-auto mt-4 w-full">
