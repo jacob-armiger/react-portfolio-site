@@ -8,36 +8,37 @@ const readings = books.sort((a, b) => b["Date Read"].localeCompare(a["Date Read"
 const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0];
 
 let isbn = "";
-if(!isNaN(Number(currentBook.ISBN13[4]))) {
+if (!isNaN(Number(currentBook.ISBN13[4]))) {
     isbn = currentBook.ISBN13.replace(/\D/g, "");
-} else if(!isNaN(Number(currentBook.ISBN[4]))) {
+} else if (!isNaN(Number(currentBook.ISBN[4]))) {
     isbn = currentBook.ISBN.replace(/\D/g, "");
 }
 ---
 
 <Layout title="Books">
     <main class="sm:w-11/12 md:w-3/4 lg:w-full xl:w-3/4">
-        <p class="justify-left mb-14 ml-4 mr-0 w-full text-left font-serif text-5xl font-bold">
+        <p
+            class="justify-left mb-8 ml-4 w-full text-left font-serif text-4xl font-bold tracking-tight sm:text-5xl">
             Currently Reading
         </p>
 
-        <div class="justify-left mt-2 flex h-72 px-4">
+        <div class="justify-left mb-16 flex px-4 sm:h-72">
             <img
                 src=`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
                 alt="Book cover"
                 loading="eager"
             />
-            <div class="ml-4 grow content-center text-left text-fade">
-                <p class="font-serif text-3xl font-bold">{currentBook.Title}</p>
-                <p class="pb-3 italic">by {currentBook.Author}</p>
+            <div class="ml-4 content-center text-left text-fade">
+                <p class="font-serif text-3xl">{currentBook.Title}</p>
+                <p class="pb-3 text-lg italic">by {currentBook.Author}</p>
             </div>
         </div>
-        <!-- <div class="text-mono bg-accent bottom-0 flex border border-x-0 border-b-0 border-solid border-[#373737] text-black">
+        <!-- <div class="text-mono mb-12 mx-4 target:bg-accent bottom-0 flex border border-x-0 border-b-0 border-solid border-[#373737] text-black">
             <p>Currently Reading</p>
         </div> -->
 
         <p
-            class="justify-left mb-14 ml-4 mt-20 w-full text-left font-serif text-5xl font-bold xl:text-nowrap">
+            class="justify-left mb-8 ml-4 text-left font-serif text-4xl font-bold tracking-tight sm:text-5xl xl:text-nowrap">
             Recent Readings and Impressions
         </p>
 

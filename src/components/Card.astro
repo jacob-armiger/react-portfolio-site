@@ -6,14 +6,14 @@ interface Props {
 const { book } = Astro.props;
 ---
 
-<div class="mb-14 cursor-default">
-    <div class="h-fit max-h-96 overflow-y-scroll rounded-t-md border border-b-0 border-solid border-custom px-4 pb-4 text-xl text-fade">
+<div class="mb-12 cursor-default text-lg">
+    <div
+        class="h-fit max-h-96 overflow-y-scroll rounded-t-md border border-b-0 border-solid border-custom px-4 pb-2 text-fade">
         <div>
-            <p
-                class="sticky top-0 bg-custom bg-opacity-95 pt-0 font-serif text-3xl font-bold text-fade">
+            <p class="sticky top-0 bg-custom bg-opacity-95 font-serif text-3xl text-fade">
                 {book.Title}
             </p>
-            <p class="pb-3 text-sm italic">by {book.Author}</p>
+            <p class={!book["My Review"] ? "italic" : "pb-2 italic"}>by {book.Author}</p>
             <p class="whitespace-pre-line">{book["My Review"]}</p>
         </div>
     </div>
