@@ -7,27 +7,25 @@ const projects = await getCollection("projects");
 ---
 
 <Layout title="Art">
-    <main class="">
-        <div>
-            {
-                projects.map((project) => (
-                    <div class="h-fit rounded-md border border-solid border-black font-mono hover:bg-fade hover:text-white">
-                        <a href={"/projects/" + project.data.title}>
-                            <Image src={project.data.image} alt="Gallery image" class="w-full" />
-                            <div class="flex flex-1 flex-col p-3 lg:p-6">
-                                <p class="mb-2 text-xl font-medium">{project.data.title}</p>
-                                <p class="text-base">{project.data.description}</p>
-                                <div class="mt-8 flex flex-row gap-6 text-xs">
-                                    {project.data.tags.map((tag) => (
-                                        <p>{tag}</p>
-                                    ))}
-                                </div>
+    <main class="mx-4 mt-2">
+        {
+            projects.map((project) => (
+                <div class="h-fit rounded-md border border-solid border-black font-mono hover:bg-fade hover:text-white">
+                    <a href={"/projects/" + project.data.title}>
+                        <Image src={project.data.image} alt="Gallery image" class="w-full" />
+                        <div class="flex flex-1 flex-col p-3 lg:p-6">
+                            <p class="mb-2 text-xl font-medium">{project.data.title}</p>
+                            <p class="text-base">{project.data.description}</p>
+                            <div class="mt-8 flex flex-row gap-6 text-xs">
+                                {project.data.tags.map((tag) => (
+                                    <p>{tag}</p>
+                                ))}
                             </div>
-                        </a>
-                    </div>
-                ))
-            }
-        </div>
+                        </div>
+                    </a>
+                </div>
+            ))
+        }
     </main>
 </Layout>
 

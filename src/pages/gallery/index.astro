@@ -15,17 +15,18 @@ const allArt = (await getCollection("art")).sort(
 ---
 
 <Layout title="Art">
-    <main
-        class="flex w-full flex-row flex-wrap justify-center sm:justify-evenly 2xl:justify-around">
-        {allArt.map((art: any) => (
-            <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">
-                <Image
-                    src={art.data.image}
-                    alt="Gallery image"
-                    width="300"
-                    class="self-start shadow-md shadow-stone-500"
-                />
-            </a>
-        ))}
+    <main class="mx-6 grid sm:mx-2 sm:grid-cols-2 2xl:w-[50lvw] 2xl:grid-cols-3">
+        {
+            allArt.map((art: any) => (
+                <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">
+                    <Image
+                        src={art.data.image}
+                        alt="Gallery image"
+                        width={350}
+                        class="w-fit self-start shadow-md shadow-stone-500"
+                    />
+                </a>
+            ))
+        }
     </main>
 </Layout>
