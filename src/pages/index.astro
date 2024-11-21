@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Image, Picture } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import books from "../data/books.json";
 import { getEntry, getCollection, type CollectionEntry } from "astro:content";
@@ -32,9 +32,9 @@ const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently
             <div class="flex flex-col flex-nowrap gap-8 sm:w-[70lvw] sm:flex-row sm:gap-4">
                 <div class="h-96 overflow-hidden object-cover text-right sm:h-[27rem] sm:w-64">
                     <span class="font-extralight">{artDate}</span>
-                    <img
+                    <Image
                         class="h-full w-full object-cover shadow-md"
-                        src={latestArt.data.image.src}
+                        src={latestArt.data.image}
                         alt="Most recent art"
                     />
                 </div>

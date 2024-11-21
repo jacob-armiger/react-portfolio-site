@@ -2,7 +2,7 @@
 // https://jankraus.net/2024/04/05/how-to-build-a-simple-photo-gallery-with-astro/
 // https://markjames.dev/blog/dynamically-importing-images-astro
 // https://vite.dev/guide/features.html#glob-import
-import { Image } from "astro:assets";
+import { Image, Picture } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
@@ -22,7 +22,7 @@ const allArt = (await getCollection("art")).sort(
                     <Image
                         src={art.data.image}
                         alt="Gallery image"
-                        width={350}
+                        // width={350}
                         class="w-fit self-start shadow-md shadow-stone-500"
                     />
                 </a>
