@@ -17,7 +17,7 @@ const { title } = Astro.props;
         <title>{title}</title>
     </head>
     <body class="relative bg-custom text-fade sm:flex lg:m-auto lg:w-7/12 2xl:w-1/3">
-        <div class="sticky top-0 z-10 bg-inherit text-center sm:h-screen lg:absolute lg:-left-28">
+        <div class="sticky top-0 z-10 bg-inherit text-center sm:h-44 lg:absolute lg:-left-28">
             <nav
                 class="my-2 flex justify-around text-right text-lg underline-offset-4 sm:mx-4 sm:mt-4 sm:h-44 sm:w-24 sm:flex-col">
                 <a href="/" class="hover:underline">home</a>
@@ -26,7 +26,7 @@ const { title } = Astro.props;
                 <a href="/projects" class="hover:underline">projects</a>
             </nav>
         </div>
-        <div class="px-2 pb-10 pt-2">
+        <div class="px-2 pb-10 pt-2 w-full">
             <slot />
         </div>
     </body>

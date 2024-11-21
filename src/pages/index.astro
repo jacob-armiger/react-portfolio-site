@@ -1,15 +1,50 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import books from "../data/books.json";
+import { getEntry, getCollection, type CollectionEntry } from "astro:content";
+
+// const latestArt = await getEntry('art', 'enterprise');
+
+const latestArt = (await getCollection("art")).sort(
+    (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
+        return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
+    }
+)[0];
+
+const artDate = latestArt.data.date.toLocaleDateString();
+
+const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0];
 ---
 
 <Layout title="Home">
-    <main>
-        <div class="mt-10 ml-12">
-            <p class="text-2xl">Hello, I'm Jacob.</p>
-            <p class="max-w-prose">
-                Currently, I'm a software developer for the United States Postal Service living in
-                New York. In my free time I enjoy reading and drawing.
+    <main class="mx-4 mt-2 font-serif">
+        <p class="text-4xl font-extralight sm:ml-10">Hello, I'm Jacob.</p>
+        <p class="mb-16 max-w-prose text-wrap font-sans text-lg sm:mb-32 sm:ml-10">
+            I'm a software developer for the United States Postal Service living in New York. In my
+            free time I enjoy reading and drawing.
+        </p>
+
+        <div class="relative">
+            <p class="absolute -left-48 bottom-28 -rotate-90 text-6xl font-extralight lg:-left-44">
+                The Latest
             </p>
+            <div class="flex flex-col flex-nowrap gap-8 sm:ml-10 sm:w-[70lvw] sm:flex-row sm:gap-4">
+                <div class="h-96 overflow-hidden object-cover text-right sm:h-[27rem] sm:w-64">
+                    <span class="font-extralight">{artDate}</span>
+                    <img
+                        class="h-full w-full object-cover shadow-md"
+                        src={latestArt.data.image.src}
+                        alt="Most recent art"
+                    />
+                </div>
+                <p class="relative text-5xl font-bold sm:h-[27rem] sm:w-[30rem] md:text-7xl">
+                    Currently reading
+                    <span class="font-normal italic">{currentBook.Title}</span>
+                    by
+                    <span class="underline decoration-wavy">{currentBook.Author}</span>
+                </p>
+            </div>
         </div>
     </main>
 </Layout>
