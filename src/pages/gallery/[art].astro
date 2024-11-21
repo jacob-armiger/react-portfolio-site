@@ -1,9 +1,10 @@
 ---
-import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
     const artEntries = await getCollection("art");
-    return artEntries.map((entry) => ({
+    return artEntries.map((entry: CollectionEntry<"art">) => ({
         params: { art: entry.slug },
         props: { entry },
     }));
@@ -18,12 +19,13 @@ const { Content } = await entry.render();
 
 <Layout title="art post">
     <main>
-        <div class="m-auto w-fit">
-            <img
-                src={entry?.data.image.src}
+        <div class="m-auto w-[550px] 2xl:ml-8 2xl:w-[600px]">
+            <Image
+                src={entry?.data.image}
                 alt="Large image of art"
-                width={600}
+                width={1100}
                 class="self-start shadow-md shadow-stone-500"
+                loading={"eager"}
             />
         </div>
         <div class="m-auto mt-4 w-full lg:w-2/3">
