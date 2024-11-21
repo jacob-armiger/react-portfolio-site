@@ -20,6 +20,12 @@ importers:
       '@astrojs/vercel':
         specifier: ^7.8.2
         version: 7.8.2(astro@4.16.7(@types/node@16.18.11)(rollup@4.24.2)(typescript@5.6.3))(react@18.3.1)
+      '@fontsource-variable/inter':
+        specifier: ^5.1.0
+        version: 5.1.0
+      '@fontsource-variable/playfair-display':
+        specifier: ^5.1.0
+        version: 5.1.0
       '@types/react':
         specifier: ^18.3.12
         version: 18.3.12
@@ -410,6 +416,12 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@fontsource-variable/inter@5.1.0':
+    resolution: {integrity: sha512-Wj2dUGP0vUpxRGQTXQTCNJO+aLcFcQm+gUPXfj/aS877bQkEPBPv9JvZJpwdm2vzelt8NTZ+ausKlBCJjh2XIg==}
+
+  '@fontsource-variable/playfair-display@5.1.0':
+    resolution: {integrity: sha512-51UJAHznXiGkchEOT5AYFuIy9N9m1JE7YxcdOtY0H4SKgzK9YYGKpeCXv3dz2e1gAd+BP2TyR0QXNnVjgeCbgw==}
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -3528,6 +3540,10 @@ snapshots:
     optional: true
 
   '@fastify/busboy@2.1.1': {}
+
+  '@fontsource-variable/inter@5.1.0': {}
+
+  '@fontsource-variable/playfair-display@5.1.0': {}
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
