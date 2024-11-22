@@ -1,7 +1,7 @@
 ---
 title: "comic-list-webscraper"
 image: "./comic_list.png"
-description: "A web application that dynamically wrangles data from comicbookreadingorders.com to provide users a method to track reading progress."
+description: "A web application that dynamically scrapes data from comicbookreadingorders.com to provide users a method to track reading progress."
 tags:
 - python
 - Flask
@@ -10,9 +10,11 @@ tags:
 
 # comic-list-webscraper
 ### [Github Repo](https://github.com/jacob-armiger/comic-list-web-scraper)
-This web app allows readers to keep track of things they’ve read from comicbookreadingorders.com. Each reading order is on its own page, so readers just need to copy the URL and paste it into the prompt in the [web app](https://www.comicbookreadingordersdownload.com).
+This web app enables readers to track comics they’ve read from [comicbookreadingorders.com](https://www.comicbookreadingorders.com). Each reading order is on its own page, so readers copy the URL into the prompt on my [web app](https://www.comicbookreadingordersdownload.com) and get an excel sheet in return.
 
-Originally this project started as a Python script I made for myself. I didn’t think I would be creating a tool that other people would use. Then I had the idea to contact the owner of the website mention above and ask if he was interested in a tool like this, and he said he’s had users request similar features. My first idea was to create a distributable executable, but after multi-platform and EV certificate issues I pivoted to a web app.
+This project started as a Python script I made for myself. Although I know literally zero other people that read comics, I eventually thought that others may find this tool useful too. I decided to contact the creator of the website above to gauge interest and it turns out that users have asked for features just like this. 
 
-My web app has emulated the style of comicbookreadingorders.com, but it’s hosted separately and on a different domain name. In the future I'd like to rewrite the script from Python to JavaScipt so I can host the site for free on Vercel!
+Initally I wanted to distribute an executable with the `pyInstaller` library, but I quickly had compatibility issues with my M1 laptop (which was relatively new at the time), and EV certificates were never going to trust me anyway. As a result I pivoted into using flask and Heroku. That was super easy to set up.
+
+The page I set up emulates the style of comicbookreadingorders.com, but it’s hosted separately on a different domain. In the future I'd like to rewrite the script from Python to JavaScipt so I can host the site for free on Vercel.
 
