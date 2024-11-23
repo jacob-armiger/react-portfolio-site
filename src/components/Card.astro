@@ -1,4 +1,6 @@
 ---
+import "../styles/tailwind.css";
+
 interface Props {
     book: any;
 }
@@ -8,7 +10,7 @@ const { book } = Astro.props;
 
 <div class="mb-12 cursor-default text-lg">
     <div
-        class="h-fit max-h-96 overflow-y-scroll rounded-t-md border border-b-0 border-solid border-custom px-4 pb-2 text-fade">
+        class="scrollbar h-fit max-h-96 overflow-y-auto rounded-t-md border border-b-0 border-solid border-custom px-4 pb-2 text-fade">
         <div>
             <p class="sticky top-0 bg-custom bg-opacity-95 font-serif text-3xl text-fade">
                 {book.Title}
