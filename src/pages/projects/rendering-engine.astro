@@ -11,9 +11,10 @@ const { Content } = await entry.render();
 <Layout title={entry.data.title}>
     <main class="mx-4 mt-2 flex flex-col">
         <canvas class="rounded-md" id="glCanvas" width="640" height="480"></canvas>
-        <div class="control_area w-full h-fit mb-8 flex flex-row gap-4">
+        <span class="text-sm italic sm:hidden">Scroll to see more controls</span>
+        <div class="control_area w-full h-fit mb-8 flex flex-row gap-4 overflow-y-auto">
             <div class="cam_pos_sliders float-start text-nowrap">
-                <p>Camera Position:</p>
+                <p class="font-semibold">Camera Position</p>
                 <div class="items-center flex gap-1">
                     <label for="camX">X:</label>
                     <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="camX">
@@ -30,26 +31,8 @@ const { Content } = await entry.render();
                     <input id="camZVal" name="camZVal" value="-10" class="w-6 bg-custom">
                 </div>
             </div>
-            <div class="cam_look_sliders float-start text-nowrap">
-                <p>Look Angle:</p>
-                <div class="items-center flex gap-1">
-                    <label for="lookX">X:</label>
-                    <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="lookX">
-                    <input id="lookXVal" name="lookXVal" value="0" class="w-6 bg-custom">
-                </div class="items-center flex gap-1">
-                <div>
-                    <label for="lookY">Y:</label>
-                    <input type="range" min="-30" max="30" value="-1" step="0.1" class="slider" id="lookY">
-                    <input id="lookYVal" name="lookYVal" value="-1" class="w-6 bg-custom">
-                </div>
-                <div class="items-center flex gap-1">
-                    <label for="lookZs">Z:</label>
-                    <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="lookZ">
-                    <input id="lookZVal" name="lookZVal" value="0" class="w-6 bg-custom">
-                </div>
-            </div>
             <div class="light_sliders float-start text-nowrap">
-                <p>Lighting Position:</p>
+                <p class="font-semibold">Lighting Position</p>
                 <div class="items-center flex gap-1">
                     <label for="lightX">X:</label>
                     <input type="range" min="-30" max="30" value="1" step="0.1" class="slider" id="lightX">
@@ -64,6 +47,24 @@ const { Content } = await entry.render();
                     <label for="lightZ">Z:</label>
                     <input type="range" min="-30" max="30" value="-4" step="0.1" class="slider" id="lightZ">
                     <input id="lightZVal" name="lightZVal" value="-4" class="w-6 bg-custom">
+                </div>
+            </div>
+            <div class="cam_look_sliders float-start text-nowrap">
+                <p class="font-semibold">Look Angle</p>
+                <div class="items-center flex gap-1">
+                    <label for="lookX">X:</label>
+                    <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="lookX">
+                    <input id="lookXVal" name="lookXVal" value="0" class="w-6 bg-custom">
+                </div class="items-center flex gap-1">
+                <div>
+                    <label for="lookY">Y:</label>
+                    <input type="range" min="-30" max="30" value="-1" step="0.1" class="slider" id="lookY">
+                    <input id="lookYVal" name="lookYVal" value="-1" class="w-6 bg-custom">
+                </div>
+                <div class="items-center flex gap-1">
+                    <label for="lookZs">Z:</label>
+                    <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="lookZ">
+                    <input id="lookZVal" name="lookZVal" value="0" class="w-6 bg-custom">
                 </div>
             </div>
         </div>
