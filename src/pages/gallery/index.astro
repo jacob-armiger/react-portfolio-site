@@ -15,16 +15,20 @@ const allArt = (await getCollection("art")).sort(
 ---
 
 <Layout title="Art">
-    <main class="mx-6 grid sm:mx-2 sm:grid-cols-2 lg:w-[55lvw] 2xl:grid-cols-3">
+    <main
+        class="mx-auto grid w-11/12 justify-center gap-y-4 sm:mx-0 sm:w-full sm:grid-cols-2 sm:justify-normal sm:gap-4 sm:px-4 lg:w-[55lvw] 2xl:grid-cols-3">
         {
             allArt.map((art: any) => (
-                <a href={"/gallery/" + art.slug} class="my-2 sm:m-2">
-                    <Image
-                        src={art.data.image}
-                        alt="Gallery image"
-                        width={390}
-                        class="w-fit self-start shadow-md shadow-stone-500"
-                    />
+                <a href={"/gallery/" + art.slug}>
+                    <div>
+                        <Image
+                            src={art.data.image}
+                            alt="Gallery image"
+                            width={390}
+                            class="shadow-md shadow-stone-500"
+                        />
+                        {/* <span class="w-8 text-sm italic">2 minute read</span> */}
+                    </div>
                 </a>
             ))
         }

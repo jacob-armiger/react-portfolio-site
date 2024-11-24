@@ -18,17 +18,11 @@ const { Content } = await entry.render();
 ---
 
 <Layout title="art post">
-    <main>
-        <div class="m-auto w-[550px] 2xl:ml-8 2xl:w-[600px]">
-            <Image
-                src={entry?.data.image}
-                alt="Large image of art"
-                width={1100}
-                class="self-start shadow-md shadow-stone-500"
-                loading={"eager"}
-            />
+    <main class="sm:mx-4">
+        <div class="shadow-md shadow-stone-500 sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px]">
+            <Image src={entry?.data.image} alt="Large image of art" width={1600} />
         </div>
-        <div class="m-auto mt-4 w-full ">
+        <div class="m-auto mt-4 w-full">
             <Prose>
                 <Content />
             </Prose>
