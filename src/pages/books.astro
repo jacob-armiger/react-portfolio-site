@@ -1,6 +1,6 @@
 ---
-import Card from "../components/Card.astro";
 import books from "../assets/books.json";
+import Card from "../components/Card.astro";
 import Layout from "../layouts/Layout.astro";
 
 const readings = books.sort((a, b) => b["Date Read"].localeCompare(a["Date Read"]));
