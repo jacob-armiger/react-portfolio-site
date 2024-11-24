@@ -10,66 +10,66 @@ const { Content } = await entry.render();
 ---
 
 <Layout title={entry.data.title}>
-    <main class="mx-4 mt-2">
+    <main class="mx-4 mt-2 flex flex-col">
         <canvas class="rounded-md" id="glCanvas" width="640" height="480"></canvas>
-        <div class="control_area" style="width: 640px;">
-            <div class="cam_pos_sliders" style="float: left; width: 30%;">
+        <div class="control_area w-full h-fit mb-8 flex flex-row gap-4">
+            <div class="cam_pos_sliders float-start text-nowrap">
                 <p>Camera Position:</p>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="camX">X:</label>
                     <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="camX">
-                    <input id="camXVal" name="camXVal" value="0" style="width: 20px;">
+                    <input id="camXVal" name="camXVal" value="0" class="w-6 bg-custom">
                 </div>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="camY">Y:</label>
                     <input type="range" min="-30" max="30" value="3" step="0.1" class="slider" id="camY">
-                    <input id="camYVal" name="camYVal" value="3" style="width: 20px;">
+                    <input id="camYVal" name="camYVal" value="3" class="w-6 bg-custom">
                 </div>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="camZ">Z:</label>
                     <input type="range" min="-30" max="30" value="-10" step="0.1" class="slider" id="camZ">
-                    <input id="camZVal" name="camZVal" value="-10" style="width: 20px;">
+                    <input id="camZVal" name="camZVal" value="-10" class="w-6 bg-custom">
                 </div>
             </div>
-            <div class="cam_look_sliders" style="float: left; width: 30%;">
+            <div class="cam_look_sliders float-start text-nowrap">
                 <p>Look Angle:</p>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="lookX">X:</label>
                     <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="lookX">
-                    <input id="lookXVal" name="lookXVal" value="0" style="width: 20px;">
-                </div>
+                    <input id="lookXVal" name="lookXVal" value="0" class="w-6 bg-custom">
+                </div class="items-center flex gap-1">
                 <div>
                     <label for="lookY">Y:</label>
                     <input type="range" min="-30" max="30" value="-1" step="0.1" class="slider" id="lookY">
-                    <input id="lookYVal" name="lookYVal" value="-1" style="width: 20px;">
+                    <input id="lookYVal" name="lookYVal" value="-1" class="w-6 bg-custom">
                 </div>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="lookZs">Z:</label>
                     <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="lookZ">
-                    <input id="lookZVal" name="lookZVal" value="0" style="width: 20px;">
+                    <input id="lookZVal" name="lookZVal" value="0" class="w-6 bg-custom">
                 </div>
             </div>
-            <div class="light_sliders" style="float: right; width: 30%;">
+            <div class="light_sliders float-start text-nowrap">
                 <p>Lighting Position:</p>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="lightX">X:</label>
                     <input type="range" min="-30" max="30" value="1" step="0.1" class="slider" id="lightX">
-                    <input id="lightXVal" name="lightXVal" value="1" style="width: 20px;">
+                    <input id="lightXVal" name="lightXVal" value="1" class="w-6 bg-custom">
                 </div>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="lightY">Y:</label>
                     <input type="range" min="-30" max="30" value="4" step="0.1" class="slider" id="lightY">
-                    <input id="lightYVal" name="lightYVal" value="4" style="width: 20px;">
+                    <input id="lightYVal" name="lightYVal" value="4" class="w-6 bg-custom">
                 </div>
-                <div>
+                <div class="items-center flex gap-1">
                     <label for="lightZ">Z:</label>
                     <input type="range" min="-30" max="30" value="-4" step="0.1" class="slider" id="lightZ">
-                    <input id="lightZVal" name="lightZVal" value="-4" style="width: 20px;">
+                    <input id="lightZVal" name="lightZVal" value="-4" class="w-6 bg-custom">
                 </div>
             </div>
         </div>
         <script src="../../scripts/bundle.js"></script>
-        <div class="m-auto mt-4 w-full">
+        <div class="mx-auto mt-4 w-full">
             <Prose>
                 <Content />
             </Prose>

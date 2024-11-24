@@ -1,10 +1,8 @@
 ---
-import { Image, Picture } from "astro:assets";
+import { Image } from "astro:assets";
+import { getCollection, type CollectionEntry } from "astro:content";
+import books from "../assets/books.json";
 import Layout from "../layouts/Layout.astro";
-import books from "../data/books.json";
-import { getEntry, getCollection, type CollectionEntry } from "astro:content";
-
-// const latestArt = await getEntry('art', 'enterprise');
 
 const latestArt = (await getCollection("art")).sort(
     (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
@@ -12,17 +10,15 @@ const latestArt = (await getCollection("art")).sort(
     }
 )[0];
 
-const artDate = latestArt.data.date.toLocaleDateString();
-
 const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0];
 ---
 
 <Layout title="Home">
     <main class="mx-4 font-serif">
         <p class="mb-4 text-4xl font-semibold">Hello, I'm Jacob.</p>
-        <p class="mb-16 max-w-prose text-wrap font-sans text-lg">
-            I'm a software developer for the United States Postal Service living in New York. In my
-            free time I enjoy reading and drawing.
+        <p class="mb-16 max-w-prose text-wrap font-sans text-lg lg:mb-32">
+            I'm a software developer for the United States Postal Service living in New York. I'm
+            also a hobbyist artist, and I know how to read.
         </p>
 
         <div class="relative">

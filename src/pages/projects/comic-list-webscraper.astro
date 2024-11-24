@@ -6,19 +6,12 @@ import Prose from "../../components/Prose.astro";
 import Layout from "../../layouts/Layout.astro";
 
 const entry = await getEntry("projects", "comic-list-webscraper");
-const { Content, headings } = await entry.render();
+const { Content } = await entry.render();
 ---
 
-<Layout title="comic-list-webscraper">
+<Layout title={entry.data.title}>
     <main class="mx-4 mt-2">
-        <div class="w-fit">
-            <Image
-                src={entry.data.image}
-                alt="Large image of art"
-                class="self-start rounded-md shadow-md shadow-stone-500"
-            />
-        </div>
-        <div class="m-auto mt-4 w-full">
+        <div class="m-auto w-full">
             <Prose>
                 <Content />
             </Prose>
