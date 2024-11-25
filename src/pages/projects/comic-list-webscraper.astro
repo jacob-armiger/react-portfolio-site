@@ -1,0 +1,19 @@
+---
+import { getEntry } from "astro:content";
+
+import Prose from "../../components/Prose.astro";
+import Layout from "../../layouts/Layout.astro";
+
+const entry = await getEntry("projects", "comic-list-webscraper");
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title}>
+    <main class="mx-4 mt-2">
+        <div class="m-auto w-full">
+            <Prose>
+                <Content />
+            </Prose>
+        </div>
+    </main>
+</Layout>

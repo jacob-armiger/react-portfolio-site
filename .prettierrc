@@ -1,0 +1,9 @@
+{
+    "printWidth": 100,
+    "useTabs": false,
+    "tabWidth": 4,
+    "bracketSameLine": true, 
+    "tailwindConfig": "./tailwind.config.mjs",
+    "plugins": ["prettier-plugin-astro", "prettier-plugin-tailwindcss"],
+    "pluginSearchDirs": false
+ }

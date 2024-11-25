@@ -1,0 +1,36 @@
+---
+// https://jankraus.net/2024/04/05/how-to-build-a-simple-photo-gallery-with-astro/
+// https://markjames.dev/blog/dynamically-importing-images-astro
+// https://vite.dev/guide/features.html#glob-import
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const allArt = (await getCollection("art")).sort(
+    (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
+        return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
+    }
+);
+---
+
+<Layout title="Art">
+    <main
+        class="mx-auto grid w-11/12 justify-center gap-y-4 sm:mx-0 sm:w-full sm:grid-cols-2 sm:justify-normal sm:gap-4 sm:px-4 lg:w-[55lvw] 2xl:grid-cols-3">
+        {
+            allArt.map((art: any) => (
+                <a href={"/gallery/" + art.slug}>
+                    <div>
+                        <Image
+                            src={art.data.image}
+                            alt="Gallery image"
+                            width={390}
+                            class="shadow-md shadow-stone-500"
+                        />
+                        {/* <span class="w-8 text-sm italic">2 minute read</span> */}
+                    </div>
+                </a>
+            ))
+        }
+    </main>
+</Layout>
