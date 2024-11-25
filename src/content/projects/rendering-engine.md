@@ -4,7 +4,7 @@ description: "An interactive 3D environment that works right in your browser."
 tags:
 - WebGL 2.0
 - GLSL
-- JavScript
+- JavaScript
 ---
 
 # rendering-engine

@@ -18,7 +18,7 @@ const allArt = (await getCollection("art")).sort(
     <main
         class="mx-auto grid w-11/12 justify-center gap-y-4 sm:mx-0 sm:w-full sm:grid-cols-2 sm:justify-normal sm:gap-4 sm:px-4 lg:w-[55lvw] 2xl:grid-cols-3">
         {
-            allArt.map((art: any) => (
+            allArt.map((art) => (
                 <a href={"/gallery/" + art.slug}>
                     <div>
                         <Image
@@ -27,7 +27,8 @@ const allArt = (await getCollection("art")).sort(
                             width={390}
                             class="shadow-md shadow-stone-500"
                         />
-                        {/* <span class="w-8 text-sm italic">2 minute read</span> */}
+                        {/* <span class="float-left text-sm italic">{String(art.data.date.toISOString().slice(0,10))}</span> */}
+                        <span class="float-right text-xs italic pr-1 mt-1">{String(art.data.date.toISOString().slice(0,10))}</span>
                     </div>
                 </a>
             ))
