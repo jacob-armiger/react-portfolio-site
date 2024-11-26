@@ -68,7 +68,9 @@ const { Content } = await entry.render();
                 </div>
             </div>
         </div>
-        <script src="../../scripts/bundle.js"></script>
+        <script src="../../scripts/bundle.js">
+            window.onerror = () => alert("Sorry, your device doesn't have enough memory to run the engine.")
+        </script>
         <div class="mx-auto mt-4 w-full">
             <Prose>
                 <Content />
