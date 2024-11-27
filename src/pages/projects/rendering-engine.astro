@@ -55,7 +55,7 @@ const { Content } = await entry.render();
                     <label for="lookX">X:</label>
                     <input type="range" min="-30" max="30" value="0" step="0.1" class="slider" id="lookX">
                     <input id="lookXVal" name="lookXVal" value="0" class="w-6 bg-custom">
-                </div class="items-center flex gap-1">
+                </div>
                 <div>
                     <label for="lookY">Y:</label>
                     <input type="range" min="-30" max="30" value="-1" step="0.1" class="slider" id="lookY">
@@ -68,9 +68,7 @@ const { Content } = await entry.render();
                 </div>
             </div>
         </div>
-        <script src="../../scripts/bundle.js">
-            window.onerror = () => alert("Sorry, your device doesn't have enough memory to run the engine.")
-        </script>
+        <script src="../../scripts/bundle.js"/>
         <div class="mx-auto mt-4 w-full">
             <Prose>
                 <Content />
