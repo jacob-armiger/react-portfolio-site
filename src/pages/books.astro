@@ -17,7 +17,7 @@ if (!isNaN(Number(currentBook.ISBN13[4]))) {
 
 <Layout title="Books">
     <main class="sm:w-11/12 lg:w-full">
-        <p class="mb-8 ml-4 w-full text-left font-serif text-4xl font-semibold">
+        <p class="mb-8 ml-4 text-left font-serif text-4xl font-semibold">
             Currently Reading
         </p>
 
@@ -43,7 +43,7 @@ if (!isNaN(Number(currentBook.ISBN13[4]))) {
 
         <div class="grid max-w-prose grid-cols-1">
             {
-                readings.map((book: any, index: number) => {
+                readings.map((book) => {
                     return <Card book={book} />;
                 })
             }
