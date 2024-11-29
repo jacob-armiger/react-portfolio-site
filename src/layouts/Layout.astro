@@ -5,7 +5,6 @@ interface Props {
     title: string;
 }
 
-const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -16,7 +15,7 @@ const { title } = Astro.props;
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
-        <title>{title}</title>
+        <title>Jacob Armiger</title>
     </head>
     <body class="relative bg-custom text-fade sm:flex lg:m-auto lg:max-w-prose">
         <div class="sticky top-0 z-10 bg-inherit text-center sm:border-none border border-b-fade sm:h-44 lg:absolute lg:-left-28">

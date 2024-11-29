@@ -1,0 +1,27 @@
+---
+import { Image } from "astro:assets";
+import { getReadingTime } from '../scripts/reading-time';
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  art: CollectionEntry<'art'>;
+}
+
+const { art } = Astro.props;
+
+// const readingTime = getReadingTime(art.body);
+---
+
+<a href={"/gallery/" + art.slug} class="h-fit mx-auto">
+    <Image
+        src={art.data.image}
+        alt="Gallery image"
+        width={390}
+        class="shadow-md shadow-stone-500"
+    />
+    <!-- <span class="float-left text-xs italic pl-1 mt-1">{readingTime}</span> -->
+    <div class="flex flex-col">
+        <span class="text-xs italic pr-1 mt-1">{String(art.data.date.toISOString().slice(0,10))}</span>
+        <p class="max-w-96 line-clamp-2 float-left text-wrap italic truncate ...">{art.body}</p>
+    </div>
+</a>

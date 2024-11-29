@@ -22,9 +22,17 @@ const { Content } = await entry.render();
         <div class="shadow-md shadow-stone-500 sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px]">
             <Image src={entry?.data.image} alt="Large image of art" width={1600} loading={"eager"}/>
         </div>
-        <span class="text-xs italic pr-1 mt-1">{String(entry.data.date.toISOString().slice(0,10))}</span>
-        <div class="m-auto mt-4 w-full">
+        <span class="text-sm italic pr-1 mt-1">{String(entry.data.date.toISOString().slice(0,10))}</span>
+        <div class="m-auto mt-2 w-full">
             <Prose>
+                {entry.data.reference ?
+                <div class="text-sm mb-5">
+                    <p class="my-0" >Reference:</p>
+                    <a href={entry.data.reference_url} class="italic">{entry.data.reference}</a>
+                </div>
+                : <></>
+                }
+                <h1>{entry.data.title}</h1>
                 <Content />
             </Prose>
         </div>
