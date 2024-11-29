@@ -1,4 +1,5 @@
 ---
+import Analytics from '@vercel/analytics/astro'
 import "@fontsource-variable/inter";
 import "@fontsource-variable/playfair-display";
 interface Props {
@@ -29,6 +30,7 @@ interface Props {
         </div>
         <div class="w-full px-2 pb-10 pt-4">
             <slot />
+            <Analytics/>
         </div>
     </body>
 </html>
