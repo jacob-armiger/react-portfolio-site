@@ -1,10 +1,11 @@
 ---
+// https://jahir.dev/blog/astro-reading-time
 import { Image } from "astro:assets";
 // import { getReadingTime } from '../scripts/reading-time';
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
-  art: CollectionEntry<'art'>;
+    art: CollectionEntry<"art">;
 }
 
 const { art } = Astro.props;
@@ -12,7 +13,7 @@ const { art } = Astro.props;
 // const readingTime = getReadingTime(art.body);
 ---
 
-<a href={"/gallery/" + art.slug} class="h-fit mx-auto">
+<a href={"/gallery/" + art.slug} class="mx-auto h-fit hover:underline">
     <Image
         src={art.data.image}
         alt="Gallery image"
@@ -21,7 +22,12 @@ const { art } = Astro.props;
     />
     <!-- <span class="float-left text-xs italic pl-1 mt-1">{readingTime}</span> -->
     <div class="flex flex-col">
-        <span class="text-xs italic pr-1 mt-1">{String(art.data.date.toISOString().slice(0,10))}</span>
-        <p class="max-w-96 line-clamp-2 float-left text-wrap italic truncate ...">{art.body}</p>
+        <span class="mt-1 pr-1 text-xs">{String(art.data.date.toISOString().slice(0, 10))}</span>
+        <div class="flex">
+            <p class="... float-left line-clamp-1 max-w-96 truncate text-wrap break-all text-sm">
+                {art.body}
+            </p>
+            <span class="text-sm italic">Read</span>
+        </div>
     </div>
 </a>
