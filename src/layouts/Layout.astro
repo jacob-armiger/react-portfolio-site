@@ -17,6 +17,7 @@ interface Props {
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>Jacob Armiger</title>
+        <Analytics/>
     </head>
     <body class="relative bg-custom text-fade sm:flex lg:m-auto lg:max-w-prose">
         <div class="sticky top-0 z-10 bg-inherit text-center sm:border-none border border-b-fade sm:h-44 lg:absolute lg:-left-28">
@@ -30,7 +31,6 @@ interface Props {
         </div>
         <div class="w-full px-2 pb-10 pt-4">
             <slot />
-            <Analytics/>
         </div>
     </body>
 </html>
