@@ -15,6 +15,10 @@ Papa.parse(file, {
             book["My Review"] = book["My Review"].replaceAll("<br/><br/>", "\n\n")
         }
 
-        fs.writeFileSync("../src/data/books.json", JSON.stringify(results.data, null, 4))
+        fs.writeFileSync("../src/assets/books.json", JSON.stringify(results.data, null, 4))
     },
 })
+
+file.on('end', () => {
+    file.close();
+});
