@@ -19,8 +19,8 @@ const { Content } = await entry.render();
 
 <Layout title="art post">
     <main class="sm:mx-4">
-        <div class="shadow-md shadow-stone-500 sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px]">
-            <Image src={entry?.data.image} alt="Large image of art" width={1600} loading={"eager"}/>
+        <div class="dark:shadow-none shadow-md shadow-stone-500 sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px]">
+            <Image src={entry?.data.image} alt="Large image of art" width={1600} loading={"eager"} class="dark:rounded-sm"/>
         </div>
         <span class="text-sm italic pr-1 mt-1">{String(entry.data.date.toISOString().slice(0,10))}</span>
         <div class="m-auto mt-2 w-full">

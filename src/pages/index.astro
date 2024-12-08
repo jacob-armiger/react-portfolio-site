@@ -7,7 +7,7 @@ import Layout from "../layouts/Layout.astro";
 const latestArt = (await getCollection("art")).sort(
     (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
         return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
-    }
+    },
 )[0];
 
 const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0];
@@ -24,10 +24,10 @@ const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently
         <div class="relative">
             <p class="absolute -left-48 bottom-28 -rotate-90 text-6xl">The Latest</p>
             <div class="flex flex-col flex-nowrap gap-8 sm:w-[70lvw] sm:flex-row sm:gap-8">
-                <div class="h-96 overflow-hidden object-cover text-right sm:h-[27rem] sm:w-64">
+                <div class="h-96 overflow-hidden object-cover text-right sm:h-[27rem] sm:w-64 dark:rounded-b-full">
                     <span class="font-extralight">Art à la mode</span>
                     <Image
-                        class="h-full w-full object-cover shadow-md"
+                        class="h-full w-full object-cover shadow-md dark:rounded-t-md"
                         src={latestArt.data.image}
                         alt="Most recent art"
                         width={300}
