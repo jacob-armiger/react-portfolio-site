@@ -1,6 +1,6 @@
 ---
 import books from "../assets/books.json";
-import Card from "../components/Card.astro";
+import Book from "../components/Book.astro";
 import Layout from "../layouts/Layout.astro";
 
 const readings = books.sort((a, b) => b["Date Read"].localeCompare(a["Date Read"]));
@@ -42,7 +42,7 @@ if (!isNaN(Number(currentBook.ISBN13[4]))) {
         <div class="grid max-w-prose grid-cols-1">
             {
                 readings.map((book) => {
-                    return <Card book={book} />;
+                    return <Book book={book} />;
                 })
             }
         </div>
