@@ -17,9 +17,7 @@ if (!isNaN(Number(currentBook.ISBN13[4]))) {
 
 <Layout title="Books">
     <main class="sm:w-11/12 lg:w-full">
-        <p class="mb-8 ml-4 text-left font-serif text-4xl font-semibold">
-            Currently Reading
-        </p>
+        <p class="mb-8 ml-4 text-left font-serif text-4xl font-semibold">Currently Reading</p>
 
         <div class="mx-4 mb-16 flex sm:h-72">
             <img
@@ -28,7 +26,7 @@ if (!isNaN(Number(currentBook.ISBN13[4]))) {
                 loading="eager"
                 width={174}
             />
-            <div class="ml-4 content-end sm:content-center text-left text-fade">
+            <div class="ml-4 content-end text-left sm:content-center">
                 <p class="font-serif text-3xl">{currentBook.Title}</p>
                 <p class="text-lg italic">by {currentBook.Author}</p>
             </div>

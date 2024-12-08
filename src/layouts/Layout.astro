@@ -1,11 +1,10 @@
 ---
-import Analytics from '@vercel/analytics/astro'
+import Analytics from "@vercel/analytics/astro";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/playfair-display";
 interface Props {
     title: string;
 }
-
 ---
 
 <!doctype html>
@@ -17,16 +16,16 @@ interface Props {
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>Jacob Armiger</title>
-        <Analytics/>
+        <Analytics />
     </head>
-    <body class="relative bg-custom text-fade sm:flex lg:m-auto lg:max-w-prose">
-        <div class="sticky top-0 z-10 bg-inherit sm:bg-transparent text-center sm:border-none border border-b-fade sm:h-44 lg:absolute lg:-left-28">
+    <body class="bg-secondary text-primary relative sm:flex lg:m-auto lg:max-w-prose">
+        <div class="sticky top-0 z-10 border-b border-primary bg-inherit text-center sm:h-44 sm:border-none sm:bg-transparent lg:absolute lg:-left-28">
             <nav
                 class="my-1 flex justify-around text-right text-lg underline-offset-4 sm:mx-4 sm:mt-4 sm:h-44 sm:w-24 sm:flex-col">
-                <a href="/" class="hover:underline font-serif font-medium">home</a>
-                <a href="/books" class="hover:underline font-serif font-medium">books</a>
-                <a href="/gallery" class="hover:underline font-serif font-medium">art</a>
-                <a href="/projects" class="hover:underline font-serif font-medium">projects</a>
+                <a href="/" class="font-serif font-medium hover:underline">home</a>
+                <a href="/books" class="font-serif font-medium hover:underline">books</a>
+                <a href="/gallery" class="font-serif font-medium hover:underline">art</a>
+                <a href="/projects" class="font-serif font-medium hover:underline">projects</a>
             </nav>
         </div>
         <div class="w-full px-2 pb-10 pt-4">

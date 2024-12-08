@@ -10,16 +10,22 @@ export default {
                 serif: ["Playfair Display Variable", ...defaultTheme.fontFamily.serif]
             },
             colors: {
-                // 'custom': '#5a6f91',
-                // 'custom': '#faf9f6',
-                'custom': '#E2E6E7',
-                // 'fade': '#373737',
-                'fade': '#3b3b3b',
-                // 'accent': 'white',
+                'primary': 'hsl(0,0%,23%)',     // text
+                'secondary': "hsl(192,9%,90%)", //background
+
+                'primary-dark': "hsl(0,0%,77%)",     // text
+                'secondary-dark': "hsl(192,9%,10%)", //background
             },
         },
 	},
 	plugins: [
         require('@tailwindcss/typography'),
+        // function ({ addComponents, theme }) {
+        //     addComponents ({
+        //         '.bg-custom': {
+        //             dark:
+        //         }
+        //     })
+        // }
     ],
 }
