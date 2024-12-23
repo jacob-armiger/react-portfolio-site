@@ -16,7 +16,7 @@ const allArt = (await getCollection("art")).sort(
 
 <Layout title="Art">
     <main
-        class="mx-auto grid w-11/12 justify-center gap-y-8 sm:mx-0 sm:w-full sm:grid-cols-2 sm:justify-normal sm:gap-6 sm:px-4 lg:w-[55lvw] 2xl:grid-cols-3">
+        class="mx-auto grid w-11/12 items-end justify-center gap-y-8 sm:mx-0 sm:w-full sm:grid-cols-2 sm:justify-normal sm:gap-6 sm:px-4 lg:w-[55lvw] 2xl:grid-cols-3">
         {allArt.map((art) => <ArtPreview art={art} />)}
     </main>
 </Layout>
