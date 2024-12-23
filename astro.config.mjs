@@ -12,4 +12,5 @@ export default defineConfig({
     adapter: vercel({
         imageService: true,
     }),
+    site: 'https://jacobarmiger.vercel.app'
 });
