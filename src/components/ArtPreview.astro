@@ -23,11 +23,12 @@ const { art } = Astro.props;
     <!-- <span class="float-left text-xs italic pl-1 mt-1">{readingTime}</span> -->
     <div class="flex flex-col font-serif">
         <span class="mt-1 pr-1 text-sm">{String(art.data.date.toISOString().slice(0, 10))}</span>
-        <div class="flex">
-            <p class="... float-left line-clamp-1 max-w-96 truncate text-wrap break-all text-sm">
+        <div class="inline-block">
+            <!-- <p class="... float-left line-clamp-1 max-w-96 truncate text-wrap break-all text-sm">
                 {art.body}
-            </p>
-            <span class="text-sm italic">Read</span>
+            </p> -->
+            <span>{art.data.title}</span>
+            <span class="italic text-sm ">...Read</span>
         </div>
     </div>
 </a>
