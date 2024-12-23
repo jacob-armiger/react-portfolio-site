@@ -1,6 +1,8 @@
 ---
+import type { CollectionEntry } from 'astro:content';
+
 interface Props {
-    book: any;
+    book: CollectionEntry<"books">;
 }
 
 const { book } = Astro.props;
@@ -11,18 +13,18 @@ const { book } = Astro.props;
         class="px-4 pb-2">
         <div>
             <p class="font-serif text-3xl">
-                {book.Title}
+                {book.data.Title}
             </p>
-            <p class={!book["My Review"] ? "italic" : "pb-2 italic"}>by {book.Author}</p>
-            <p class="whitespace-pre-line">{book["My Review"]}</p>
+            <p class={!book.data["My Review"] ? "italic" : "pb-2 italic"}>by {book.data.Author}</p>
+            <p class="whitespace-pre-line">{book.data["My Review"]}</p>
         </div>
     </div>
 
     <div class="bottom-0 mx-4 flex border-t border-primary dark:border-primary-dark">
     {
-        book["Date Read"] ? (
-                <p class="grow">Read {book["Date Read"]}</p>
-                <p class="pr-2 text-right">{book["My Rating"]}/5</p>
+        book.data["Date Read"] ? (
+                <p class="grow">Read {book.data["Date Read"]}</p>
+                <p class="pr-2 text-right">{book.data["My Rating"]}/5</p>
         ) : (
                 <p class="h-6 grow pl-2" />
         )

@@ -1,11 +1,11 @@
 ---
 import { Image } from "astro:assets";
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-    const artEntries = await getCollection("art");
-    return artEntries.map((entry: CollectionEntry<"art">) => ({
-        params: { art: entry.slug },
+    const artEntries = await getCollection('art');
+    return artEntries.map((entry) => ({
+        params: { art: entry.id },
         props: { entry },
     }));
 }
@@ -14,7 +14,7 @@ import Prose from "../../components/Prose.astro";
 import Layout from "../../layouts/Layout.astro";
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 ---
 
 <Layout title="art post">

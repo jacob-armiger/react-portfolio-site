@@ -6,6 +6,10 @@ let file = fs.createReadStream('books.csv')
 
 Papa.parse(file, {
     header:true,
+    transformHeader: (h) => {
+        // rename Book Id to id for Astro file loader
+        return h == "Book Id" ? "id" : h;
+    },
     complete: (results) => {
         results.data = results.data.filter((book) => {
             return book["Exclusive Shelf"] != "to-read"

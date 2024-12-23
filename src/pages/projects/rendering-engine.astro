@@ -1,11 +1,11 @@
 ---
-import { getEntry } from "astro:content";
+import { getEntry, render } from "astro:content";
 
 import Prose from "../../components/Prose.astro";
 import Layout from "../../layouts/Layout.astro";
 
-const entry = await getEntry("projects", "rendering-engine");
-const { Content } = await entry.render();
+const entry: any = await getEntry("projects", "rendering-engine");
+const { Content } = await render(entry);
 ---
 
 <Layout title={entry.data.title}>

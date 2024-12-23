@@ -1,17 +1,19 @@
 ---
-import books from "../assets/books.json";
+import type { CollectionEntry } from "astro:content";
+import { getCollection} from 'astro:content';
 import Book from "../components/Book.astro";
 import Layout from "../layouts/Layout.astro";
 
-const readings = books.sort((a, b) => b["Date Read"].localeCompare(a["Date Read"]));
+const collection = await getCollection('books');
 
-const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0];
+const readings: CollectionEntry<"books">[] = collection.sort((a:CollectionEntry<"books">,b: CollectionEntry<"books">) => b.data["Date Read"].localeCompare(a.data["Date Read"]))
 
-let isbn = "";
-if (!isNaN(Number(currentBook.ISBN13[4]))) {
-    isbn = currentBook.ISBN13.replace(/\D/g, "");
-} else if (!isNaN(Number(currentBook.ISBN[4]))) {
-    isbn = currentBook.ISBN.replace(/\D/g, "");
+const currentBook = collection.find((book: CollectionEntry<"books">) => book.data["Exclusive Shelf"] == "currently-reading");
+let isbn: string | undefined = "";
+if (!isNaN(Number(currentBook?.data.ISBN13[4]))) {
+    isbn = currentBook?.data.ISBN13.replace(/\D/g, "");
+} else if (!isNaN(Number(currentBook?.data.ISBN[4]))) {
+    isbn = currentBook?.data.ISBN.replace(/\D/g, "");
 }
 ---
 
@@ -23,12 +25,11 @@ if (!isNaN(Number(currentBook.ISBN13[4]))) {
             <img
                 src=`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
                 alt="Book cover"
-                loading="eager"
-                width={174}
+                width="174"
             />
             <div class="ml-4 content-end text-left sm:content-center">
-                <p class="font-serif text-3xl">{currentBook.Title}</p>
-                <p class="text-lg italic">by {currentBook.Author}</p>
+                <p class="font-serif text-3xl">{currentBook?.data.Title}</p>
+                <p class="text-lg italic">by {currentBook?.data.Author}</p>
             </div>
         </div>
         <!-- <div class="text-mono mb-12 mx-4 target:bg-accent bottom-0 flex border border-x-0 border-b-0 border-solid border-[#373737] text-black">

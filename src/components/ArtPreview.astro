@@ -13,7 +13,7 @@ const { art } = Astro.props;
 // const readingTime = getReadingTime(art.body);
 ---
 
-<a href={"/gallery/" + art.slug} class="mx-auto h-fit hover:underline">
+<a href={"/gallery/" + art.id} class="mx-auto h-fit hover:underline">
     <Image
         src={art.data.image}
         alt="Gallery image"
