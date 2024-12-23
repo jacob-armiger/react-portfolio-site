@@ -1,3 +1,7 @@
+# RSS Feeds
+Art: https://jacobarmiger.vercel.app/gallery/rss.xml
+Books: https://jacobarmiger.vercel.app/rss.xml
+
 # Astro Starter Kit: Basics
 
 ```sh
