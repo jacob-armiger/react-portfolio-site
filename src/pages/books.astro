@@ -1,14 +1,19 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getCollection} from 'astro:content';
+import { getCollection } from "astro:content";
 import Book from "../components/Book.astro";
 import Layout from "../layouts/Layout.astro";
 
-const collection = await getCollection('books');
+const collection = await getCollection("books");
 
-const readings: CollectionEntry<"books">[] = collection.sort((a:CollectionEntry<"books">,b: CollectionEntry<"books">) => b.data["Date Read"].localeCompare(a.data["Date Read"]))
+const readings: CollectionEntry<"books">[] = collection.sort(
+    (a: CollectionEntry<"books">, b: CollectionEntry<"books">) =>
+        b.data["Date Read"].localeCompare(a.data["Date Read"]),
+);
 
-const currentBook = collection.find((book: CollectionEntry<"books">) => book.data["Exclusive Shelf"] == "currently-reading");
+const currentBook = collection.find(
+    (book: CollectionEntry<"books">) => book.data["Exclusive Shelf"] == "currently-reading",
+);
 let isbn: string | undefined = "";
 if (!isNaN(Number(currentBook?.data.ISBN13[4]))) {
     isbn = currentBook?.data.ISBN13.replace(/\D/g, "");
@@ -19,6 +24,24 @@ if (!isNaN(Number(currentBook?.data.ISBN13[4]))) {
 
 <Layout title="Books">
     <main class="sm:w-11/12 lg:w-full">
+        <!-- <a
+            href="https://jacobarmiger.vercel.app/rss.xml"
+            target="_blank"
+            class="absolute right-4 top-[3.8rem] sm:top-7 md:right-16 lg:right-1">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#000000"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"
+                ></path><circle cx="5" cy="19" r="1"></circle></svg
+            >
+        </a> -->
         <p class="mb-8 ml-4 text-left font-serif text-4xl font-semibold">Currently Reading</p>
 
         <div class="mx-4 mb-16 flex sm:h-72">
