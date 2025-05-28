@@ -10,13 +10,33 @@ import Layout from "../../layouts/Layout.astro";
 const allArt = (await getCollection("art")).sort(
     (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
         return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
-    },
+    }
+);
+
+const blogs = (await getCollection("blog")).sort(
+    (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => {
+        return Date.parse(String(b.data.dateCreated)) - Date.parse(String(a.data.dateCreated));
+    }
 );
 ---
 
 <Layout title="Art">
-    <main
-        class="mx-auto grid w-11/12 items-end justify-center gap-y-8 sm:mx-0 sm:w-full sm:grid-cols-2 sm:justify-normal sm:gap-6 sm:px-4 lg:w-[55lvw] 2xl:grid-cols-3">
-        {allArt.map((art) => <ArtPreview art={art} />)}
+    <main class="mx-auto w-11/12 sm:mx-0 sm:w-full sm:px-4 lg:w-[55lvw]">
+        <div class="mb-6 mt-4 flex flex-col border-b border-primary pb-6 dark:border-primary-dark">
+            { blogs.map((blog) => (
+                    <a
+                        href={"/gallery/" + blog.id}
+                        class="flex font-mono underline-offset-4 hover:underline">
+                        <span class="italic">{blog.data.title}</span>
+                        <div class="mx-4 flex-grow border-b border-dotted" />
+                        <span>{blog.data.dateCreated.toISOString().slice(0, 10)}</span>
+                    </a>
+                ))
+            }
+        </div>
+
+        <div class="grid gap-y-8 sm:grid-cols-2 sm:gap-6 2xl:grid-cols-3">
+            {allArt.map((art) => <ArtPreview art={art} />)}
+        </div>
     </main>
 </Layout>

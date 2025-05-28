@@ -25,6 +25,15 @@ const projects = defineCollection({
     }),
 });
 
+const blog = defineCollection({
+    loader: glob({pattern: "**/*.md", base: "./src/content/blog"}),
+    schema: () => z.object({
+        title: z.string(),
+        dateCreated: z.date(),
+        dateEdited: z.date().optional(),
+  }),
+});
+
 const books = defineCollection({
     loader: file("src/assets/books.json"),
     schema: () => z.object({
@@ -47,5 +56,6 @@ const books = defineCollection({
 export const collections = {
     art,
     projects,
-    books
+    books,
+    blog
 };

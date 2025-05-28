@@ -1,0 +1,31 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+    const artEntries = await getCollection('blog');
+    return artEntries.map((entry) => ({
+        params: { blog: entry.id },
+        props: { entry },
+    }));
+}
+
+import Prose from "../../components/Prose.astro";
+import Layout from "../../layouts/Layout.astro";
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Layout title="art post">
+    <main class="sm:mx-4">
+        <div class="mx-auto mt-2 w-full">
+            <Prose>
+                <h1>{entry.data.title}</h1>
+                <span class="italic text-sm">{entry.data.dateCreated.toISOString().slice(0, 10)}</span>
+                <Content />
+            </Prose>
+        </div>
+        <p>fdsafdsa</p>
+    </main>
+</Layout>
