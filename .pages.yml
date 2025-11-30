@@ -6,3 +6,4 @@ content:
     path:  src/content/art
     fields: 
       - { name: title, label: Title, type: string}
+      - { name: body, label: Body, type: rich-text}
