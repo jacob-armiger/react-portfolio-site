@@ -4,3 +4,5 @@ content:
     label: Art
     type: collection
     path:  src/content/art
+    fields: 
+      - { name: title, label: Title, type: string}
