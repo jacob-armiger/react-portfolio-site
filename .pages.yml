@@ -1,4 +1,4 @@
-media: src/assets/*
+media: src/assets/
 content: 
   - name: art
     label: Art
