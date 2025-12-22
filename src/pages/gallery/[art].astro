@@ -18,12 +18,11 @@ const { Content } = await render(entry);
 ---
 
 <Layout title="art post">
-    <main class="sm:mx-4">
-        <div class="dark:shadow-none shadow-md shadow-stone-500 sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px]">
-            <Image src={entry?.data.image} alt="Large image of art" width={1600} loading={"eager"} class="dark:rounded-sm"/>
-        </div>
-        <span class="text-sm italic pr-1 mt-1">{String(entry.data.date.toISOString().slice(0,10))}</span>
-        <div class="m-auto mt-2 w-full">
+    <main class="sm:mx-2">
+        <figure class="sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px] mx-auto">
+            <Image src={entry?.data.image} alt="Large image of art" width={1600} loading={"eager"} class="dark:rounded-sm dark:shadow-none shadow-md shadow-stone-500 "/>
+        </figure>
+        <div class="mt-2 w-fit mx-auto">
             <Prose>
                 {entry.data.reference ?
                 <div class="text-sm mb-5">
@@ -32,7 +31,8 @@ const { Content } = await render(entry);
                 </div>
                 : <></>
                 }
-                <h1>{entry.data.title}</h1>
+                <h1 class="mb-0 mt-4">{entry.data.title}</h1>
+                <p class="text-sm italic pr-1 mt-1">{String(entry.data.date.toISOString().slice(0,10))}</p>
                 <Content />
             </Prose>
         </div>

@@ -18,10 +18,10 @@ const { Content } = await render(entry);
 ---
 
 <Layout title="art post">
-    <main class="sm:mx-4">
-        <div class="mx-auto mt-2 w-full">
+    <main>
+        <div class="w-fit mx-auto">
             <Prose>
-                <h1>{entry.data.title}</h1>
+                <h1 class="mb-0">{entry.data.title}</h1>
                 <span class="italic text-sm">{entry.data.dateCreated.toISOString().slice(0, 10)}</span>
                 <Content />
             </Prose>

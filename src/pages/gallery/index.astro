@@ -21,21 +21,21 @@ const blogs = (await getCollection("blog")).sort(
 ---
 
 <Layout title="Art">
-    <main class="mx-auto w-11/12 sm:mx-0 sm:w-full sm:px-4 lg:w-[55lvw]">
-        <div class="mb-6 mt-4 flex flex-col border-b border-primary pb-6 dark:border-primary-dark">
+    <main class="mx-auto w-11/12 sm:mx-0 sm:w-full sm:px-4 lg:w-full">
+        <div class="mb-6 flex flex-col border-b border-primary pb-6 dark:border-primary-dark">
             { blogs.map((blog) => (
                     <a
                         href={"/gallery/" + blog.id}
-                        class="flex font-mono underline-offset-4 hover:underline">
+                        class="flex font-mono mt-4 underline-offset-4 hover:underline">
                         <span class="italic">{blog.data.title}</span>
-                        <div class="mx-4 flex-grow border-b border-dotted" />
+                        <div class="mx-4 flex-grow border-b border-black border-dotted" />
                         <span>{blog.data.dateCreated.toISOString().slice(0, 10)}</span>
                     </a>
                 ))
             }
         </div>
 
-        <div class="grid gap-y-8 sm:grid-cols-2 sm:gap-6 2xl:grid-cols-3">
+        <div class="grid gap-y-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {allArt.map((art) => <ArtPreview art={art} />)}
         </div>
     </main>
