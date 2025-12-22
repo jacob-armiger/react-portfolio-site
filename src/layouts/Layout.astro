@@ -18,19 +18,18 @@ interface Props {
         <title>Jacob Armiger</title>
         <Analytics />
     </head>
-    <body
-        class="text-primary bg-secondary dark:text-primary-dark dark:bg-secondary-dark relative sm:flex lg:m-auto lg:max-w-prose">
-        <div
-            class="border-primary dark:border-primary-dark sticky top-0 z-10 border-b bg-inherit text-center sm:h-44 sm:border-none sm:bg-transparent lg:absolute lg:-left-28">
-            <nav
-                class="my-1 flex justify-around text-right text-lg underline-offset-4 sm:mx-4 sm:mt-4 sm:h-44 sm:w-24 sm:flex-col">
-                <a href="/" class="font-serif font-medium hover:underline">home</a>
-                <a href="/books" class="font-serif font-medium hover:underline">books</a>
-                <a href="/gallery" class="font-serif font-medium hover:underline">art</a>
-                <a href="/projects" class="font-serif font-medium hover:underline">projects</a>
-            </nav>
-        </div>
-        <div class="w-full px-2 pb-10 pt-4">
+    <body class="bg-secondary text-primary dark:bg-secondary-dark dark:text-primary-dark">
+        <nav
+            class="flex gap-8 items-center border-primary bg-inherit text-center text-lg mx-2 sm:text-xl my-2 sm:my-4 underline-offset-4 lg:m-auto lg:fixed lg:mx-4 lg:mt-16 lg:h-68 lg:w-36 lg:flex-col lg:border-r-2 dark:border-primary-dark">
+            <a href="/" class="font-bold font-serif hover:underline">JacobLDraws</a>
+            <!-- <a href="/" class="font-serif font-medium hover:underline">home</a> -->
+            <a href="/gallery" class="font-serif font-medium hover:underline">ART</a>
+            <a href="/books" class="font-serif font-medium hover:underline">BOOKS</a>
+            <a href="/directory" class="font-serif font-medium hover:underline">DIRECTORY</a>
+            <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
+            <a href="https://www.instagram.com/jacobldraws/" target="_blank" class="lg:mx-auto"><img src="public/Instagram_Glyph_Black.svg" width="20"></a>
+        </nav>
+        <div class="mx-auto lg:w-2/3">
             <slot />
         </div>
     </body>
