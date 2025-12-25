@@ -23,6 +23,10 @@ const blogs = (await getCollection("blog")).sort(
 <Layout title="Art">
     <main class="mx-auto w-11/12 sm:mx-0 sm:w-full sm:px-4 lg:w-full">
         <div class="mb-6 flex flex-col border-b border-primary pb-6 dark:border-primary-dark">
+
+        <p class="mb-8 text-left text-5xl font-bold xl:text-nowrap">
+            Art and Writings
+        </p>
             {
                 blogs.map((blog) => (
                     <a

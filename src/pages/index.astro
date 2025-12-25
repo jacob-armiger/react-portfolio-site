@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import { getCollection, type CollectionEntry } from "astro:content";
 import books from "../assets/books.json";
 import Layout from "../layouts/Layout.astro";
+import type { ImageMetadata } from "astro";
 
 const latestArt = (await getCollection("art")).sort(
     (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
@@ -10,43 +11,66 @@ const latestArt = (await getCollection("art")).sort(
     },
 )[0];
 
+console.log("TEST");
+const latest_images: any = Object.values(
+    import.meta.glob<ImageMetadata>("/src/assets/latest/*", { eager: true, import: "default" }),
+);
+
 const currentBook = books.filter((book) => book["Exclusive Shelf"] == "currently-reading")[0];
 ---
 
 <Layout title="Home">
     <main class="">
         <div
-            class="h-[1400px] w-full bg-cover bg-top"
+            class="mb-2 h-[1400px] w-full bg-cover bg-top"
             style="background-image: url(/banner_image2.jpeg)">
             <div class="w-2/3 pl-4 pt-12 text-left text-white sm:pt-16">
-                <p class="w-11/12 font-serif text-4xl sm:w-2/3 sm:text-5xl md:text-6xl 2xl:text-7xl">
+                <p
+                    class="w-11/12 font-serif text-4xl sm:w-2/3 sm:text-5xl md:text-6xl 2xl:text-7xl">
                     Want a portrait made, art lessons, or to buy my work?
                 </p>
-                <button class="mt-2 rounded-sm bg-white px-4 py-2 font-bold text-black sm:mt-8"
-                    >Contact Me</button
-                >
+                <a href="mailto:jacobldraws@icloud.com">
+                    <button class="mt-2 rounded-sm bg-white px-4 py-2 font-bold text-black sm:mt-8">
+                        Contact Me
+                    </button>
+                </a>
             </div>
         </div>
 
         <div class="relative">
-            <p class="absolute -left-48 bottom-28 -rotate-90 text-6xl">The Latest</p>
-            <div class="flex flex-col flex-nowrap gap-8 sm:w-[70lvw] sm:flex-row sm:gap-8">
-                <div
+            <p class="absolute -left-48 top-[7.5rem] hidden -rotate-90 text-6xl xl:inline">
+                The Latest
+            </p>
+            <span class="ml-2 font-extralight md:hidden">Art à la mode</span>
+            <!-- <div class="flex flex-col flex-wrap gap-1 w-full sm:w-[70lvw] sm:flex-row sm:gap-2"> -->
+            <div
+                class="grid w-full grid-cols-1 justify-items-center gap-1 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3 2xl:grid-cols-4">
+                <!-- <div
                     class="h-96 overflow-hidden object-cover text-right sm:h-[27rem] sm:w-64 dark:rounded-b-full">
-                    <span class="font-extralight">Art à la mode</span>
+                    
                     <Image
                         class="h-full w-full object-cover shadow-md dark:rounded-t-md"
                         src={latestArt.data.image}
                         alt="Most recent art"
                         width={300}
                     />
-                </div>
-                <p class="relative text-5xl font-bold sm:h-[27rem] sm:w-[30rem] md:text-7xl">
+                </div> -->
+                {
+                    latest_images.map((img: ImageMetadata) => (
+                        <img
+                            src={img.src}
+                            alt="Most recent blog image"
+                            width={480}
+                            class="object-cover sm:h-[38rem] lg:h-[28rem]"
+                        />
+                    ))
+                }
+                <!-- <p class="relative text-5xl font-bold sm:h-[27rem] sm:w-[30rem] md:text-7xl">
                     I'm currently reading
                     <span class="font-normal italic">{currentBook.Title}</span>
                     by
                     <span class="underline decoration-dotted">{currentBook.Author}</span>
-                </p>
+                </p> -->
             </div>
         </div>
     </main>
