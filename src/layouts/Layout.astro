@@ -20,14 +20,17 @@ interface Props {
     </head>
     <body class="bg-secondary text-primary dark:bg-secondary-dark dark:text-primary-dark">
         <nav
-            class="text-md lg:h-68 sticky top-0 z-50 mb-8 flex w-full items-center justify-center gap-4 border-b-2 border-primary bg-inherit px-2 py-1 text-center underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:fixed lg:m-auto lg:mx-4 lg:mt-16 lg:w-36 lg:flex-col lg:border-b-0 lg:border-r-2 lg:py-0 dark:border-primary-dark">
+            class="text-md lg:h-68 sticky top-0 z-50 flex w-full items-center justify-center gap-4 border-b-2 border-primary bg-inherit px-2 py-1 text-center underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:fixed lg:m-auto lg:mx-4 lg:mt-16 lg:w-36 lg:flex-col lg:border-b-0 lg:border-r-2 lg:py-0 dark:border-primary-dark">
             <a href="/" class="font-serif font-bold hover:underline">JacobLDraws</a>
             <a href="/gallery" class="font-serif font-medium hover:underline">ART</a>
             <a href="/books" class="font-serif font-medium hover:underline">BOOKS</a>
             <a href="/directory" class="font-serif font-medium hover:underline">DIRECTORY</a>
             <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
-            <a href="https://www.instagram.com/jacobldraws/" target="_blank" class="lg:mx-auto"
+            <a href="https://www.instagram.com/jacobldraws/" target="_blank" class="dark:hidden lg:mx-auto"
                 ><img src="/Instagram_Glyph_Black.svg" width="20" /></a
+            >
+            <a href="https://www.instagram.com/jacobldraws/" target="_blank" class=" hidden dark:block lg:mx-auto"
+                ><img src="/Instagram_Glyph_White.svg" width="20" /></a
             >
         </nav>
         <div class="mx-auto mt-0 lg:w-2/3">

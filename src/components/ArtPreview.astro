@@ -13,18 +13,20 @@ const { art } = Astro.props;
 // const readingTime = getReadingTime(art.body);
 ---
 
-<a href={"/gallery/" + art.id} class="am:h-[50vw] h-[75vw] hover:underline lg:h-[33vw]">
+<a href={"/gallery/" + art.id} class="mb-2 hover:underline">
     <Image
         src={art.data.image}
         alt="Gallery image"
         width={300}
-        class="h-3/4 w-full object-cover shadow-md shadow-stone-500 dark:rounded-lg dark:shadow-none"
+        class="w-full object-cover shadow-md shadow-stone-500 sm:h-[48vw] lg:h-[24vw] dark:rounded-lg dark:shadow-none"
     />
-    <div class="flex flex-col font-serif">
-        <span class="mt-1 pr-1 text-sm">{String(art.data.date.toISOString().slice(0, 10))}</span>
-        <div class="inline-block">
-            <span class="text-lg font-bold">{art.data.title}</span>
-            <p class="... float-left line-clamp-2 max-w-96 truncate text-wrap break-all text-sm">
+    <div class="flex flex-col">
+        <div class="flex flex-col font-mono">
+            <span class="mb-0 mt-1 text-wrap text-lg font-bold leading-none">{art.data.title}</span>
+            <span class="pr-1 text-sm font-thin"
+                >{String(art.data.date.toISOString().slice(0, 10))}</span
+            >
+            <p class="... float-left mt-1 line-clamp-2 w-full truncate text-wrap break-all text-sm">
                 {art.body}
             </p>
         </div>
