@@ -10,25 +10,26 @@ import Layout from "../../layouts/Layout.astro";
 const allArt = (await getCollection("art")).sort(
     (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
         return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
-    }
+    },
 );
 
 const blogs = (await getCollection("blog")).sort(
     (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => {
         return Date.parse(String(b.data.dateCreated)) - Date.parse(String(a.data.dateCreated));
-    }
+    },
 );
 ---
 
 <Layout title="Art">
     <main class="mx-auto w-11/12 sm:mx-0 sm:w-full sm:px-4 lg:w-full">
         <div class="mb-6 flex flex-col border-b border-primary pb-6 dark:border-primary-dark">
-            { blogs.map((blog) => (
+            {
+                blogs.map((blog) => (
                     <a
                         href={"/gallery/" + blog.id}
-                        class="flex font-mono mt-4 underline-offset-4 hover:underline">
+                        class="flex font-mono underline-offset-4 hover:underline">
                         <span class="italic">{blog.data.title}</span>
-                        <div class="mx-4 flex-grow border-b border-black border-dotted" />
+                        <div class="mx-4 flex-grow border-b border-dotted border-black" />
                         <span>{blog.data.dateCreated.toISOString().slice(0, 10)}</span>
                     </a>
                 ))
