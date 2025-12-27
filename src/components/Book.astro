@@ -15,7 +15,7 @@ const { book } = Astro.props;
             <p class="font-serif text-3xl">
                 {book.data.Title}
             </p>
-            <p class={!book.data["My Review"] ? "italic" : "pb-2 italic"}>by {book.data.Author}</p>
+            <p class={!book.data["My Review"] ? "" : "pb-2"}>by {book.data.Author}</p>
             <p class="whitespace-pre-line">{book.data["My Review"]}</p>
         </div>
     </div>

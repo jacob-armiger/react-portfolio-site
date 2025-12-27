@@ -5,6 +5,8 @@ import "@fontsource-variable/playfair-display";
 interface Props {
     title: string;
 }
+
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,22 +17,25 @@ interface Props {
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
-        <title>Jacob Armiger</title>
+        <title>{title}</title>
         <Analytics />
     </head>
-    <body
-        class="text-primary bg-secondary dark:text-primary-dark dark:bg-secondary-dark relative sm:flex lg:m-auto lg:max-w-prose">
-        <div
-            class="border-primary dark:border-primary-dark sticky top-0 z-10 border-b bg-inherit text-center sm:h-44 sm:border-none sm:bg-transparent lg:absolute lg:-left-28">
-            <nav
-                class="my-1 flex justify-around text-right text-lg underline-offset-4 sm:mx-4 sm:mt-4 sm:h-44 sm:w-24 sm:flex-col">
-                <a href="/" class="font-serif font-medium hover:underline">home</a>
-                <a href="/books" class="font-serif font-medium hover:underline">books</a>
-                <a href="/gallery" class="font-serif font-medium hover:underline">art</a>
-                <a href="/projects" class="font-serif font-medium hover:underline">projects</a>
-            </nav>
-        </div>
-        <div class="w-full px-2 pb-10 pt-4">
+    <body class="bg-secondary text-primary dark:bg-secondary-dark dark:text-primary-dark">
+        <nav
+            class="text-md lg:h-68 sticky top-0 z-50 flex w-full items-center justify-center gap-4 border-b-2 border-primary bg-inherit px-2 py-1 text-center underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:fixed lg:m-auto lg:mx-4 lg:mt-16 lg:w-36 lg:flex-col lg:border-b-0 lg:border-r-2 lg:py-0 dark:border-primary-dark">
+            <a href="/" class="font-serif font-bold hover:underline">JacobLDraws</a>
+            <a href="/gallery" class="font-serif font-medium hover:underline">ART</a>
+            <a href="/books" class="font-serif font-medium hover:underline">BOOKS</a>
+            <a href="/directory" class="font-serif font-medium hover:underline">DIRECTORY</a>
+            <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
+            <a href="https://www.instagram.com/jacobldraws/" target="_blank" class="dark:hidden lg:mx-auto"
+                ><img src="/Instagram_Glyph_Black.svg" width="20" /></a
+            >
+            <a href="https://www.instagram.com/jacobldraws/" target="_blank" class=" hidden dark:block lg:mx-auto"
+                ><img src="/Instagram_Glyph_White.svg" width="20" /></a
+            >
+        </nav>
+        <div class="mx-auto mt-0 lg:w-2/3">
             <slot />
         </div>
     </body>

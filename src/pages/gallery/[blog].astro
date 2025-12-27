@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-    const artEntries = await getCollection('blog');
+    const artEntries = await getCollection("blog");
     return artEntries.map((entry) => ({
         params: { blog: entry.id },
         props: { entry },
@@ -17,12 +17,14 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<Layout title="art post">
-    <main class="sm:mx-4">
-        <div class="mx-auto mt-2 w-full">
+<Layout title={entry.data.title ?? "Blog Post"}>
+    <main>
+        <div class="mx-2 mt-8 w-fit sm:mx-auto">
             <Prose>
-                <h1>{entry.data.title}</h1>
-                <span class="italic text-sm">{entry.data.dateCreated.toISOString().slice(0, 10)}</span>
+                <h1 class="mb-0 text-5xl">{entry.data.title}</h1>
+                <span class="text-sm italic"
+                    >{entry.data.dateCreated.toISOString().slice(0, 10)}</span
+                >
                 <Content />
             </Prose>
         </div>

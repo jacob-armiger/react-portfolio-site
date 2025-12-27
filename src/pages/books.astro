@@ -17,7 +17,7 @@ const currentBooks = collection.filter(
 ---
 
 <Layout title="Books">
-    <main class="sm:w-11/12 lg:w-full">
+    <main class="sm:max-w-prose mx-auto mt-8">
         <!-- <a
             href="https://jacobarmiger.vercel.app/rss.xml"
             target="_blank"
@@ -36,7 +36,7 @@ const currentBooks = collection.filter(
                 ></path><circle cx="5" cy="19" r="1"></circle></svg
             >
         </a> -->
-        {
+        <!-- {
             currentBooks.length > 0 && (
                 <p class="mb-8 ml-4 text-left font-serif text-4xl font-semibold">
                     Currently Reading
@@ -61,12 +61,12 @@ const currentBooks = collection.filter(
                     </div>
                 ))
             }
-        </div>
+        </div> -->
         <!-- <div class="text-mono mb-12 mx-4 target:bg-accent bottom-0 flex border border-x-0 border-b-0 border-solid border-[#373737] text-black">
             <p>Currently Reading</p>
         </div> -->
 
-        <p class="mb-8 ml-4 text-left font-serif text-4xl font-semibold xl:text-nowrap">
+        <p class="mb-8 ml-4 text-left text-5xl font-bold xl:text-nowrap">
             Recent Readings and Impressions
         </p>
 

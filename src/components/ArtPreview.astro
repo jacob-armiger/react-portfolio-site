@@ -13,22 +13,26 @@ const { art } = Astro.props;
 // const readingTime = getReadingTime(art.body);
 ---
 
-<a href={"/gallery/" + art.id} class="mx-auto h-fit hover:underline">
+<a
+    href={"/gallery/" + art.id}
+    class="mb-2 touch-none decoration-primary/50 hover:underline dark:decoration-secondary-dark/50">
     <Image
         src={art.data.image}
         alt="Gallery image"
-        width={390}
-        class="shadow-md shadow-stone-500 dark:rounded-lg dark:shadow-none"
+        width={300}
+        class="w-full object-cover shadow-md shadow-stone-500 sm:h-[48vw] lg:h-[24vw] dark:rounded-lg dark:shadow-none"
     />
-    <!-- <span class="float-left text-xs italic pl-1 mt-1">{readingTime}</span> -->
-    <div class="flex flex-col font-serif">
-        <span class="mt-1 pr-1 text-sm">{String(art.data.date.toISOString().slice(0, 10))}</span>
-        <div class="inline-block">
-            <!-- <p class="... float-left line-clamp-1 max-w-96 truncate text-wrap break-all text-sm">
+    <div class="flex flex-col">
+        <div class="flex flex-col">
+            <span class="mb-0 mt-1 text-wrap font-serif text-lg font-bold"
+                >{art.data.title}</span
+            >
+            <span class="pr-1 font-serif text-sm"
+                >{String(art.data.date.toISOString().slice(0, 10))}</span
+            >
+            <p class="... float-left mt-1 line-clamp-2 w-full truncate text-wrap break-all text-sm">
                 {art.body}
-            </p> -->
-            <span class="text-lg font-bold">{art.data.title}</span>
-            <span class="italic text-sm overflow-hidden">...Read</span>
+            </p>
         </div>
     </div>
 </a>
