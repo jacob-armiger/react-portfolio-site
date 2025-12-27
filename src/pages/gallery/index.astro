@@ -29,10 +29,8 @@ const blogs = (await getCollection("blog")).sort(
                     <a
                         href={"/gallery/" + blog.id}
                         class="flex flex-col font-serif hover:underline sm:flex-row">
-                        <div>
-                            <span class="text-lg font-bold">{blog.data.title}</span>
-                        </div>
-                        <div class="mx-4 hidden flex-grow border-b border-dotted border-primary sm:flex dark:border-primary-dark" />
+                        <span class="text-lg font-bold">{blog.data.title}</span>
+                        <div class="mx-4 hidden flex-grow border-b-2 border-dotted border-primary sm:flex dark:border-primary-dark" />
                         <span class="text-sm sm:text-base">
                             {blog.data.dateCreated.toISOString().slice(0, 10)}
                         </span>
@@ -43,7 +41,7 @@ const blogs = (await getCollection("blog")).sort(
 
         <hr class="mb-8 border-primary opacity-30 dark:border-primary-dark" />
 
-        <div class="grid gap-y-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+        <div class="grid gap-y-12 sm:grid-cols-2 sm:gap-6 sm:gap-y-8 lg:grid-cols-3">
             {allArt.map((art) => <ArtPreview art={art} />)}
         </div>
     </main>
