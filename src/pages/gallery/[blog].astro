@@ -17,7 +17,7 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<Layout title="art post">
+<Layout title={entry.data.title ?? "Blog Post"}>
     <main>
         <div class="mx-2 mt-8 w-fit sm:mx-auto">
             <Prose>

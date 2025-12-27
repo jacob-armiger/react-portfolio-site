@@ -17,7 +17,7 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<Layout title="art post">
+<Layout title={entry.data.title ?? "Art Post"}>
     <main>
         <figure class="sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px] mx-auto">
             <Image src={entry?.data.image} alt="Large image of art" width={1600} loading={"eager"} class="dark:rounded-sm dark:shadow-none shadow-md shadow-stone-500 "/>
