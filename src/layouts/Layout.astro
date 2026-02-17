@@ -37,8 +37,23 @@ const { title } = Astro.props;
                 ><img src="/Instagram_Glyph_White.svg" width="20" /></a
             >
         </nav>
-        <div class="mx-auto mt-0 lg:w-2/3">
-            <slot />
-        </div>
+
+        {(() => {
+            const path = Astro.url.pathname;
+            const useAlt = path === "/" || path === "/gallery";
+            if (useAlt) {
+                return (
+                    <div class="ml-auto lg:pr-4 mt-0 lg:w-5/6">
+                        <slot />
+                    </div>
+                );
+            } else {
+                return (
+                    <div class="mx-auto mt-0 lg:w-2/3">
+                        <slot />
+                    </div>
+                );
+            }
+        })()}
     </body>
 </html>
