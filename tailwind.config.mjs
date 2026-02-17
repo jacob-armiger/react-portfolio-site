@@ -13,8 +13,12 @@ export default {
                 'primary': 'hsl(0,0%,23%)',         // text
                 'secondary': "hsl(192,9%,90%)",     //background
 
-                'primary-dark': "hsl(0,0%,77%)",     // text
-                'secondary-dark': "hsl(192,9%,10%)", //background
+                // 'primary-dark': "hsl(0,0%,77%)",     // text
+                // 'secondary-dark': "hsl(192,9%,10%)", //background
+
+                'primary-dark': "hsl(58, 10%, 77%)",        // text
+                'secondary-dark': "hsl(192,8%,10%)",        //background
+                'primary-dark-bright': "hsl(58, 10%, 95%)", // special text and buttons
             },
         },
 	},

@@ -3,13 +3,7 @@ import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 
-// const latestArt = (await getCollection("art")).sort(
-//     (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
-//         return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
-//     },
-// )[0];
-
-const latest_images: any = Object.values(
+const art_images: any = Object.values(
     import.meta.glob<ImageMetadata>("/src/assets/art/*", { eager: true, import: "default" }),
 );
 
@@ -24,18 +18,18 @@ const latest_images: any = Object.values(
                     style="background-image: url(/banner_image2.jpeg)">
                     <div class="w-2/3 pl-4 pt-12 text-left text-white sm:pt-16">
                         <p
-                            class="w-11/12 font-serif text-4xl sm:w-2/3 sm:text-5xl md:text-6xl 2xl:text-7xl">
+                            class="w-11/12 font-serif text-4xl sm:w-2/3 sm:text-5xl md:text-6xl 2xl:text-7xl dark:text-primary-dark-bright">
                             Want a portrait made, art lessons, or to buy my work?
                         </p>
                         <a href="mailto:jacobldraws@icloud.com">
-                            <button class="mt-2 rounded-sm bg-white px-4 py-2 font-bold text-black sm:mt-8">
+                            <button class="mt-2 rounded-sm bg-white px-4 py-2 font-bold text-black sm:mt-8 dark:bg-primary-dark-bright">
                                 Contact Me
                             </button>
                         </a>
                     </div>
                 </div>
                 {
-                    latest_images.map((img: ImageMetadata) => (
+                    art_images.map((img: ImageMetadata) => (
                         <Image
                             src={img.src}
                             alt="Most recent blog image"
