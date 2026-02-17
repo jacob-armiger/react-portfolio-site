@@ -4,10 +4,15 @@
 // https://vite.dev/guide/features.html#glob-import
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
+import BlogCard from "../../components/BlogCard.astro";
 import Layout from "../../layouts/Layout.astro";
 
-// gallery page is now repurposed as the writing index. we only fetch
-// blog entries and leave art for a new /art route.
+const allArt = (await getCollection("art")).sort(
+    (a: CollectionEntry<"art">, b: CollectionEntry<"art">) => {
+        return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
+    },
+);
+
 const blogs = (await getCollection("blog")).sort(
     (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => {
         return Date.parse(String(b.data.dateCreated)) - Date.parse(String(a.data.dateCreated));
@@ -22,7 +27,7 @@ const blogs = (await getCollection("blog")).sort(
             {
                 blogs.map((blog) => (
                     <a
-                        href={'/gallery/' + blog.id}
+                        href={'/writing/' + blog.id}
                         class="flex flex-col font-serif hover:underline sm:flex-row">
                         <span class="text-lg font-bold">{blog.data.title}</span>
                         <div class="mx-4 hidden flex-grow border-b-2 border-dotted border-primary sm:flex dark:border-primary-dark" />
@@ -32,6 +37,12 @@ const blogs = (await getCollection("blog")).sort(
                     </a>
                 ))
             }
+        </div>
+
+        <hr class="mb-8 border-primary opacity-30 dark:border-primary-dark" />
+
+        <div class="grid gap-y-12 sm:grid-cols-2 sm:gap-6 sm:gap-y-8 lg:grid-cols-3">
+            {allArt.map((art) => <BlogCard art={art} />)}
         </div>
     </main>
 </Layout>

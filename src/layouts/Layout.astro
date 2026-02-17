@@ -26,7 +26,8 @@ const { title } = Astro.props;
         <nav
             class="text-md lg:h-68 sticky top-0 z-50 flex w-full items-center justify-center gap-4 border-b-2 border-primary bg-inherit px-2 py-1 text-center underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:fixed lg:m-auto lg:mx-4 lg:mt-16 lg:w-36 lg:flex-col lg:border-b-0 lg:border-r-2 lg:py-0 dark:border-primary-dark">
             <a href="/" class="font-serif font-bold hover:underline">JacobLDraws</a>
-            <a href="/gallery" class="font-serif font-medium hover:underline">ART</a>
+            <a href="/art" class="font-serif font-medium hover:underline">ART</a>
+            <a href="/writing" class="font-serif font-medium hover:underline">WRITINGS</a>
             <a href="/books" class="font-serif font-medium hover:underline">BOOKS</a>
             <a href="/directory" class="font-serif font-medium hover:underline">DIRECTORY</a>
             <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
@@ -40,7 +41,7 @@ const { title } = Astro.props;
 
         {(() => {
             const path = Astro.url.pathname;
-            const useAlt = path === "/" || path === "/gallery";
+            const useAlt = path === "/" || path === "/writing" || path === "/art";
             if (useAlt) {
                 return (
                     <div class="ml-auto lg:pr-4 mt-0 lg:w-5/6">

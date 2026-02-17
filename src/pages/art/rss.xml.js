@@ -10,14 +10,14 @@ export async function GET(context) {
         description: 'I post my art and write about it',
         // Pull in your project "site" from the endpoint context
         // https://docs.astro.build/en/reference/api-reference/#site
-        site: context.site + "/gallery",
+        site: context.site + "/art",
         // Array of `<item>`s in output xml
         // See "Generating items" section for examples using content collections and glob imports
         items: art.map((post) => ({
             title: post.data.title,
             pubDate: post.data.date,
             description: "Click the RSS link to see art. " + post.body,
-            link: `/gallery/${post.id}`
+            link: `/art/${post.id}`
         })),
         // (optional) inject custom xml
         customData: `<language>en-us</language>`,

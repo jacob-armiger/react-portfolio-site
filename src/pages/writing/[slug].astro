@@ -1,0 +1,56 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+    const blogEntries = await getCollection('blog');
+    const artEntries = await getCollection('art');
+    const all = [...blogEntries, ...artEntries];
+    return all.map((entry) => ({
+        params: { slug: entry.id },
+        props: { entry },
+    }));
+}
+
+
+import Prose from "../../components/Prose.astro";
+import Layout from "../../layouts/Layout.astro";
+
+// entry can be either a blog or art item; treat as any to avoid strict property errors
+const { entry } = Astro.props as { entry: any };
+const { Content } = await render(entry);
+
+// helper to pick date field and provide fallback
+const when: Date = entry.data?.dateCreated ?? entry.data?.date ?? new Date();
+---
+
+<Layout title={entry.data.title ?? "Writing Post"}>
+    <main>
+        {entry.data.image ? (
+            <figure class="sm:max-w-[550px] 2xl:ml-8 2xl:w-[600px] mx-auto">
+                <Image
+                    src={entry.data.image}
+                    alt="Cover image"
+                    width={1600}
+                    loading="eager"
+                    class="dark:rounded-sm dark:shadow-none shadow-md shadow-stone-500 "
+                />
+            </figure>
+        ) : null}
+        <div class="mt-2 w-fit mx-2 sm:mx-auto">
+            <Prose>
+                {entry.data.reference ? (
+                    <div class="text-sm mb-5">
+                        <p class="my-0">Reference:</p>
+                        <a href={entry.data.reference_url} class="italic">
+                            {entry.data.reference}
+                        </a>
+                    </div>
+                ) : null}
+                <h1 class="mb-0 mt-4">{entry.data.title}</h1>
+                <p class="text-sm italic pr-1 mt-1">{String(when.toISOString().slice(0, 10))}</p>
+                <Content />
+            </Prose>
+        </div>
+    </main>
+</Layout>
