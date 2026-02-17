@@ -1,0 +1,48 @@
+---
+// https://jankraus.net/2024/04/05/how-to-build-a-simple-photo-gallery-with-astro/
+// https://markjames.dev/blog/dynamically-importing-images-astro
+// https://vite.dev/guide/features.html#glob-import
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import BlogCard from "../../components/BlogCard.astro";
+import Layout from "../../layouts/Layout.astro";
+
+const articles = (await getCollection("article")).sort(
+    (a: CollectionEntry<"article">, b: CollectionEntry<"article">) => {
+        return Date.parse(String(b.data.date)) - Date.parse(String(a.data.date));
+    },
+);
+
+const essays = (await getCollection("essay")).sort(
+    (a: CollectionEntry<"essay">, b: CollectionEntry<"essay">) => {
+        return Date.parse(String(b.data.dateCreated)) - Date.parse(String(a.data.dateCreated));
+    },
+);
+---
+
+<Layout title="Writing">
+    <main class="mx-auto mt-8 w-11/12 sm:mx-0 sm:w-full sm:px-4 lg:w-full">
+        <div class="flex flex-col border-primary pb-6 dark:border-primary-dark">
+            <p class="mb-8 text-left text-5xl font-bold xl:text-nowrap">Essays & Articles</p>
+            {
+                essays.map((blog) => (
+                    <a
+                        href={'/writing/' + blog.id}
+                        class="flex flex-col font-serif hover:underline sm:flex-row">
+                        <span class="text-lg font-bold">{blog.data.title}</span>
+                        <div class="mx-4 hidden flex-grow border-b-2 border-dotted border-primary sm:flex dark:border-primary-dark" />
+                        <span class="text-sm sm:text-base">
+                            {blog.data.dateCreated.toISOString().slice(0, 10)}
+                        </span>
+                    </a>
+                ))
+            }
+        </div>
+
+        <hr class="mb-8 border-primary opacity-30 dark:border-primary-dark" />
+
+        <div class="grid gap-y-12 sm:grid-cols-2 sm:gap-6 sm:gap-y-8 lg:grid-cols-3">
+            {articles.map((art) => <BlogCard art={art} />)}
+        </div>
+    </main>
+</Layout>

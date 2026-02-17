@@ -1,0 +1,38 @@
+---
+// https://jahir.dev/blog/astro-reading-time
+import { Image } from "astro:assets";
+// import { getReadingTime } from '../scripts/reading-time';
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+    art: CollectionEntry<"article">;
+}
+
+const { art } = Astro.props;
+
+// const readingTime = getReadingTime(art.body);
+---
+
+<a
+    href={"/writing/" + art.id}
+    class="mb-2 decoration-primary/50 hover:underline dark:decoration-primary-dark/50">
+    <Image
+        src={art.data.image}
+        alt="Gallery image"
+        width={300}
+        class="w-full object-cover shadow-md shadow-stone-500 sm:h-[48vw] lg:h-[24vw] dark:rounded-lg dark:shadow-none"
+    />
+    <div class="flex flex-col">
+        <div class="flex flex-col">
+            <span class="mb-0 mt-1 text-wrap font-serif text-lg font-bold"
+                >{art.data.title}</span
+            >
+            <span class="pr-1 font-serif text-sm"
+                >{String(art.data.date.toISOString().slice(0, 10))}</span
+            >
+            <p class="... float-left mt-1 line-clamp-2 w-full truncate text-wrap break-all text-sm">
+                {art.body}
+            </p>
+        </div>
+    </div>
+</a>

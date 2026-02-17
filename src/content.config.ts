@@ -5,8 +5,8 @@ import { z, defineCollection } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 
 // 3. Define collections
-const art = defineCollection({
-    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/art"}),
+const article = defineCollection({
+    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/article"}),
     schema: ({ image }) => z.object({
         date: z.date(),
         image: image(),
@@ -16,17 +16,8 @@ const art = defineCollection({
   }),
 });
 
-const projects = defineCollection({
-    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/projects"}),
-    schema: () => z.object({
-        title: z.string(),
-        description: z.string(),
-        tags: z.array(z.string()),
-    }),
-});
-
-const blog = defineCollection({
-    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/blog"}),
+const essay = defineCollection({
+    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/essay"}),
     schema: () => z.object({
         title: z.string(),
         dateCreated: z.date(),
@@ -50,12 +41,20 @@ const books = defineCollection({
     }),
   });
 
+const projects = defineCollection({
+    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/projects"}),
+    schema: () => z.object({
+        title: z.string(),
+        description: z.string(),
+        tags: z.array(z.string()),
+    }),
+});
 
 
 // 3. Export a single `collections` object to register your collection(s)
 export const collections = {
-    art,
-    projects,
+    article,
+    essay,
     books,
-    blog
+    projects,
 };

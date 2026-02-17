@@ -1,5 +1,7 @@
 # RSS Feeds
-Art: https://jacobarmiger.vercel.app/gallery/rss.xml
+Art: https://jacobarmiger.vercel.app/art/rss.xml
+
+Writing: https://jacobarmiger.vercel.app/writing/rss.xml
 
 Books: https://jacobarmiger.vercel.app/rss.xml
 
