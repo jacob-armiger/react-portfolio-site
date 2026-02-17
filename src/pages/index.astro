@@ -6,7 +6,6 @@ import Layout from "../layouts/Layout.astro";
 const art_images: any = Object.values(
     import.meta.glob<ImageMetadata>("/src/assets/art/*", { eager: true, import: "default" }),
 );
-
 ---
 
 <Layout title="JacobLDraws">
@@ -14,11 +13,11 @@ const art_images: any = Object.values(
         <div class="relative">
             <div class="grid w-full grid-cols-1 justify-items-center gap-1 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 2xl:grid-cols-4">
                 <div
-                    class="mb-2 h-[1400px] w-full bg-cover bg-top col-span-2 row-span-3"
-                    style="background-image: url(/banner_image2.jpeg)">
+                    class="row-span-3 mb-2 h-[1400px] w-full bg-cover bg-top sm:col-span-2"
+                    style="background-image: url(/banner_image2.jpeg)"
+                >
                     <div class="w-2/3 pl-4 pt-12 text-left text-white sm:pt-16">
-                        <p
-                            class="w-11/12 font-serif text-4xl sm:w-2/3 sm:text-5xl md:text-6xl 2xl:text-7xl dark:text-primary-dark-bright">
+                        <p class="w-11/12 font-serif text-4xl sm:w-2/3 lg:w-10/12 sm:text-5xl md:text-6xl 2xl:text-7xl dark:text-primary-dark-bright">
                             Want a portrait made, art lessons, or to buy my work?
                         </p>
                         <a href="mailto:jacobldraws@icloud.com">
@@ -35,7 +34,7 @@ const art_images: any = Object.values(
                             alt="Most recent blog image"
                             width={268}
                             height={358}
-                            class="object-cover sm:h-[38rem] lg:h-[28.5rem] w-full"
+                            class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
                         />
                     ))
                 }
