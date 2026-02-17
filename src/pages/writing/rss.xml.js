@@ -2,12 +2,12 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 
 export async function GET(context) {
-    const blogPosts = await getCollection('blog');
-    const artPosts = await getCollection('art');
-    const posts = [...blogPosts, ...artPosts];
+    const essays = await getCollection('essay');
+    const articles = await getCollection('article');
+    const posts = [...essays, ...articles];
     return rss({
         title: 'Jacob\'s Writings',
-        description: 'Blog posts, essays, and cover-featured pieces',
+        description: 'Articles and Essays on Art',
         site: context.site + '/writing',
         items: posts.map((post) => ({
             title: post.data.title,

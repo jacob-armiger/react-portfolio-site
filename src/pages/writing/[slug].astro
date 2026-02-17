@@ -3,8 +3,8 @@ import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-    const blogEntries = await getCollection('blog');
-    const artEntries = await getCollection('art');
+    const blogEntries = await getCollection('essay');
+    const artEntries = await getCollection('article');
     const all = [...blogEntries, ...artEntries];
     return all.map((entry) => ({
         params: { slug: entry.id },
