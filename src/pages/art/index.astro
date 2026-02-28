@@ -12,7 +12,7 @@ const images: any = Object.values(imageModules);
 ---
 
 <Layout title="Art">
-    <main class="mx-auto mt-8 w-11/12 sm:mx-0 sm:w-full sm:px-4">
+    <main class="lg:col-span-9 lg:col-start-4 col-span-12 ">
         <ArtMasonryGrid artEntries={images} client:load/>
     </main>
     <script type="module" src="/scripts/imageZoom.js" defer></script>

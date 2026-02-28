@@ -9,8 +9,8 @@ const { Content } = await render(entry);
 ---
 
 <Layout title={entry.data.title}>
-    <main class="mx-4 mt-2">
-        <div class="m-auto w-full">
+    <main class="col-span-12 lg:col-span-8 page-top">
+        <div class="w-full">
             <Prose>
                 <Content />
             </Prose>
