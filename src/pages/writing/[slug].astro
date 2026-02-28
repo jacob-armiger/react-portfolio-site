@@ -31,7 +31,9 @@ const when: Date = entry.data?.dateCreated ?? entry.data?.date ?? new Date();
                 <Image
                     src={entry.data.image}
                     alt="Cover image"
-                    width={1600}
+                    width={1200}
+                    format="webp"
+                    quality={82}
                     loading="eager"
                     class="dark:rounded-sm dark:shadow-none shadow-md shadow-stone-500 w-full"
                 />
