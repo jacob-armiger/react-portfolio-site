@@ -9,8 +9,7 @@ const { book } = Astro.props;
 ---
 <!-- TODO: possibly add "Read more" text to expand reviews. Scrolling causes too many problems -->
 <div class="mb-12 cursor-default text-lg">
-    <div
-        class="px-4 pb-2">
+    <div class="pb-2">
         <div>
             <p class="font-serif text-3xl">
                 {book.data.Title}
@@ -20,7 +19,7 @@ const { book } = Astro.props;
         </div>
     </div>
 
-    <div class="bottom-0 mx-4 flex border-t border-primary dark:border-primary-dark">
+    <div class="bottom-0 flex border-t border-primary dark:border-primary-dark">
     {
         book.data["Date Read"] ? (
                 <p class="grow">Read {book.data["Date Read"]}</p>

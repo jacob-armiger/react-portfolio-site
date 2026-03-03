@@ -1,19 +1,29 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { Image } from "astro:assets";
-import { RegularMasonryGrid as MasonryGrid, Frame } from '@masonry-grid/react'
+import { getImage } from "astro:assets";
 import ArtMasonryGrid from "../../components/ArtMasonryGrid.tsx";
 
-
 // grab every image file under assets/art
-const imageModules = import.meta.glob<ImageMetadata>("../../assets/art/*.{png,jpg,jpeg}", { eager: true, import: "default"  });
-const images: any = Object.values(imageModules);
+const imageModules = import.meta.glob<{ default: ImageMetadata }>("../../assets/art/*.{png,jpg,jpeg}", { eager: true });
+const rawImages = Object.values(imageModules).map((m) => m.default);
 
+// Pre-generate optimised WebP thumbnails (560 px = 2× the 280 px frame width)
+const images = await Promise.all(
+  rawImages.map(async (img) => {
+    const optimized = await getImage({ src: img, format: "webp", width: 560 });
+    return {
+      src: optimized.src,
+      width: (optimized.attributes.width as number) ?? img.width,
+      height: (optimized.attributes.height as number) ?? img.height,
+      originalSrc: img.src,
+    };
+  })
+);
 ---
 
 <Layout title="Art">
-    <main class="mx-auto mt-8 w-11/12 sm:mx-0 sm:w-full sm:px-4">
-        <ArtMasonryGrid artEntries={images} client:load/>
+    <main class="lg:col-span-8 lg:col-start-5 col-span-12 ">
+        <ArtMasonryGrid artEntries={images} client:only="react"/>
     </main>
     <script type="module" src="/scripts/imageZoom.js" defer></script>
 </Layout>

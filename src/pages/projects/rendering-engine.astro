@@ -9,7 +9,7 @@ const { Content } = await render(entry);
 ---
 
 <Layout title={entry.data.title}>
-    <main class="mx-4 mt-2 flex flex-col">
+    <main class="col-span-12 lg:col-span-10 flex flex-col page-top">
         <canvas class="rounded-md" id="glCanvas" width="640" height="480"></canvas>
         <span class="text-sm italic sm:hidden">Scroll to see more controls</span>
         <div class="control_area w-full h-fit mb-8 flex flex-row gap-4 overflow-y-auto">

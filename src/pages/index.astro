@@ -9,19 +9,20 @@ const art_images: any = Object.values(
 ---
 
 <Layout title="JacobLDraws">
-    <main class="">
+    <main class="col-span-12 lg:col-span-10 lg:pr-4">
         <div class="relative">
-            <div class="grid w-full grid-cols-1 justify-items-center gap-1 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 2xl:grid-cols-4">
+            <div class="grid w-full grid-cols-12 gap-1 sm:gap-4">
                 <div
-                    class="row-span-3 mb-2 h-[1400px] w-full bg-cover bg-top sm:col-span-2"
-                    style="background-image: url(/banner_image2.jpeg)"
-                >
+                    class="col-span-12 row-span-3 mb-2 h-[1400px] bg-cover bg-top lg:col-span-8"
+                    style="background-image: url(/banner_image2.jpeg)">
                     <div class="w-2/3 pl-4 pt-12 text-left text-white sm:pt-16">
-                        <p class="w-11/12 font-serif text-4xl sm:w-2/3 lg:w-10/12 sm:text-5xl md:text-6xl 2xl:text-7xl dark:text-primary-dark-bright">
+                        <p
+                            class="w-11/12 font-serif text-4xl text-secondary sm:w-7/12 sm:text-5xl md:text-6xl md:tracking-tight lg:w-10/12 lg:tracking-tighter 2xl:text-7xl dark:text-primary-dark-bright">
                             Want a portrait made, art lessons, or to buy my work?
                         </p>
                         <a href="mailto:jacobldraws@icloud.com">
-                            <button class="mt-2 rounded-sm bg-white px-4 py-2 font-bold text-black sm:mt-8 dark:bg-primary-dark-bright">
+                            <button
+                                class="hover:text-gray mt-8 border-[1px] bg-secondary px-10 py-9 font-semibold tracking-wide text-primary hover:bg-primary hover:text-secondary sm:mt-8">
                                 Contact Me
                             </button>
                         </a>
@@ -29,13 +30,15 @@ const art_images: any = Object.values(
                 </div>
                 {
                     art_images.map((img: ImageMetadata) => (
-                        <Image
-                            src={img.src}
-                            alt="Most recent blog image"
-                            width={268}
-                            height={358}
-                            class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
-                        />
+                        <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                            <Image
+                                src={img.src}
+                                alt="Most recent blog image"
+                                width={268}
+                                height={358}
+                                class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
+                            />
+                        </div>
                     ))
                 }
             </div>

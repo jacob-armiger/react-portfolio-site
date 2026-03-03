@@ -24,12 +24,15 @@ export default {
 	},
 	plugins: [
         require('@tailwindcss/typography'),
-        // function ({ addComponents, theme }) {
-        //     addComponents ({
-        //         '.bg-custom': {
-        //             dark:
-        //         }
-        //     })
-        // }
+        function ({ addUtilities }) {
+            addUtilities({
+                '.page-top': {
+                    marginTop: '2rem',
+                    '@screen lg': {
+                        marginTop: '0',
+                    },
+                },
+            });
+        },
     ],
 }
