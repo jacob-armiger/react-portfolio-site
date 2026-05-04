@@ -1,5 +1,4 @@
 import rss from '@astrojs/rss';
-import { statSync } from 'node:fs';
 
 const CATEGORY_LABELS = {
     selectedWork: 'Selected Work',
@@ -25,21 +24,20 @@ export async function GET(context) {
     ], { eager: true });
 
     const items = Object.entries(artImages)
+        .sort((a, b) => b[0].localeCompare(a[0]))
         .map(([path]) => {
             const [category, file] = path.split('/').slice(-2);
             const filename = file.replace(/\.[^.]+$/, '');
             const categoryLabel = CATEGORY_LABELS[category] ?? 'Art';
-            const sourcePath = new URL(path, import.meta.url);
-            const fileStats = statSync(sourcePath);
 
             return {
                 title: `${categoryLabel}: ${toDisplayName(filename)}`,
-                pubDate: fileStats.mtime,
+                // Build-time date keeps feed valid in static deployments.
+                pubDate: new Date(),
                 description: `New artwork in ${categoryLabel}.`,
                 link: `/art#${slugify(categoryLabel)}`,
             };
-        })
-        .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+        });
 
     return rss({
         // `<title>` field in output xml
