@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react'
 import { RegularMasonryGrid as MasonryGrid, Frame } from '@masonry-grid/react'
 
-interface OptimizedImage {
+export interface OptimizedImage {
     src: string;
     width: number;
     height: number;
     originalSrc: string;
+    category: string;
 }
+
+const ALL = 'All';
+
+const slugify = (str: string) => str.toLowerCase().replace(/\s+/g, '-');
 
 function useResponsiveGridProps() {
     const getProps = () => {
         const w = window.innerWidth;
-        // if (w < 640)  return { frameWidth: 160, gap: 6 };   // sm
         if (w < 400) return { frameWidth: 150, gap: 2 };   // md
         return               { frameWidth: 280, gap: 10 };  // lg+
     };
@@ -29,23 +33,67 @@ function useResponsiveGridProps() {
 
 export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedImage[] }) {
     const { frameWidth, gap } = useResponsiveGridProps();
+    const [active, setActive] = useState(ALL);
+
+    const categories = [ALL, ...Array.from(new Set(artEntries.map((img) => img.category)))];
+    const visible = active === ALL 
+        ? artEntries.filter((img) => img.category !== 'Selected Work')
+        : artEntries.filter((img) => img.category === active);
+
+    // Read hash on mount and sync URL when active category changes
+    useEffect(() => {
+        const hash = window.location.hash.slice(1);
+        const matchedCategory = categories.find(cat => slugify(cat) === hash);
+        if (matchedCategory) {
+            setActive(matchedCategory);
+        }
+    }, []);
+
+    useEffect(() => {
+        const slug = active === ALL ? '' : slugify(active);
+        window.history.replaceState(null, '', slug ? `#${slug}` : '#');
+    }, [active]);
 
     return (
-        <MasonryGrid frameWidth={frameWidth} gap={gap}>
-            {artEntries.map((img, i) => (
-                <Frame key={i} width={img.width} height={img.height}>
-                    <img
-                        src={img.src}
-                        alt="Artwork"
-                        className="zoomable"
-                        loading="lazy"
-                        width={img.width}
-                        height={img.height}
-                        data-zoom-src={img.originalSrc}
-                        style={{ cursor: 'zoom-in' }}
-                    />
-                </Frame>
-            ))}
-        </MasonryGrid>
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-4">
+            {/* Vertical filter nav */}
+            <nav className="flex flex-row flex-wrap gap-x-3 gap-y-3 lg:flex-col lg:gap-y-3 lg:w-24 lg:shrink-0 lg:pt-10">
+                {categories.map((cat) => (
+                    <a
+                        key={cat}
+                        href={cat === ALL ? '#' : `#${slugify(cat)}`}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setActive(cat);
+                        }}
+                        className={`text-left font-serif text-xs leading-none tracking-wide transition-opacity hover:opacity-100 ${
+                            active === cat ? 'font-semibold opacity-100 underline underline-offset-4' : 'opacity-40'
+                        }`}
+                    >
+                        {cat}
+                    </a>
+                ))}
+            </nav>
+
+            {/* Grid */}
+            <div className="flex-1 min-w-0">
+                <MasonryGrid frameWidth={frameWidth} gap={gap}>
+                    {visible.map((img, i) => (
+                        <Frame key={img.originalSrc + i} width={img.width} height={img.height}>
+                            <img
+                                src={img.src}
+                                alt="Artwork"
+                                className="zoomable"
+                                loading="lazy"
+                                width={img.width}
+                                height={img.height}
+                                data-zoom-src={img.originalSrc}
+                                style={{ cursor: 'zoom-in' }}
+                            />
+                        </Frame>
+                    ))}
+                </MasonryGrid>
+            </div>
+        </div>
     );
 }

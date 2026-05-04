@@ -2,27 +2,46 @@
 import Layout from "../../layouts/Layout.astro";
 import { getImage } from "astro:assets";
 import ArtMasonryGrid from "../../components/ArtMasonryGrid.tsx";
+import type { OptimizedImage } from "../../components/ArtMasonryGrid.tsx";
 
-// grab every image file under assets/art
-const imageModules = import.meta.glob<{ default: ImageMetadata }>("../../assets/art/*.{png,jpg,jpeg}", { eager: true });
-const rawImages = Object.values(imageModules).map((m) => m.default);
+type RawModule = { default: ImageMetadata };
 
-// Pre-generate optimised WebP thumbnails (560 px = 2× the 280 px frame width)
-const images = await Promise.all(
-  rawImages.map(async (img) => {
-    const optimized = await getImage({ src: img, format: "webp", width: 560 });
-    return {
-      src: optimized.src,
-      width: (optimized.attributes.width as number) ?? img.width,
-      height: (optimized.attributes.height as number) ?? img.height,
-      originalSrc: img.src,
-    };
-  })
-);
+async function loadCategory(pattern: string, label: string): Promise<OptimizedImage[]> {
+    const modules = import.meta.glob<RawModule>([
+        "../../assets/selectedWork/*.{png,jpg,jpeg}",
+        "../../assets/digitalStudies/*.{png,jpg,jpeg}",
+        "../../assets/drawings/*.{png,jpg,jpeg}",
+        "../../assets/oilPaintings/*.{png,jpg,jpeg}",
+    ], { eager: true });
+
+    const raw = Object.entries(modules)
+        .filter(([path]) => path.includes(`/${pattern}/`))
+        .map(([, m]) => m.default);
+
+    return Promise.all(
+        raw.map(async (img) => {
+            const optimized = await getImage({ src: img, format: "webp", width: 560 });
+            return {
+                src: optimized.src,
+                width: (optimized.attributes.width as number) ?? img.width,
+                height: (optimized.attributes.height as number) ?? img.height,
+                originalSrc: img.src,
+                category: label,
+            };
+        })
+    );
+}
+
+const images: OptimizedImage[] = [
+    ...await loadCategory("selectedWork", "Selected Work"),
+    ...await loadCategory("drawings", "Drawings"),
+    ...await loadCategory("oilPaintings", "Oil Paintings"),
+    ...await loadCategory("digitalStudies", "Digital Studies"),
+];
 ---
 
 <Layout title="Art">
-    <main class="lg:col-span-8 lg:col-start-5 col-span-12 ">
+    <main class="lg:col-span-10 lg:col-start-3 col-span-12 px-4 sm:px-6 lg:px-0 pt-6 lg:pt-8">
         <ArtMasonryGrid artEntries={images} client:only="react"/>
     </main>
     <script type="module" src="/scripts/imageZoom.js" defer></script>
