@@ -20,11 +20,11 @@ If an artist is to avoid both a lack of regiment and an over regimented educatio
 The path to becoming a master is not by attempting to master one fundamental before moving to the next. It is refining all of your fundamental skills repeatedly until your work is brought up to a master’s level. You work on skills, move on to a new skill, and then return to refine old skills, which in turn elevates your work as a whole.
 
 In this diagram I show the fundamental skills as poles of a tent. Each pole carries its share of weight, but if another pole is missing or too short then the tent will still sag and stop functioning in its purpose. 
-![Good tent](../../assets/IMG_1939.jpeg)
+![Good tent](../../assets/blogImages/IMG_1939.jpeg)
 
 You may raise a single tent pole very high, but it does not make your tent much better. I will attempt to stop saying poles soon, but if you raise all of your poles similarly then you will have a decent tent all the while and the higher the poles, the greater your tent. All this to say that if you improve all of your skills, then you will create better work as a result, and if you neglect your poles then you will not have a good tent!
 !
-![Bad tent](../../assets/IMG_1938.jpeg)
+![Bad tent](../../assets/blogImages/IMG_1938.jpeg)
 
 I suggest artists uptake a round robin form of education by simply trying new things and also returning to old things. Do not look at a new medium or subject as something you are just “bad” at, but instead as a new thing to learn that will improve all the work you do. This keeps an artist from stagnating and also sustains interest. I find that there are even great artists who seem to have stuck with what works for them and their career, and their work seems to have more or less been of a similar quality for years. This also happens to beginner artists. For example, a beginner may like to draw anime, but then all they draw is anime for years. They may get better at copying anime,  but soon their skills stagnate. This isn’t to say that they don’t move on to new things eventually, but much time and effort could be saved if they were consistently pushing into new territory.
 

@@ -25,7 +25,7 @@ const when: Date = entry.data?.dateCreated ?? entry.data?.date ?? new Date();
 ---
 
 <Layout title={entry.data.title ?? "Writing Post"}>
-    <main class="col-span-10 col-start-2 sm:col-span-8 sm:col-start-3 lg:col-start-4 lg:col-span-6 page-top">
+    <main class="col-span-12 lg:col-start-4 lg:col-span-6 px-4 sm:px-6 lg:px-0 page-top">
         {entry.data.image ? (
             <figure class="">
                 <Image

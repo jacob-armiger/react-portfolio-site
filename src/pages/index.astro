@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 
 const art_images: any = Object.values(
-    import.meta.glob<ImageMetadata>("/src/assets/art/*", { eager: true, import: "default" }),
+    import.meta.glob<ImageMetadata>("/src/assets/selectedWork/*", { eager: true, import: "default" }),
 );
 ---
 
