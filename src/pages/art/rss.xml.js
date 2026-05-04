@@ -32,8 +32,6 @@ export async function GET(context) {
 
             return {
                 title: `${categoryLabel}: ${toDisplayName(filename)}`,
-                // Build-time date keeps feed valid in static deployments.
-                pubDate: new Date(),
                 description: `New artwork in ${categoryLabel}.`,
                 link: `/art#${slugify(categoryLabel)}`,
             };

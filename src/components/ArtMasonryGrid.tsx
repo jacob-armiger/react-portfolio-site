@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { RegularMasonryGrid as MasonryGrid, Frame } from '@masonry-grid/react'
 
 export interface OptimizedImage {
@@ -35,23 +35,37 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
     const { frameWidth, gap } = useResponsiveGridProps();
     const [active, setActive] = useState(ALL);
 
-    const categories = [ALL, ...Array.from(new Set(artEntries.map((img) => img.category)))];
+    const categories = useMemo(
+        () => [ALL, ...Array.from(new Set(artEntries.map((img) => img.category)))],
+        [artEntries]
+    );
     const visible = active === ALL 
         ? artEntries.filter((img) => img.category !== 'Selected Work')
         : artEntries.filter((img) => img.category === active);
 
-    // Read hash on mount and sync URL when active category changes
+    // Read hash on mount and sync active category
     useEffect(() => {
         const hash = window.location.hash.slice(1);
         const matchedCategory = categories.find(cat => slugify(cat) === hash);
         if (matchedCategory) {
             setActive(matchedCategory);
         }
-    }, []);
+    }, [categories]);
+
+    // Stay in sync with browser back/forward navigation
+    useEffect(() => {
+        const onHashChange = () => {
+            const hash = window.location.hash.slice(1);
+            const matchedCategory = categories.find(cat => slugify(cat) === hash);
+            setActive(matchedCategory ?? ALL);
+        };
+        window.addEventListener('hashchange', onHashChange);
+        return () => window.removeEventListener('hashchange', onHashChange);
+    }, [categories]);
 
     useEffect(() => {
         const slug = active === ALL ? '' : slugify(active);
-        window.history.replaceState(null, '', slug ? `#${slug}` : '#');
+        window.history.replaceState(null, '', slug ? `#${slug}` : window.location.pathname);
     }, [active]);
 
     return (

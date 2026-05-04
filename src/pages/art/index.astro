@@ -6,20 +6,33 @@ import type { OptimizedImage } from "../../components/ArtMasonryGrid.tsx";
 
 type RawModule = { default: ImageMetadata };
 
-async function loadCategory(pattern: string, label: string): Promise<OptimizedImage[]> {
-    const modules = import.meta.glob<RawModule>([
-        "../../assets/selectedWork/*.{png,jpg,jpeg}",
-        "../../assets/digitalStudies/*.{png,jpg,jpeg}",
-        "../../assets/drawings/*.{png,jpg,jpeg}",
-        "../../assets/oilPaintings/*.{png,jpg,jpeg}",
-    ], { eager: true });
+const CATEGORY_ORDER: Array<[string, string]> = [
+    ['selectedWork', 'Selected Work'],
+    ['drawings', 'Drawings'],
+    ['oilPaintings', 'Oil Paintings'],
+    ['digitalStudies', 'Digital Studies'],
+];
 
-    const raw = Object.entries(modules)
-        .filter(([path]) => path.includes(`/${pattern}/`))
-        .map(([, m]) => m.default);
+// Single glob call — module map is built once and grouped by folder
+const allModules = import.meta.glob<RawModule>([
+    "../../assets/selectedWork/*.{png,jpg,jpeg}",
+    "../../assets/digitalStudies/*.{png,jpg,jpeg}",
+    "../../assets/drawings/*.{png,jpg,jpeg}",
+    "../../assets/oilPaintings/*.{png,jpg,jpeg}",
+], { eager: true });
 
-    return Promise.all(
-        raw.map(async (img) => {
+const grouped = new Map<string, RawModule[]>();
+for (const [path, mod] of Object.entries(allModules)) {
+    const folder = path.split('/').at(-2)!;
+    const list = grouped.get(folder) ?? [];
+    list.push(mod);
+    grouped.set(folder, list);
+}
+
+const images: OptimizedImage[] = await Promise.all(
+    CATEGORY_ORDER.flatMap(([folder, label]) =>
+        (grouped.get(folder) ?? []).map(async (m) => {
+            const img = m.default;
             const optimized = await getImage({ src: img, format: "webp", width: 560 });
             return {
                 src: optimized.src,
@@ -29,15 +42,8 @@ async function loadCategory(pattern: string, label: string): Promise<OptimizedIm
                 category: label,
             };
         })
-    );
-}
-
-const images: OptimizedImage[] = [
-    ...await loadCategory("selectedWork", "Selected Work"),
-    ...await loadCategory("drawings", "Drawings"),
-    ...await loadCategory("oilPaintings", "Oil Paintings"),
-    ...await loadCategory("digitalStudies", "Digital Studies"),
-];
+    )
+);
 ---
 
 <Layout title="Art">
