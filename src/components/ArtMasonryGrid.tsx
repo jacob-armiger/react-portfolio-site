@@ -57,7 +57,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
     return (
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-4">
             {/* Vertical filter nav */}
-            <nav className="flex flex-row flex-wrap gap-x-3 gap-y-3 lg:flex-col lg:gap-y-3 lg:w-24 lg:shrink-0 lg:pt-10">
+            <nav className="flex flex-row flex-wrap justify-center gap-x-4 gap-y-2 lg:justify-start lg:flex-col lg:gap-y-3 lg:w-24 lg:shrink-0 lg:pt-10">
                 {categories.map((cat) => (
                     <a
                         key={cat}
@@ -67,7 +67,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             setActive(cat);
                         }}
                         className={`text-left font-serif text-xs leading-none tracking-wide transition-opacity hover:opacity-100 ${
-                            active === cat ? 'font-semibold opacity-100 underline underline-offset-4' : 'opacity-40'
+                            active === cat ? 'font-semibold opacity-100 underline underline-offset-2' : 'opacity-60'
                         }`}
                     >
                         {cat}
