@@ -29,27 +29,27 @@ const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString(
     <input type="hidden" name="_next" value={fallbackNextUrl} data-next-input />
 
     <div class="flex flex-col gap-1">
-        <label for="name" class="text-sm font-semibold uppercase tracking-wide opacity-60">Name</label>
+        <label for="name" class="text-sm font-semibold uppercase tracking-wide opacity-80">Name</label>
         <input
             type="text"
             id="name"
             name="name"
             required
             autocomplete="name"
-            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-40 focus:border-primary dark:border-primary-dark"
+            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
             placeholder="Your name"
         />
     </div>
 
     <div class="flex flex-col gap-1">
-        <label for="email" class="text-sm font-semibold uppercase tracking-wide opacity-60">Email</label>
+        <label for="email" class="text-sm font-semibold uppercase tracking-wide opacity-80">Email</label>
         <input
             type="email"
             id="email"
             name="email"
             required
             autocomplete="email"
-            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-40 focus:border-primary dark:border-primary-dark"
+            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
             placeholder="your@email.com"
         />
     </div>
@@ -64,20 +64,20 @@ const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString(
                 class="mt-1 h-4 w-4 accent-primary dark:accent-primary-dark"
             />
             <span>
-                <span class="block font-semibold uppercase tracking-wide opacity-60">Optional</span>
+                <span class="block font-semibold uppercase tracking-wide opacity-80">Optional</span>
                 <span>I am local to New York City for in-person lessons.</span>
             </span>
         </label>
     </div>
 
     <div class="flex flex-col gap-1">
-        <label for="message" class="text-sm font-semibold uppercase tracking-wide opacity-60">Message</label>
+        <label for="message" class="text-sm font-semibold uppercase tracking-wide opacity-80">Message</label>
         <textarea
             id="message"
             name="message"
             rows="6"
             required
-            class="resize-none border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-40 focus:border-primary dark:border-primary-dark"
+            class="resize-none border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
             placeholder={messagePlaceholder}
         ></textarea>
     </div>

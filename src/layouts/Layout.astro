@@ -55,6 +55,7 @@ const { title } = Astro.props;
             </nav>
             <!-- slot goes directly in grid so each page's root element can be a grid item -->
             <slot />
+            <div aria-hidden="true" class="col-span-12 h-12 lg:col-span-10 lg:col-start-3 sm:h-16"></div>
         </div>
     </body>
 </html>

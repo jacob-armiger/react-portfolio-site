@@ -1,38 +1,97 @@
 ---
 import ContactForm from "../components/ContactForm.astro";
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+
+type ArtModule = { default: ImageMetadata };
+
+const artModules = import.meta.glob<ArtModule>([
+    "../assets/selectedWork/1.png",
+    "../assets/drawings/3.jpeg",
+    "../assets/drawings/4.jpeg",
+    "../assets/drawings/5.jpeg",
+    "../assets/oilPaintings/2.png",
+    "../assets/digitalStudies/4.png",
+], { eager: true });
+
+const lessonGallery = [
+    { path: "../assets/selectedWork/1.png", alt: "Portrait painting", label: "Portrait" },
+    { path: "../assets/drawings/3.jpeg", alt: "Graphite drawing study", label: "Drawing" },
+    { path: "../assets/oilPaintings/2.png", alt: "Oil painting", label: "Oil Paint" },
+    { path: "../assets/digitalStudies/4.png", alt: "Digital painting study", label: "Digital" },
+    { path: "../assets/drawings/5.jpeg", alt: "Refined figure drawing", label: "Refined Figures" },
+    { path: "../assets/drawings/4.jpeg", alt: "Sketchbook drawing", label: "Sketch" },
+].map((entry) => ({
+    ...entry,
+    image: artModules[entry.path].default,
+}));
 ---
 
 <Layout title="Art Lessons">
     <main class="col-span-10 col-start-2 sm:col-span-8 sm:col-start-3 lg:col-start-4 lg:col-span-6 page-top px-4 lg:px-0">
         <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
+        <p class="mb-8 text-base leading-relaxed opacity-80">
+            I offer tailored art lessons for students of all levels. Whether you're a beginner 
+            looking to build foundational skills or an experienced artist seeking to refine your draftsmanship, 
+            I'm here to help you achieve your artistic goals. My teaching approach is flexible and 
+            adjusted to your personal interests.
+        </p>
+
+        <section class="mb-12">
+            <p class="mb-4 italic text-3xl font-semibold text-center">With my lessons you'll be able to draw or paint
+            anything in any medium.</p>
+            <p class="mb-5 text-base leading-relaxed opacity-80">
+                You'll learn foundational skills and concepts that will enable you to create anything at a high level.
+            </p>
+
+            <div class="mx-auto grid max-w-xl grid-cols-2 gap-2 sm:max-w-2xl sm:grid-cols-3 sm:gap-3">
+                {
+                    lessonGallery.map((piece) => (
+                        <figure class="group overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
+                            <div class="aspect-[5/6] overflow-hidden">
+                                <Image
+                                    src={piece.image}
+                                    alt={piece.alt}
+                                    sizes="(min-width: 1024px) 10rem, (min-width: 640px) 28vw, 42vw"
+                                    class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                                />
+                            </div>
+                            <figcaption class="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.16em] opacity-70 sm:text-[11px]">
+                                {piece.label}
+                            </figcaption>
+                        </figure>
+                    ))
+                }
+            </div>
+        </section>
+
         <div class="mb-10 flex flex-col gap-6 text-base leading-relaxed">
             <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
                 <p class="font-semibold text-lg">$50 &mdash; One hour, one-on-one</p>
-                <p class="mt-1 opacity-70">Sessions are scheduled at your convenience. Weekly or bi-weekly is generally recommended.</p>
+                <p class="mt-1 opacity-80">Sessions are scheduled at your convenience. Weekly or bi-weekly is generally recommended.</p>
             </div>
 
             <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
                 <p class="font-semibold text-lg">Format</p>
-                <p class="mt-1 opacity-70">
-                    Lessons are available online or in person for students local to New York City.
+                <p class="mt-1 opacity-80">
+                    Lessons are available online or in-person for those local to New York City.
                 </p>
             </div>
 
             <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
                 <p class="font-semibold text-lg">What to Expect</p>
-                <p class="mt-1 opacity-70">
-                    All lessons are tailored to your personal needs and goals. Sessions typically include a review of your work, demonstrations, short lectures, and hands-on drawing time. Homework recommendations are available at the end of each session. The goal is to make learning fun and aligned with wherever you want to take your art.
+                <p class="mt-1 opacity-80">
+                    All lessons are tailored to your personal needs and goals. Sessions typically include a review of your work, demonstrations, short lectures, and hands-on drawing time. Homework recommendations are available at the end of each session. All is meant to be fun and align with any art goals you may have!
                 </p>
             </div>
         </div>
 
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
 
-        <p class="mb-8 text-left font-serif text-3xl font-semibold">Get in Touch</p>
-        <p class="mb-8 text-base leading-relaxed opacity-70">
-            Let me know if you have any questions, what days and times work for your schedule, and what you want to focus on.
+        <p class="mb-4 text-left font-serif text-3xl font-semibold">Get in Touch</p>
+        <p class="mb-8 text-base leading-relaxed opacity-80">
+            Let me know if you have any questions, what days and times work for your schedule, and what interests you.
         </p>
 
         <ContactForm
