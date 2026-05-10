@@ -1,9 +1,16 @@
 ---
 import ContactForm from "../components/ContactForm.astro";
-import { Image } from "astro:assets";
+import { getImage } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 
 type ArtModule = { default: ImageMetadata };
+type LessonGalleryEntry = {
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+    label: string;
+};
 
 const artModules = import.meta.glob<ArtModule>([
     "../assets/selectedWork/1.png",
@@ -14,16 +21,24 @@ const artModules = import.meta.glob<ArtModule>([
     "../assets/digitalStudies/4.png",
 ], { eager: true });
 
-const lessonGallery = [
+const lessonGallery: LessonGalleryEntry[] = await Promise.all([
     { path: "../assets/selectedWork/1.png", alt: "Portrait painting", label: "Portrait" },
     { path: "../assets/drawings/3.jpeg", alt: "Graphite drawing study", label: "Drawing" },
     { path: "../assets/oilPaintings/2.png", alt: "Oil painting", label: "Oil Paint" },
     { path: "../assets/digitalStudies/4.png", alt: "Digital painting study", label: "Digital" },
     { path: "../assets/drawings/5.jpeg", alt: "Refined figure drawing", label: "Refined Figures" },
     { path: "../assets/drawings/4.jpeg", alt: "Sketchbook drawing", label: "Sketch" },
-].map((entry) => ({
-    ...entry,
-    image: artModules[entry.path].default,
+].map(async (entry) => {
+    const image = artModules[entry.path].default;
+    const optimized = await getImage({ src: image, format: "webp", width: 320 });
+
+    return {
+        src: optimized.src,
+        width: (optimized.attributes.width as number) ?? image.width,
+        height: (optimized.attributes.height as number) ?? image.height,
+        alt: entry.alt,
+        label: entry.label,
+    };
 }));
 ---
 
@@ -50,10 +65,13 @@ const lessonGallery = [
                     lessonGallery.map((piece) => (
                         <figure class="group overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
                             <div class="aspect-[5/6] overflow-hidden">
-                                <Image
-                                    src={piece.image}
+                                <img
+                                    src={piece.src}
                                     alt={piece.alt}
-                                    sizes="(min-width: 1024px) 10rem, (min-width: 640px) 28vw, 42vw"
+                                    width={piece.width}
+                                    height={piece.height}
+                                    loading="lazy"
+                                    decoding="async"
                                     class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                                 />
                             </div>
