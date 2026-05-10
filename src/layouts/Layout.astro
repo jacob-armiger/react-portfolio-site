@@ -25,24 +25,31 @@ const { title } = Astro.props;
     <body class="bg-secondary text-primary dark:bg-secondary-dark dark:text-primary-dark">
         <div class="grid min-h-screen content-start grid-cols-12">
             <nav
-                class="text-md sticky top-0 z-50 col-span-12 flex h-fit w-full items-center justify-start gap-6 border-b-[1px] border-primary
-                 bg-secondary px-2 py-1 text-left tracking-wide underline-offset-4 backdrop-blur-md 
+                class="text-md sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-6 gap-y-2 border-b-[1px] border-primary
+                 bg-secondary px-2 py-2 text-left tracking-wide underline-offset-4 backdrop-blur-md 
                  sm:gap-8 sm:py-2 sm:text-xl 
-                 lg:col-span-2 lg:h-screen lg:flex-col lg:items-start lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-16
+                 lg:col-span-2 lg:h-screen lg:flex-nowrap lg:flex-col lg:items-start lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-16
                 dark:border-primary-dark dark:bg-secondary-dark/80">
                 <a href="/" class="font-serif font-bold hover:underline">JacobLDraws</a>
+                <a href="/art-lessons" class="font-serif hover:underline">LESSONS</a>
                 <a href="/art" class="font-serif hover:underline">ART</a>
                 <a href="/writing" class="font-serif hover:underline">BLOG</a>
                 <a href="/books" class="hidden font-serif hover:underline sm:block">BOOKS</a>
-                <a href="/directory" class="hidden font-serif hover:underline sm:block">DIRECTORY</a
-                >
+                <a href="/directory" class="hidden font-serif hover:underline sm:block">DIRECTORY</a>
                 <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
-                <a href="https://www.instagram.com/jacobldraws/" target="_blank" class="dark:hidden"
+                <a
+                    href="https://www.instagram.com/jacobldraws/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="JacobLDraws on Instagram"
+                    class="dark:hidden"
                     ><img src="/Instagram_Glyph_Black.svg" width="20" /></a
                 >
                 <a
                     href="https://www.instagram.com/jacobldraws/"
                     target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="JacobLDraws on Instagram"
                     class="hidden dark:block"><img src="/Instagram_Glyph_White.svg" width="20" /></a
                 >
             </nav>

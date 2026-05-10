@@ -1,0 +1,43 @@
+---
+import ContactForm from "../components/ContactForm.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Art Lessons">
+    <main class="col-span-10 col-start-2 sm:col-span-8 sm:col-start-3 lg:col-start-4 lg:col-span-6 page-top px-4 lg:px-0">
+        <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
+
+        <div class="mb-10 flex flex-col gap-6 text-base leading-relaxed">
+            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
+                <p class="font-semibold text-lg">$50 &mdash; One hour, one-on-one</p>
+                <p class="mt-1 opacity-70">Sessions are scheduled at your convenience. Weekly or bi-weekly is generally recommended.</p>
+            </div>
+
+            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
+                <p class="font-semibold text-lg">Format</p>
+                <p class="mt-1 opacity-70">
+                    Lessons are available online or in person for students local to New York City.
+                </p>
+            </div>
+
+            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
+                <p class="font-semibold text-lg">What to Expect</p>
+                <p class="mt-1 opacity-70">
+                    All lessons are tailored to your personal needs and goals. Sessions typically include a review of your work, demonstrations, short lectures, and hands-on drawing time. Homework recommendations are available at the end of each session. The goal is to make learning fun and aligned with wherever you want to take your art.
+                </p>
+            </div>
+        </div>
+
+        <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
+
+        <p class="mb-8 text-left font-serif text-3xl font-semibold">Get in Touch</p>
+        <p class="mb-8 text-base leading-relaxed opacity-70">
+            Let me know if you have any questions, what days and times work for your schedule, and what you want to focus on.
+        </p>
+
+        <ContactForm
+            subject="Art Lessons Inquiry"
+            messagePlaceholder="Questions, availability, goals..."
+        />
+    </main>
+</Layout>

@@ -1,0 +1,27 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Thank You">
+    <main class="page-top col-span-10 col-start-2 px-4 sm:col-span-8 sm:col-start-3 lg:col-span-6 lg:col-start-4 lg:px-0">
+        <p class="mb-4 text-left text-5xl font-bold">Thank You</p>
+        <p class="mb-10 max-w-prose text-base leading-relaxed opacity-70">
+            Your message has been sent. I will get back to you as soon as I can.
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+            <a
+                href="/"
+                class="border border-primary px-8 py-3 font-semibold tracking-wide text-primary hover:bg-primary hover:text-secondary dark:border-primary-dark dark:text-primary-dark dark:hover:bg-primary-dark dark:hover:text-secondary-dark"
+            >
+                Return Home
+            </a>
+            <a
+                href="/art-lessons"
+                class="border border-primary/30 px-8 py-3 font-semibold tracking-wide text-primary hover:border-primary hover:bg-primary hover:text-secondary dark:border-primary-dark/30 dark:text-primary-dark dark:hover:border-primary-dark dark:hover:bg-primary-dark dark:hover:text-secondary-dark"
+            >
+                View Lessons
+            </a>
+        </div>
+    </main>
+</Layout>
