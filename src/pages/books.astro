@@ -10,10 +10,6 @@ const readings: CollectionEntry<"books">[] = collection.sort(
     (a: CollectionEntry<"books">, b: CollectionEntry<"books">) =>
         b.data["Date Read"].localeCompare(a.data["Date Read"])
 );
-
-const currentBooks = collection.filter(
-    (book: CollectionEntry<"books">) => book.data["Exclusive Shelf"] == "currently-reading"
-);
 ---
 
 <Layout title="Books">

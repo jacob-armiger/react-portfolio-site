@@ -1,0 +1,104 @@
+---
+interface Props {
+    subject?: string;
+    messagePlaceholder?: string;
+    submitLabel?: string;
+    redirectPath?: string;
+}
+
+const {
+    subject = "Website Contact",
+    messagePlaceholder = "What's on your mind?",
+    submitLabel = "Send",
+    redirectPath = "/submit",
+} = Astro.props;
+
+const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString();
+---
+
+<form
+    action="https://formsubmit.co/jacobldraws@icloud.com"
+    method="POST"
+    class="flex flex-col gap-6"
+    data-redirect-path={redirectPath}
+    data-contact-form
+>
+    <input type="hidden" name="_captcha" value="false" />
+    <input type="hidden" name="_subject" value={subject} />
+    <input type="hidden" name="_template" value="table" />
+    <input type="hidden" name="_next" value={fallbackNextUrl} data-next-input />
+
+    <div class="flex flex-col gap-1">
+        <label for="name" class="text-sm font-semibold uppercase tracking-wide opacity-80">Name</label>
+        <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            autocomplete="name"
+            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            placeholder="Your name"
+        />
+    </div>
+
+    <div class="flex flex-col gap-1">
+        <label for="email" class="text-sm font-semibold uppercase tracking-wide opacity-80">Email</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            placeholder="your@email.com"
+        />
+    </div>
+
+    <div class="rounded-sm border border-primary/20 px-4 py-3 dark:border-primary-dark/20">
+        <label for="local-to-new-york" class="flex items-start gap-3 text-sm leading-relaxed">
+            <input
+                type="checkbox"
+                id="local-to-new-york"
+                name="local_to_new_york_city"
+                value="yes"
+                class="mt-1 h-4 w-4 accent-primary dark:accent-primary-dark"
+            />
+            <span>
+                <span class="block font-semibold uppercase tracking-wide opacity-80">Optional</span>
+                <span>I am local to New York City for in-person lessons.</span>
+            </span>
+        </label>
+    </div>
+
+    <div class="flex flex-col gap-1">
+        <label for="message" class="text-sm font-semibold uppercase tracking-wide opacity-80">Message</label>
+        <textarea
+            id="message"
+            name="message"
+            rows="6"
+            required
+            class="resize-none border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            placeholder={messagePlaceholder}
+        ></textarea>
+    </div>
+
+    <button
+        type="submit"
+        class="mt-2 self-start border border-primary px-10 py-4 font-semibold tracking-wide text-primary hover:bg-primary hover:text-secondary dark:border-primary-dark dark:text-primary-dark dark:hover:bg-primary-dark dark:hover:text-secondary-dark"
+    >
+        {submitLabel}
+    </button>
+</form>
+
+<script is:inline>
+    document.querySelectorAll("form[data-contact-form]").forEach((form) => {
+        const redirectPath = form.getAttribute("data-redirect-path");
+        const nextInput = form.querySelector('input[name="_next"][data-next-input]');
+
+        if (!redirectPath || !(nextInput instanceof HTMLInputElement)) {
+            return;
+        }
+
+        nextInput.value = new URL(redirectPath, window.location.origin).toString();
+    });
+</script>
