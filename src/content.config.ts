@@ -6,7 +6,8 @@ import { glob, file } from 'astro/loaders';
 
 // 3. Define collections
 const article = defineCollection({
-    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/article"}),
+  // Keep archived posts in src/content/article/archive without publishing them.
+  loader: glob({pattern: "*.{md,mdx}", base: "./src/content/article"}),
     schema: ({ image }) => z.object({
         date: z.date(),
         image: image(),
