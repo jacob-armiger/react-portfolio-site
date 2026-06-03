@@ -1,6 +1,9 @@
 ---
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+
 interface Slide {
-    src: string | { src: string };
+    src: string | ImageMetadata;
     alt: string;
     caption?: string;
 }
@@ -27,13 +30,43 @@ if (inputImages.length === 0) {
     throw new Error("ImageCarousel requires at least one image.");
 }
 
-const resolvedImages = inputImages.map((img) => ({
-    src: typeof img.src === "string" ? img.src : img.src.src,
-    alt: img.alt,
-    caption: img.caption ?? "",
-}));
+const isSingleImage = inputImages.length === 1;
 
-const isSingleImage = resolvedImages.length === 1;
+const resolvedImages = await Promise.all(
+    inputImages.map(async (img) => {
+        const source = img.src;
+
+        if (typeof source === "string") {
+            return {
+                src: source,
+                thumbSrc: source,
+                thumbWidth: undefined,
+                thumbHeight: undefined,
+                alt: img.alt,
+                caption: img.caption ?? "",
+            };
+        }
+
+        const targetWidth = isSingleImage ? 1400 : 700;
+        const thumbWidth = Math.min(source.width, targetWidth);
+        const thumbHeight = Math.round((source.height / source.width) * thumbWidth);
+        const optimizedThumb = await getImage({
+            src: source,
+            width: thumbWidth,
+            format: "webp",
+            quality: 78,
+        });
+
+        return {
+            src: source.src,
+            thumbSrc: optimizedThumb.src,
+            thumbWidth,
+            thumbHeight,
+            alt: img.alt,
+            caption: img.caption ?? "",
+        };
+    }),
+);
 ---
 
 <section
@@ -54,9 +87,12 @@ const isSingleImage = resolvedImages.length === 1;
                     data-carousel-caption-text={image.caption}
                     aria-label={`Open image ${index + 1} in larger view`}>
                     <img
-                        src={image.src}
+                        src={image.thumbSrc}
                         alt={image.alt}
-                        loading={index < 2 ? "eager" : "lazy"}
+                        width={image.thumbWidth}
+                        height={image.thumbHeight}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        fetchpriority={index === 0 ? "high" : "auto"}
                         decoding="async"
                         class="image-carousel-thumb-image !m-0 block rounded-md"
                     />
