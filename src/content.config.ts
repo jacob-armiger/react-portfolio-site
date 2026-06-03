@@ -17,15 +17,6 @@ const article = defineCollection({
   }),
 });
 
-const essay = defineCollection({
-    loader: glob({pattern: "**/*.{md,mdx}", base: "./src/content/essay"}),
-    schema: () => z.object({
-        title: z.string(),
-        dateCreated: z.date(),
-        dateEdited: z.date().optional(),
-  }),
-});
-
 const books = defineCollection({
     loader: file("src/assets/books.json"),
     schema: () => z.object({
@@ -55,7 +46,6 @@ const projects = defineCollection({
 // 3. Export a single `collections` object to register your collection(s)
 export const collections = {
     article,
-    essay,
     books,
     projects,
 };
