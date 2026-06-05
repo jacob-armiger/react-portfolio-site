@@ -10,24 +10,25 @@ type LessonGalleryEntry = {
     height: number;
     alt: string;
     label: string;
+    objectPositionClass?: string;
 };
 
 const artModules = import.meta.glob<ArtModule>([
     "../assets/selectedWork/1.png",
     "../assets/drawings/3.jpeg",
-    "../assets/drawings/4.jpeg",
+    "../assets/drawings/IMG_5409.jpeg",
     "../assets/drawings/5.jpeg",
     "../assets/oilPaintings/2.png",
     "../assets/digitalStudies/4.png",
 ], { eager: true });
 
 const lessonGallery: LessonGalleryEntry[] = await Promise.all([
-    { path: "../assets/selectedWork/1.png", alt: "Portrait painting", label: "Portrait" },
+    { path: "../assets/selectedWork/1.png", alt: "Portrait painting", label: "Portrait Painting" },
     { path: "../assets/drawings/3.jpeg", alt: "Graphite drawing study", label: "Drawing" },
-    { path: "../assets/oilPaintings/2.png", alt: "Oil painting", label: "Oil Paint" },
-    { path: "../assets/digitalStudies/4.png", alt: "Digital painting study", label: "Digital" },
-    { path: "../assets/drawings/5.jpeg", alt: "Refined figure drawing", label: "Refined Figures" },
-    { path: "../assets/drawings/4.jpeg", alt: "Sketchbook drawing", label: "Sketch" },
+    { path: "../assets/drawings/5.jpeg", alt: "Refined figure drawing", label: "Refined Draftsmanship" },
+    { path: "../assets/oilPaintings/2.png", alt: "Oil painting", label: "Oil Painting" },
+    { path: "../assets/digitalStudies/4.png", alt: "Digital painting study", label: "Digital Painting" },
+    { path: "../assets/drawings/IMG_5409.jpeg", alt: "Sketchbook drawing", label: "Sketch", objectPositionClass: "object-right" },
 ].map(async (entry) => {
     const image = artModules[entry.path].default;
     const optimized = await getImage({ src: image, format: "webp", width: 320 });
@@ -38,12 +39,13 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all([
         height: (optimized.attributes.height as number) ?? image.height,
         alt: entry.alt,
         label: entry.label,
+        objectPositionClass: entry.objectPositionClass,
     };
 }));
 ---
 
 <Layout title="Art Lessons">
-    <main class="col-span-10 col-start-2 sm:col-span-8 sm:col-start-3 lg:col-start-4 lg:col-span-6 page-top px-4 lg:px-0">
+    <main class="col-span-12 lg:col-start-4 lg:col-span-6 px-4 sm:px-6 lg:px-0 page-top">
         <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
         <p class="mb-8 text-base leading-relaxed opacity-80">
@@ -72,7 +74,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all([
                                     height={piece.height}
                                     loading="lazy"
                                     decoding="async"
-                                    class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                                    class={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02] ${piece.objectPositionClass ?? ""}`}
                                 />
                             </div>
                             <figcaption class="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.16em] opacity-70 sm:text-[11px]">
