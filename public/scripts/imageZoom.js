@@ -9,6 +9,7 @@ const createModal = () => {
     background: rgba(0,0,0,0.85);
     z-index: 9999;
     overflow: hidden;
+    touch-action: none;
   `;
   // Use window.innerHeight so the backdrop covers the full visual viewport
   // on mobile Safari (avoids the URL-bar gap that 100dvh/100vh can leave).
@@ -48,6 +49,8 @@ const createModal = () => {
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.15s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   `;
 
   const makeBtn = (label) => {
@@ -70,13 +73,25 @@ const createModal = () => {
   let scale = 1;
   let tx = 0;
   let ty = 0;
-  const STEP      = 1.5;
+  const BUTTON_STEP = 1.1;
+  const CLICK_SCALE = 2.2;
   const MIN_SCALE = 1;
   const MAX_SCALE = 8;
+  const EPSILON = 0.001;
+  let dragging = false, dragStartX = 0, dragStartY = 0;
+  let txAtDrag = 0, tyAtDrag = 0, didDrag = false;
+
+  const setCursor = () => {
+    if (dragging && scale > MIN_SCALE + EPSILON) {
+      img.style.cursor = 'grabbing';
+      return;
+    }
+    img.style.cursor = scale > MIN_SCALE + EPSILON ? 'zoom-out' : 'zoom-in';
+  };
 
   const applyTransform = () => {
     img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
-    img.style.cursor = scale > 1 ? 'grab' : 'default';
+    setCursor();
     btnZoomOut.disabled = scale <= MIN_SCALE;
     btnZoomIn.disabled  = scale >= MAX_SCALE;
     btnZoomOut.style.opacity = scale <= MIN_SCALE ? '0.35' : '1';
@@ -93,14 +108,13 @@ const createModal = () => {
     ty = Math.max(ty, m - r.height + (ty - r.top)  + 1);
   };
 
-  // Zoom centred on the image centre
-  const zoomBy = (factor) => {
+  const zoomTo = (nextScale, centerX, centerY) => {
     const rect = img.getBoundingClientRect();
-    const cx = rect.left + rect.width  / 2;
-    const cy = rect.top  + rect.height / 2;
+    const cx = centerX ?? (rect.left + rect.width / 2);
+    const cy = centerY ?? (rect.top + rect.height / 2);
     const lx = (cx - rect.left) / scale;
     const ly = (cy - rect.top)  / scale;
-    const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+    const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, nextScale));
     tx = cx - lx * newScale - (rect.left - tx);
     ty = cy - ly * newScale - (rect.top  - ty);
     scale = newScale;
@@ -109,12 +123,27 @@ const createModal = () => {
     applyTransform();
   };
 
-  btnZoomIn.addEventListener('click',  (e) => { e.stopPropagation(); zoomBy(STEP); });
-  btnZoomOut.addEventListener('click', (e) => { e.stopPropagation(); zoomBy(1 / STEP); });
+  // Zoom centred on the image centre by default
+  const zoomBy = (factor) => {
+    zoomTo(scale * factor);
+  };
+
+  btnZoomIn.addEventListener('click',  (e) => { e.stopPropagation(); zoomBy(BUTTON_STEP); });
+  btnZoomOut.addEventListener('click', (e) => { e.stopPropagation(); zoomBy(1 / BUTTON_STEP); });
+
+  img.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (didDrag) { didDrag = false; return; }
+
+    if (scale <= MIN_SCALE + EPSILON) {
+      zoomTo(CLICK_SCALE, e.clientX, e.clientY);
+      return;
+    }
+
+    zoomTo(MIN_SCALE);
+  });
 
   // --- Drag-to-pan (mouse + touch) ---
-  let dragging = false, dragStartX = 0, dragStartY = 0;
-  let txAtDrag = 0, tyAtDrag = 0, didDrag = false;
 
   const startPan = (clientX, clientY) => {
     dragging = true; didDrag = false;
@@ -135,21 +164,21 @@ const createModal = () => {
   const stopDrag = () => {
     if (!dragging) return;
     dragging = false;
-    img.style.cursor = scale > 1 ? 'grab' : 'default';
     img.style.transition = 'transform 0.15s ease';
+    setCursor();
   };
 
   // Mouse
   img.addEventListener('mousedown', (e) => {
     if (scale <= 1) return;
     e.preventDefault();
-    img.style.cursor = 'grabbing';
     startPan(e.clientX, e.clientY);
+    setCursor();
   });
   window.addEventListener('mousemove', (e) => {
     if (!dragging) return;
     movePan(e.clientX, e.clientY);
-    img.style.cursor = 'grabbing';
+    setCursor();
   });
   window.addEventListener('mouseup',    stopDrag);
   window.addEventListener('mouseleave', stopDrag);
@@ -188,6 +217,7 @@ const createModal = () => {
   });
 
   modal.appendChild(img);
+  applyTransform();
 
   return { modal, toolbar };
 };
@@ -198,7 +228,6 @@ export function initImageZoom() {
   document.addEventListener('click', (e) => {
     const el = e.target.closest('img.zoomable');
     if (!el) return;
-    el.style.cursor = 'zoom-in';
     const { modal, toolbar } = createModal();
     modal.querySelector('img').src = el.dataset.zoomSrc || el.currentSrc || el.src;
     document.body.appendChild(toolbar);
