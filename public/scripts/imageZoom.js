@@ -132,7 +132,14 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   let wheelEndTimer = null;
   let closeTimer = null;
   let isClosing = false;
-  let pinchLastDistance = 0;
+  let pinchStartDistance = 0;
+  let pinchStartScale = 1;
+  let pinchStartTx = 0;
+  let pinchStartTy = 0;
+  let pinchAnchorLX = 0;
+  let pinchAnchorLY = 0;
+  let pinchBaseLeft = 0;
+  let pinchBaseTop = 0;
   let touchMode = null;
   let touchStartX = 0;
   let touchStartY = 0;
@@ -407,6 +414,19 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     y: (touchA.clientY + touchB.clientY) / 2,
   });
 
+  const beginPinch = (touchA, touchB) => {
+    const midpoint = midpointBetweenTouches(touchA, touchB);
+    const rect = img.getBoundingClientRect();
+    pinchStartDistance = distanceBetweenTouches(touchA, touchB);
+    pinchStartScale = scale;
+    pinchStartTx = tx;
+    pinchStartTy = ty;
+    pinchAnchorLX = (midpoint.x - rect.left) / scale;
+    pinchAnchorLY = (midpoint.y - rect.top) / scale;
+    pinchBaseLeft = rect.left - tx;
+    pinchBaseTop = rect.top - ty;
+  };
+
   const resetSwipeVisual = () => {
     if (!isTouchUI) return;
     modal.style.transition = SWIPE_RESET_TRANSITION;
@@ -604,7 +624,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
       e.preventDefault();
       touchMode = 'pinch';
       didDrag = true;
-      pinchLastDistance = distanceBetweenTouches(e.touches[0], e.touches[1]);
+      beginPinch(e.touches[0], e.touches[1]);
       return;
     }
 
@@ -629,13 +649,27 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   const onTouchMove = (e) => {
     if (touchMode === 'pinch' && e.touches.length === 2) {
       e.preventDefault();
+      if (pinchStartDistance <= 0) return;
+
       const nextDistance = distanceBetweenTouches(e.touches[0], e.touches[1]);
-      if (pinchLastDistance > 0) {
-        const factor = nextDistance / pinchLastDistance;
-        const midpoint = midpointBetweenTouches(e.touches[0], e.touches[1]);
-        zoomTo(scale * factor, midpoint.x, midpoint.y);
+      const midpoint = midpointBetweenTouches(e.touches[0], e.touches[1]);
+      const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinchStartScale * (nextDistance / pinchStartDistance)));
+      let nextTx = midpoint.x - pinchAnchorLX * nextScale - pinchBaseLeft;
+      let nextTy = midpoint.y - pinchAnchorLY * nextScale - pinchBaseTop;
+
+      if (nextScale === MIN_SCALE) {
+        nextTx = 0;
+        nextTy = 0;
+      } else {
+        const constrained = constrainTranslation(scale, nextTx, nextTy, nextScale);
+        nextTx = constrained.tx;
+        nextTy = constrained.ty;
       }
-      pinchLastDistance = nextDistance;
+
+      scale = nextScale;
+      tx = nextTx;
+      ty = nextTy;
+      applyTransform();
       return;
     }
 
@@ -689,7 +723,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     }
 
     if (touchMode === 'pinch') {
-      pinchLastDistance = 0;
+      pinchStartDistance = 0;
     }
 
     touchMode = null;
@@ -699,7 +733,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
 
   const onTouchCancel = () => {
     touchMode = null;
-    pinchLastDistance = 0;
+    pinchStartDistance = 0;
     swipeDY = 0;
     resetSwipeVisual();
     stopDrag();
