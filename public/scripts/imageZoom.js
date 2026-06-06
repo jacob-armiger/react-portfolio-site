@@ -13,6 +13,24 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     touch-action: none;
   `;
 
+  const topFade = document.createElement('div');
+  topFade.style.cssText = `
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 38vh;
+    pointer-events: none;
+    z-index: 10001;
+    opacity: 0.22;
+    transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.58) 28%,
+      rgba(0, 0, 0, 0.2) 62%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  `;
+
   const setModalHeight = () => {
     modal.style.height = window.innerHeight + 'px';
   };
@@ -380,6 +398,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     modal.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
     modal.style.transform = '';
     modal.style.opacity = '';
+    topFade.style.opacity = '0.22';
     window.setTimeout(() => {
       modal.style.transition = '';
     }, 220);
@@ -478,6 +497,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     btnPrev?.remove();
     btnNext?.remove();
     thumbStrip?.remove();
+    topFade.remove();
     document.body.style.overflow = '';
     toolbar.remove();
     modal.remove();
@@ -581,9 +601,10 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     const progress = clamped / 220;
     const easedProgress = 1 - Math.pow(1 - progress, 0.45);
     const travel = easedProgress * 260;
-    const fade = Math.max(0.68, 1 - travel / 760);
+    const fade = Math.max(0.34, 1 - travel / 360);
     modal.style.transform = `translateY(${travel}px)`;
     modal.style.opacity = String(fade);
+    topFade.style.opacity = String(Math.min(0.98, 0.22 + easedProgress * 0.72));
   };
 
   const onTouchEnd = (e) => {
@@ -597,6 +618,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
         modal.style.transition = 'transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.16s cubic-bezier(0.22, 1, 0.36, 1)';
         modal.style.transform = `translateY(${window.innerHeight}px)`;
         modal.style.opacity = '0';
+        topFade.style.opacity = '1';
         window.setTimeout(() => {
           close();
         }, 160);
@@ -651,6 +673,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   });
 
   modal.appendChild(img);
+  modal.appendChild(topFade);
   setCurrentIndex(currentIndex);
 
   if (hasNav) {
