@@ -97,12 +97,11 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             <img
                                 src={img.src}
                                 alt="Artwork"
-                                className="zoomable"
+                                className="zoomable cursor-pointer"
                                 loading="lazy"
                                 width={img.width}
                                 height={img.height}
                                 data-zoom-src={img.originalSrc}
-                                style={{ cursor: 'zoom-in' }}
                             />
                         </Frame>
                     ))}
