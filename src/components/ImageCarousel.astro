@@ -123,11 +123,35 @@ const resolvedImages = await Promise.all(
                 if (thumbs.length === 0) return;
 
                 const srcs = thumbs.map((t) => t.getAttribute("data-carousel-src") || "");
+                const previewSrcs = thumbs.map((t) => {
+                    const previewImg = t.querySelector("img");
+                    return previewImg?.currentSrc || previewImg?.src || "";
+                });
+
+                const prewarm = (index) => {
+                    const src = srcs[index];
+                    if (!src) return;
+                    if (typeof window.preloadImageZoomSrc === "function") {
+                        window.preloadImageZoomSrc(src);
+                        return;
+                    }
+                    const prefetchImg = new Image();
+                    prefetchImg.decoding = "async";
+                    prefetchImg.src = src;
+                };
 
                 thumbs.forEach((thumb, i) => {
+                    thumb.addEventListener("mouseenter", () => prewarm(i));
+                    thumb.addEventListener("touchstart", () => prewarm(i), { passive: true });
+
                     thumb.addEventListener("click", () => {
                         if (typeof window.openImageZoom === "function") {
-                            window.openImageZoom(srcs[i], { srcs, startIndex: i });
+                            window.openImageZoom(srcs[i], {
+                                srcs,
+                                startIndex: i,
+                                previewSrc: previewSrcs[i],
+                                previewSrcs,
+                            });
                         }
                     });
                 });

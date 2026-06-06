@@ -1,7 +1,17 @@
 // Lightweight image zoom: click a .zoomable image to open modal.
 // Zoom via +/− buttons; drag-to-pan with mouse, touch, or trackpad.
 
-const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
+const imagePreloadCache = new Set();
+
+export function preloadImageZoomSrc(src) {
+  if (!src || imagePreloadCache.has(src)) return;
+  imagePreloadCache.add(src);
+  const preloadImg = new Image();
+  preloadImg.decoding = 'async';
+  preloadImg.src = src;
+}
+
+const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
   const modal = document.createElement('div');
   modal.style.cssText = `
     position: fixed;
@@ -133,6 +143,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   let swipeResetTimer = null;
   let closeTimer = null;
   let isClosing = false;
+  let sourceLoadToken = 0;
   let pinchStartDistance = 0;
   let pinchStartScale = 1;
   let pinchAnchorLX = 0;
@@ -291,14 +302,53 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     });
   };
 
+  const warmNeighbors = (index) => {
+    preloadImageZoomSrc(srcs[index]);
+    preloadImageZoomSrc(srcs[index - 1]);
+    preloadImageZoomSrc(srcs[index + 1]);
+  };
+
+  const setImageSourceForIndex = (index) => {
+    const fullSrc = srcs[index];
+    const previewSrc = previewSrcs[index] || fullSrc;
+
+    if (previewSrc) {
+      img.src = previewSrc;
+    }
+
+    if (!fullSrc || fullSrc === previewSrc) {
+      warmNeighbors(index);
+      return;
+    }
+
+    const thisLoadToken = ++sourceLoadToken;
+    preloadImageZoomSrc(fullSrc);
+
+    const fullImg = new Image();
+    fullImg.decoding = 'async';
+    fullImg.onload = () => {
+      if (thisLoadToken !== sourceLoadToken) return;
+      img.src = fullSrc;
+      warmNeighbors(index);
+    };
+    fullImg.onerror = () => {
+      warmNeighbors(index);
+    };
+    fullImg.src = fullSrc;
+
+    if (fullImg.complete) {
+      fullImg.onload?.();
+    }
+  };
+
   const setCurrentIndex = (nextIndex) => {
     const clamped = clampIndex(nextIndex);
     const didChange = clamped !== currentIndex;
     currentIndex = clamped;
 
     if (didChange || img.src !== srcs[currentIndex]) {
-      img.src = srcs[currentIndex];
       resetViewState();
+      setImageSourceForIndex(currentIndex);
     }
 
     updateNavState();
@@ -771,10 +821,22 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   return { modal, toolbar };
 };
 
-export function openImageZoom(src, { srcs = [], startIndex = 0 } = {}) {
+export function openImageZoom(src, {
+  srcs = [],
+  startIndex = 0,
+  previewSrc,
+  previewSrcs = [],
+} = {}) {
   const allSrcs = srcs.length > 0 ? srcs : [src];
   const idx = srcs.length > 0 ? startIndex : 0;
-  const { modal, toolbar } = createModal({ srcs: allSrcs, startIndex: idx });
+  const allPreviewSrcs = srcs.length > 0
+    ? previewSrcs
+    : [previewSrc || src];
+  const { modal, toolbar } = createModal({
+    srcs: allSrcs,
+    startIndex: idx,
+    previewSrcs: allPreviewSrcs,
+  });
   document.body.appendChild(toolbar);
   document.body.appendChild(modal);
 }
@@ -784,10 +846,31 @@ export function initImageZoom() {
   if (window.__imageZoomInitialized) return;
   window.__imageZoomInitialized = true;
 
+  const maybePreloadFromTarget = (target) => {
+    const el = target?.closest?.('img.zoomable');
+    if (!el) return;
+    preloadImageZoomSrc(el.dataset.zoomSrc || el.currentSrc || el.src);
+  };
+
+  document.addEventListener('pointerenter', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    maybePreloadFromTarget(e.target);
+  }, true);
+
+  document.addEventListener('touchstart', (e) => {
+    maybePreloadFromTarget(e.target);
+  }, { passive: true });
+
+  document.addEventListener('mousedown', (e) => {
+    maybePreloadFromTarget(e.target);
+  }, true);
+
   document.addEventListener('click', (e) => {
     const el = e.target.closest('img.zoomable');
     if (!el) return;
-    openImageZoom(el.dataset.zoomSrc || el.currentSrc || el.src);
+    openImageZoom(el.dataset.zoomSrc || el.currentSrc || el.src, {
+      previewSrc: el.currentSrc || el.src,
+    });
   });
 }
 
@@ -800,4 +883,5 @@ if (typeof window !== 'undefined') {
     initImageZoom();
   }
   window.openImageZoom = openImageZoom;
+  window.preloadImageZoomSrc = preloadImageZoomSrc;
 }
