@@ -106,6 +106,14 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   const MIN_SCALE = 1;
   const MAX_SCALE = 8;
   const EPSILON = 0.001;
+  const SWIPE_CLOSE_THRESHOLD = 120;
+  const SWIPE_CLAMP_DISTANCE = 220;
+  const SWIPE_TRAVEL_DISTANCE = 260;
+  const SWIPE_RESET_TRANSITION = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+  const SWIPE_CLOSE_PHASE1_MS = 110;
+  const SWIPE_CLOSE_PHASE2_MS = 90;
+  const SWIPE_FADEOUT_VIEWPORT_RATIO = 0.72;
+  const SWIPE_FLICK_EXTRA = 96;
 
   let currentIndex = startIndex;
   const hasNav = srcs.length > 1;
@@ -122,6 +130,8 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   let wheelDY = 0;
   let wheelRaf = null;
   let wheelEndTimer = null;
+  let closeTimer = null;
+  let isClosing = false;
   let pinchLastDistance = 0;
   let touchMode = null;
   let touchStartX = 0;
@@ -147,6 +157,13 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     btnZoomIn.disabled = scale >= MAX_SCALE;
     btnZoomOut.style.opacity = scale <= MIN_SCALE ? '0.35' : '1';
     btnZoomIn.style.opacity = scale >= MAX_SCALE ? '0.35' : '1';
+  };
+
+  const resetViewState = () => {
+    scale = 1;
+    tx = 0;
+    ty = 0;
+    applyTransform();
   };
 
   const constrainTranslation = (currentScale, nextTx, nextTy, nextScale = currentScale) => {
@@ -275,10 +292,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
 
     if (didChange || img.src !== srcs[currentIndex]) {
       img.src = srcs[currentIndex];
-      scale = 1;
-      tx = 0;
-      ty = 0;
-      applyTransform();
+      resetViewState();
     }
 
     updateNavState();
@@ -395,13 +409,49 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
 
   const resetSwipeVisual = () => {
     if (!isTouchUI) return;
-    modal.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+    modal.style.transition = SWIPE_RESET_TRANSITION;
     modal.style.transform = '';
     modal.style.opacity = '';
     topFade.style.opacity = '0.22';
     window.setTimeout(() => {
       modal.style.transition = '';
     }, 220);
+  };
+
+  const setSwipeVisual = (progress) => {
+    const easedProgress = 1 - Math.pow(1 - progress, 0.45);
+    const travel = easedProgress * SWIPE_TRAVEL_DISTANCE;
+    const fade = Math.max(0.34, 1 - travel / 360);
+    modal.style.transform = `translateY(${travel}px)`;
+    modal.style.opacity = String(fade);
+    topFade.style.opacity = String(Math.min(0.98, 0.22 + easedProgress * 0.72));
+  };
+
+  const runSwipeCloseFlick = () => {
+    const fadeOutY = Math.round(window.innerHeight * SWIPE_FADEOUT_VIEWPORT_RATIO);
+    const flickY = window.innerHeight + SWIPE_FLICK_EXTRA;
+
+    // Phase 1: fade out before reaching screen bottom.
+    modal.style.transition = `transform ${SWIPE_CLOSE_PHASE1_MS}ms cubic-bezier(0.24, 0.92, 0.28, 1), opacity 95ms cubic-bezier(0.4, 0, 1, 1)`;
+    modal.style.transform = `translateY(${fadeOutY}px)`;
+    modal.style.opacity = '0';
+    topFade.style.opacity = '1';
+
+    closeTimer = window.setTimeout(() => {
+      if (isClosing) {
+        closeTimer = null;
+        return;
+      }
+
+      // Phase 2: short flick downward while invisible.
+      modal.style.transition = `transform ${SWIPE_CLOSE_PHASE2_MS}ms cubic-bezier(0.2, 0.82, 0.35, 1)`;
+      modal.style.transform = `translateY(${flickY}px)`;
+
+      closeTimer = window.setTimeout(() => {
+        close();
+        closeTimer = null;
+      }, SWIPE_CLOSE_PHASE2_MS);
+    }, SWIPE_CLOSE_PHASE1_MS);
   };
 
   const movePan = (clientX, clientY) => {
@@ -475,6 +525,9 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   document.addEventListener('keydown', onKeyDown);
 
   const close = () => {
+    if (isClosing) return;
+    isClosing = true;
+
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', stopDrag);
     window.removeEventListener('mouseleave', stopDrag);
@@ -492,6 +545,10 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     if (wheelEndTimer !== null) {
       window.clearTimeout(wheelEndTimer);
       wheelEndTimer = null;
+    }
+    if (closeTimer !== null) {
+      window.clearTimeout(closeTimer);
+      closeTimer = null;
     }
 
     btnPrev?.remove();
@@ -597,14 +654,9 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     if (dy <= 0 || Math.abs(dx) > Math.abs(dy)) return;
 
     swipeDY = dy;
-    const clamped = Math.min(220, dy);
-    const progress = clamped / 220;
-    const easedProgress = 1 - Math.pow(1 - progress, 0.45);
-    const travel = easedProgress * 260;
-    const fade = Math.max(0.34, 1 - travel / 360);
-    modal.style.transform = `translateY(${travel}px)`;
-    modal.style.opacity = String(fade);
-    topFade.style.opacity = String(Math.min(0.98, 0.22 + easedProgress * 0.72));
+    const clamped = Math.min(SWIPE_CLAMP_DISTANCE, dy);
+    const progress = clamped / SWIPE_CLAMP_DISTANCE;
+    setSwipeVisual(progress);
   };
 
   const onTouchEnd = (e) => {
@@ -614,14 +666,8 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     const movedY = Math.abs(lastTapY - touchStartY);
 
     if (touchMode === 'swipe') {
-      if (swipeDY > 120) {
-        modal.style.transition = 'transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.16s cubic-bezier(0.22, 1, 0.36, 1)';
-        modal.style.transform = `translateY(${window.innerHeight}px)`;
-        modal.style.opacity = '0';
-        topFade.style.opacity = '1';
-        window.setTimeout(() => {
-          close();
-        }, 160);
+      if (swipeDY > SWIPE_CLOSE_THRESHOLD) {
+        runSwipeCloseFlick();
         return;
       }
       resetSwipeVisual();
