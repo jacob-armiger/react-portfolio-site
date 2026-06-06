@@ -106,7 +106,7 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   const MIN_SCALE = 1;
   const MAX_SCALE = 8;
   const EPSILON = 0.001;
-  const SWIPE_CLOSE_THRESHOLD = 120;
+  const SWIPE_RELEASE_CLOSE_MIN = 22;
   const SWIPE_CLAMP_DISTANCE = 220;
   const SWIPE_TRAVEL_DISTANCE = 260;
   const SWIPE_RESET_TRANSITION = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
@@ -130,12 +130,11 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   let wheelDY = 0;
   let wheelRaf = null;
   let wheelEndTimer = null;
+  let swipeResetTimer = null;
   let closeTimer = null;
   let isClosing = false;
   let pinchStartDistance = 0;
   let pinchStartScale = 1;
-  let pinchStartTx = 0;
-  let pinchStartTy = 0;
   let pinchAnchorLX = 0;
   let pinchAnchorLY = 0;
   let pinchBaseLeft = 0;
@@ -419,8 +418,6 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     const rect = img.getBoundingClientRect();
     pinchStartDistance = distanceBetweenTouches(touchA, touchB);
     pinchStartScale = scale;
-    pinchStartTx = tx;
-    pinchStartTy = ty;
     pinchAnchorLX = (midpoint.x - rect.left) / scale;
     pinchAnchorLY = (midpoint.y - rect.top) / scale;
     pinchBaseLeft = rect.left - tx;
@@ -429,12 +426,17 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
 
   const resetSwipeVisual = () => {
     if (!isTouchUI) return;
+    if (swipeResetTimer !== null) {
+      window.clearTimeout(swipeResetTimer);
+      swipeResetTimer = null;
+    }
     modal.style.transition = SWIPE_RESET_TRANSITION;
     modal.style.transform = '';
     modal.style.opacity = '';
     topFade.style.opacity = '0.22';
-    window.setTimeout(() => {
+    swipeResetTimer = window.setTimeout(() => {
       modal.style.transition = '';
+      swipeResetTimer = null;
     }, 220);
   };
 
@@ -566,6 +568,10 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
       window.clearTimeout(wheelEndTimer);
       wheelEndTimer = null;
     }
+    if (swipeResetTimer !== null) {
+      window.clearTimeout(swipeResetTimer);
+      swipeResetTimer = null;
+    }
     if (closeTimer !== null) {
       window.clearTimeout(closeTimer);
       closeTimer = null;
@@ -693,14 +699,14 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     setSwipeVisual(progress);
   };
 
-  const onTouchEnd = (e) => {
+  const onTouchEnd = () => {
     const now = Date.now();
     const tapDuration = now - touchStartTime;
     const movedX = Math.abs(lastTapX - touchStartX);
     const movedY = Math.abs(lastTapY - touchStartY);
 
     if (touchMode === 'swipe') {
-      if (swipeDY > SWIPE_CLOSE_THRESHOLD) {
+      if (swipeDY > SWIPE_RELEASE_CLOSE_MIN) {
         runSwipeCloseFlick();
         return;
       }
