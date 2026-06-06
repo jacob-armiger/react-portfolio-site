@@ -377,12 +377,12 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
 
   const resetSwipeVisual = () => {
     if (!isTouchUI) return;
-    modal.style.transition = 'transform 0.18s ease, opacity 0.18s ease';
+    modal.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
     modal.style.transform = '';
     modal.style.opacity = '';
     window.setTimeout(() => {
       modal.style.transition = '';
-    }, 180);
+    }, 220);
   };
 
   const movePan = (clientX, clientY) => {
@@ -577,8 +577,11 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
     if (dy <= 0 || Math.abs(dx) > Math.abs(dy)) return;
 
     swipeDY = dy;
-    const travel = Math.min(200, dy);
-    const fade = Math.max(0.75, 1 - travel / 1000);
+    const clamped = Math.min(220, dy);
+    const progress = clamped / 220;
+    const easedProgress = 1 - Math.pow(1 - progress, 0.45);
+    const travel = easedProgress * 260;
+    const fade = Math.max(0.68, 1 - travel / 760);
     modal.style.transform = `translateY(${travel}px)`;
     modal.style.opacity = String(fade);
   };
@@ -591,7 +594,12 @@ const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
 
     if (touchMode === 'swipe') {
       if (swipeDY > 120) {
-        close();
+        modal.style.transition = 'transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.16s cubic-bezier(0.22, 1, 0.36, 1)';
+        modal.style.transform = `translateY(${window.innerHeight}px)`;
+        modal.style.opacity = '0';
+        window.setTimeout(() => {
+          close();
+        }, 160);
         return;
       }
       resetSwipeVisual();
