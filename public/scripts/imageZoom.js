@@ -1,6 +1,7 @@
 // Lightweight image zoom: click a .zoomable image to open modal.
-// Zoom via +/− buttons; drag-to-pan when zoomed in.
-const createModal = () => {
+// Zoom via +/− buttons; drag-to-pan with mouse, touch, or trackpad.
+
+const createModal = ({ srcs = [], startIndex = 0 } = {}) => {
   const modal = document.createElement('div');
   modal.style.cssText = `
     position: fixed;
@@ -11,13 +12,13 @@ const createModal = () => {
     overflow: hidden;
     touch-action: none;
   `;
-  // Use window.innerHeight so the backdrop covers the full visual viewport
-  // on mobile Safari (avoids the URL-bar gap that 100dvh/100vh can leave).
-  const setModalHeight = () => { modal.style.height = window.innerHeight + 'px'; };
+
+  const setModalHeight = () => {
+    modal.style.height = window.innerHeight + 'px';
+  };
   setModalHeight();
   window.addEventListener('resize', setModalHeight);
 
-  // Disable page scroll while modal is open
   document.body.style.overflow = 'hidden';
 
   const img = document.createElement('img');
@@ -30,7 +31,6 @@ const createModal = () => {
     transition: transform 0.15s ease;
   `;
 
-  // --- toolbar (bottom-right) ---
   const toolbar = document.createElement('div');
   toolbar.style.cssText = `
     position: fixed; bottom: 16px; right: 16px;
@@ -58,18 +58,20 @@ const createModal = () => {
     btn.type = 'button';
     btn.textContent = label;
     btn.style.cssText = btnStyle;
-    btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.3)');
-    btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.15)');
+    btn.addEventListener('mouseenter', () => {
+      btn.style.background = 'rgba(255,255,255,0.3)';
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.background = 'rgba(255,255,255,0.15)';
+    });
     return btn;
   };
 
-  const btnZoomIn  = makeBtn('+');
+  const btnZoomIn = makeBtn('+');
   const btnZoomOut = makeBtn('−');
-  const btnClose   = makeBtn('×');
-
+  const btnClose = makeBtn('×');
   toolbar.append(btnZoomIn, btnZoomOut, btnClose);
 
-  // --- zoom / pan state ---
   let scale = 1;
   let tx = 0;
   let ty = 0;
@@ -78,8 +80,21 @@ const createModal = () => {
   const MIN_SCALE = 1;
   const MAX_SCALE = 8;
   const EPSILON = 0.001;
-  let dragging = false, dragStartX = 0, dragStartY = 0;
-  let txAtDrag = 0, tyAtDrag = 0, didDrag = false;
+
+  let currentIndex = startIndex;
+  const hasNav = srcs.length > 1;
+
+  let dragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let txAtDrag = 0;
+  let tyAtDrag = 0;
+  let didDrag = false;
+
+  let wheelDX = 0;
+  let wheelDY = 0;
+  let wheelRaf = null;
+  let wheelEndTimer = null;
 
   const setCursor = () => {
     if (dragging && scale > MIN_SCALE + EPSILON) {
@@ -93,62 +108,147 @@ const createModal = () => {
     img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
     setCursor();
     btnZoomOut.disabled = scale <= MIN_SCALE;
-    btnZoomIn.disabled  = scale >= MAX_SCALE;
+    btnZoomIn.disabled = scale >= MAX_SCALE;
     btnZoomOut.style.opacity = scale <= MIN_SCALE ? '0.35' : '1';
-    btnZoomIn.style.opacity  = scale >= MAX_SCALE ? '0.35' : '1';
+    btnZoomIn.style.opacity = scale >= MAX_SCALE ? '0.35' : '1';
   };
 
-  // Clamp so at least 80 px of the image stays on screen
-  const clamp = () => {
-    const r = img.getBoundingClientRect();
-    const vw = window.innerWidth, vh = window.innerHeight, m = 80;
-    tx = Math.min(tx, vw  - m - (r.left - tx) - 1);
-    tx = Math.max(tx, m - r.width  + (tx - r.left) + 1);
-    ty = Math.min(ty, vh - m - (r.top  - ty) - 1);
-    ty = Math.max(ty, m - r.height + (ty - r.top)  + 1);
+  const constrainTranslation = (currentScale, nextTx, nextTy, nextScale = currentScale) => {
+    const rect = img.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const baseLeft = rect.left - tx;
+    const baseTop = rect.top - ty;
+    const baseWidth = rect.width / currentScale;
+    const baseHeight = rect.height / currentScale;
+    const nextWidth = baseWidth * nextScale;
+    const nextHeight = baseHeight * nextScale;
+
+    let constrainedTx = nextTx;
+    let constrainedTy = nextTy;
+
+    if (nextWidth <= vw) {
+      constrainedTx = (vw - nextWidth) / 2 - baseLeft;
+    } else {
+      const minTx = vw - baseLeft - nextWidth;
+      const maxTx = -baseLeft;
+      constrainedTx = Math.max(minTx, Math.min(maxTx, constrainedTx));
+    }
+
+    if (nextHeight <= vh) {
+      constrainedTy = (vh - nextHeight) / 2 - baseTop;
+    } else {
+      const minTy = vh - baseTop - nextHeight;
+      const maxTy = -baseTop;
+      constrainedTy = Math.max(minTy, Math.min(maxTy, constrainedTy));
+    }
+
+    return { tx: constrainedTx, ty: constrainedTy };
   };
 
   const zoomTo = (nextScale, centerX, centerY) => {
     const rect = img.getBoundingClientRect();
+    const currentScale = scale;
     const cx = centerX ?? (rect.left + rect.width / 2);
     const cy = centerY ?? (rect.top + rect.height / 2);
-    const lx = (cx - rect.left) / scale;
-    const ly = (cy - rect.top)  / scale;
+    const lx = (cx - rect.left) / currentScale;
+    const ly = (cy - rect.top) / currentScale;
     const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, nextScale));
-    tx = cx - lx * newScale - (rect.left - tx);
-    ty = cy - ly * newScale - (rect.top  - ty);
-    scale = newScale;
-    if (scale === MIN_SCALE) { tx = 0; ty = 0; }
-    else clamp();
+
+    const nextTx = cx - lx * newScale - (rect.left - tx);
+    const nextTy = cy - ly * newScale - (rect.top - ty);
+
+    if (newScale === MIN_SCALE) {
+      scale = newScale;
+      tx = 0;
+      ty = 0;
+    } else {
+      const constrained = constrainTranslation(currentScale, nextTx, nextTy, newScale);
+      tx = constrained.tx;
+      ty = constrained.ty;
+      scale = newScale;
+    }
+
     applyTransform();
   };
 
-  // Zoom centred on the image centre by default
-  const zoomBy = (factor) => {
-    zoomTo(scale * factor);
-  };
+  const zoomBy = (factor) => zoomTo(scale * factor);
 
-  btnZoomIn.addEventListener('click',  (e) => { e.stopPropagation(); zoomBy(BUTTON_STEP); });
-  btnZoomOut.addEventListener('click', (e) => { e.stopPropagation(); zoomBy(1 / BUTTON_STEP); });
-
-  img.addEventListener('click', (e) => {
+  btnZoomIn.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (didDrag) { didDrag = false; return; }
-
-    if (scale <= MIN_SCALE + EPSILON) {
-      zoomTo(CLICK_SCALE, e.clientX, e.clientY);
-      return;
-    }
-
-    zoomTo(MIN_SCALE);
+    zoomBy(BUTTON_STEP);
+  });
+  btnZoomOut.addEventListener('click', (e) => {
+    e.stopPropagation();
+    zoomBy(1 / BUTTON_STEP);
   });
 
-  // --- Drag-to-pan (mouse + touch) ---
+  const navigate = (delta) => {
+    currentIndex = (currentIndex + delta + srcs.length) % srcs.length;
+    img.src = srcs[currentIndex];
+    scale = 1;
+    tx = 0;
+    ty = 0;
+    applyTransform();
+  };
+
+  const navBtnStyle = `
+    position: fixed;
+    top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    color: #fff; font-size: 22px; line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10000;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  `;
+
+  let btnPrev = null;
+  let btnNext = null;
+  if (hasNav) {
+    btnPrev = document.createElement('button');
+    btnPrev.type = 'button';
+    btnPrev.textContent = '❮';
+    btnPrev.style.cssText = navBtnStyle + 'left: 8px;';
+    btnPrev.addEventListener('mouseenter', () => {
+      btnPrev.style.background = 'rgba(255,255,255,0.3)';
+    });
+    btnPrev.addEventListener('mouseleave', () => {
+      btnPrev.style.background = 'rgba(255,255,255,0.15)';
+    });
+    btnPrev.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigate(-1);
+    });
+
+    btnNext = document.createElement('button');
+    btnNext.type = 'button';
+    btnNext.textContent = '❯';
+    btnNext.style.cssText = navBtnStyle + 'right: 8px;';
+    btnNext.addEventListener('mouseenter', () => {
+      btnNext.style.background = 'rgba(255,255,255,0.3)';
+    });
+    btnNext.addEventListener('mouseleave', () => {
+      btnNext.style.background = 'rgba(255,255,255,0.15)';
+    });
+    btnNext.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigate(1);
+    });
+  }
 
   const startPan = (clientX, clientY) => {
-    dragging = true; didDrag = false;
-    dragStartX = clientX; dragStartY = clientY;
-    txAtDrag = tx; tyAtDrag = ty;
+    dragging = true;
+    didDrag = false;
+    dragStartX = clientX;
+    dragStartY = clientY;
+    txAtDrag = tx;
+    tyAtDrag = ty;
     img.style.transition = 'none';
   };
 
@@ -157,8 +257,11 @@ const createModal = () => {
     const dx = clientX - dragStartX;
     const dy = clientY - dragStartY;
     if (Math.abs(dx) > 2 || Math.abs(dy) > 2) didDrag = true;
-    tx = txAtDrag + dx; ty = tyAtDrag + dy;
-    clamp(); applyTransform();
+
+    const constrained = constrainTranslation(scale, txAtDrag + dx, tyAtDrag + dy);
+    tx = constrained.tx;
+    ty = constrained.ty;
+    applyTransform();
   };
 
   const stopDrag = () => {
@@ -168,9 +271,104 @@ const createModal = () => {
     setCursor();
   };
 
-  // Mouse
+  const flushWheelPan = () => {
+    wheelRaf = null;
+    if (wheelDX === 0 && wheelDY === 0) return;
+
+    const prevTx = tx;
+    const prevTy = ty;
+    const constrained = constrainTranslation(scale, tx - wheelDX, ty - wheelDY);
+    tx = constrained.tx;
+    ty = constrained.ty;
+    wheelDX = 0;
+    wheelDY = 0;
+
+    if (Math.abs(tx - prevTx) > 0.5 || Math.abs(ty - prevTy) > 0.5) {
+      didDrag = true;
+    }
+
+    applyTransform();
+  };
+
+  const onWheel = (e) => {
+    if (scale <= MIN_SCALE + EPSILON) return;
+    e.preventDefault();
+
+    img.style.transition = 'none';
+    if (wheelEndTimer !== null) window.clearTimeout(wheelEndTimer);
+    wheelEndTimer = window.setTimeout(() => {
+      wheelEndTimer = null;
+      if (!dragging) img.style.transition = 'transform 0.15s ease';
+    }, 80);
+
+    const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? window.innerHeight : 1);
+    wheelDX += e.deltaX * unit;
+    wheelDY += e.deltaY * unit;
+
+    if (wheelRaf === null) {
+      wheelRaf = window.requestAnimationFrame(flushWheelPan);
+    }
+  };
+  modal.addEventListener('wheel', onWheel, { passive: false });
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      close();
+      return;
+    }
+    if (!hasNav) return;
+    if (e.key === 'ArrowLeft') navigate(-1);
+    if (e.key === 'ArrowRight') navigate(1);
+  };
+  document.addEventListener('keydown', onKeyDown);
+
+  const close = () => {
+    window.removeEventListener('mouseup', stopDrag);
+    window.removeEventListener('mouseleave', stopDrag);
+    window.removeEventListener('touchend', stopDrag);
+    window.removeEventListener('touchcancel', stopDrag);
+    window.removeEventListener('resize', setModalHeight);
+    modal.removeEventListener('wheel', onWheel);
+    document.removeEventListener('keydown', onKeyDown);
+
+    if (wheelRaf !== null) {
+      window.cancelAnimationFrame(wheelRaf);
+      wheelRaf = null;
+    }
+    if (wheelEndTimer !== null) {
+      window.clearTimeout(wheelEndTimer);
+      wheelEndTimer = null;
+    }
+
+    btnPrev?.remove();
+    btnNext?.remove();
+    document.body.style.overflow = '';
+    toolbar.remove();
+    modal.remove();
+  };
+
+  btnClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    close();
+  });
+
+  img.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (didDrag) {
+      didDrag = false;
+      return;
+    }
+
+    if (scale <= MIN_SCALE + EPSILON) {
+      zoomTo(CLICK_SCALE, e.clientX, e.clientY);
+      return;
+    }
+
+    zoomTo(MIN_SCALE);
+  });
+
   img.addEventListener('mousedown', (e) => {
-    if (scale <= 1) return;
+    if (scale <= MIN_SCALE) return;
     e.preventDefault();
     startPan(e.clientX, e.clientY);
     setCursor();
@@ -180,10 +378,9 @@ const createModal = () => {
     movePan(e.clientX, e.clientY);
     setCursor();
   });
-  window.addEventListener('mouseup',    stopDrag);
+  window.addEventListener('mouseup', stopDrag);
   window.addEventListener('mouseleave', stopDrag);
 
-  // Touch
   img.addEventListener('touchstart', (e) => {
     if (e.touches.length !== 1) return;
     e.preventDefault();
@@ -194,50 +391,56 @@ const createModal = () => {
     e.preventDefault();
     movePan(e.touches[0].clientX, e.touches[0].clientY);
   }, { passive: false });
-  window.addEventListener('touchend',    stopDrag);
+  window.addEventListener('touchend', stopDrag);
   window.addEventListener('touchcancel', stopDrag);
 
-  // --- Close ---
-  const close = () => {
-    window.removeEventListener('mouseup',    stopDrag);
-    window.removeEventListener('mouseleave', stopDrag);
-    window.removeEventListener('touchend',    stopDrag);
-    window.removeEventListener('touchcancel', stopDrag);
-    window.removeEventListener('resize', setModalHeight);
-    document.body.style.overflow = '';
-    toolbar.remove();
-    modal.remove();
-  };
-
-  btnClose.addEventListener('click', (e) => { e.stopPropagation(); close(); });
-
   modal.addEventListener('click', (e) => {
-    if (didDrag) { didDrag = false; return; }
+    if (didDrag) {
+      didDrag = false;
+      return;
+    }
     if (e.target === modal) close();
   });
 
   modal.appendChild(img);
   applyTransform();
 
+  if (hasNav) {
+    document.body.appendChild(btnPrev);
+    document.body.appendChild(btnNext);
+  }
+
   return { modal, toolbar };
 };
 
+export function openImageZoom(src, { srcs = [], startIndex = 0 } = {}) {
+  const allSrcs = srcs.length > 0 ? srcs : [src];
+  const idx = srcs.length > 0 ? startIndex : 0;
+  const { modal, toolbar } = createModal({ srcs: allSrcs, startIndex: idx });
+  modal.querySelector('img').src = allSrcs[idx];
+  document.body.appendChild(toolbar);
+  document.body.appendChild(modal);
+}
+
 export function initImageZoom() {
   if (typeof window === 'undefined') return;
+  if (window.__imageZoomInitialized) return;
+  window.__imageZoomInitialized = true;
 
   document.addEventListener('click', (e) => {
     const el = e.target.closest('img.zoomable');
     if (!el) return;
-    const { modal, toolbar } = createModal();
-    modal.querySelector('img').src = el.dataset.zoomSrc || el.currentSrc || el.src;
-    document.body.appendChild(toolbar);
-    document.body.appendChild(modal);
+    openImageZoom(el.dataset.zoomSrc || el.currentSrc || el.src);
   });
 }
 
-// auto-init on DOMContentLoaded
 if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => {
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', () => {
+      initImageZoom();
+    }, { once: true });
+  } else {
     initImageZoom();
-  });
+  }
+  window.openImageZoom = openImageZoom;
 }

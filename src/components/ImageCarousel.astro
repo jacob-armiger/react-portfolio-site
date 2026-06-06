@@ -106,91 +106,39 @@ const resolvedImages = await Promise.all(
         }
     </div>
 
-    <dialog class="image-lightbox" data-carousel-dialog aria-label={`${label} expanded view`}>
-        <div class="image-lightbox__inner">
-            <button type="button" class="image-lightbox__close" data-carousel-close aria-label="Close larger view">
-                Close
-            </button>
-
-            <img
-                src=""
-                alt=""
-                class="image-lightbox__image"
-                style="width:auto;max-width:96vw;max-height:92vh;height:auto;object-fit:contain;"
-                data-carousel-image
-                loading="eager"
-                decoding="async"
-            />
-
-            {showCaptions ? <p class="image-lightbox__caption" data-carousel-modal-caption></p> : null}
-        </div>
-    </dialog>
 </section>
 
 <script is:inline>
     (() => {
-        const roots = Array.from(document.querySelectorAll("[data-image-carousel]"));
-        if (roots.length === 0) return;
+        const init = () => {
+            const roots = Array.from(document.querySelectorAll("[data-image-carousel]"));
+            if (roots.length === 0) return;
 
-        roots.forEach((root) => {
-            if (!(root instanceof HTMLElement)) return;
-            if (root.dataset.carouselInitialized === "true") return;
-            root.dataset.carouselInitialized = "true";
+            roots.forEach((root) => {
+                if (!(root instanceof HTMLElement)) return;
+                if (root.dataset.carouselInitialized === "true") return;
+                root.dataset.carouselInitialized = "true";
 
-            const dialog = root.querySelector("[data-carousel-dialog]");
-            const modalImage = root.querySelector("[data-carousel-image]");
-            const modalCaption = root.querySelector("[data-carousel-modal-caption]");
-            const closeButton = root.querySelector("[data-carousel-close]");
-            const thumbs = Array.from(root.querySelectorAll("[data-carousel-thumb]"));
+                const thumbs = Array.from(root.querySelectorAll("[data-carousel-thumb]"));
+                if (thumbs.length === 0) return;
 
-            if (!(dialog instanceof HTMLDialogElement) || !(modalImage instanceof HTMLImageElement) || thumbs.length === 0) {
-                return;
-            }
+                const srcs = thumbs.map((t) => t.getAttribute("data-carousel-src") || "");
 
-            const openImage = (thumb) => {
-                const src = thumb.getAttribute("data-carousel-src") || "";
-                const alt = thumb.getAttribute("data-carousel-alt") || "";
-                const caption = thumb.getAttribute("data-carousel-caption-text") || "";
-
-                modalImage.src = src;
-                modalImage.alt = alt;
-
-                if (modalCaption instanceof HTMLElement) {
-                    modalCaption.textContent = caption;
-                }
-
-                if (!dialog.open) {
-                    dialog.showModal();
-                    document.body.classList.add("overflow-hidden");
-                }
-            };
-
-            thumbs.forEach((thumb) => {
-                thumb.addEventListener("click", () => openImage(thumb));
+                thumbs.forEach((thumb, i) => {
+                    thumb.addEventListener("click", () => {
+                        if (typeof window.openImageZoom === "function") {
+                            window.openImageZoom(srcs[i], { srcs, startIndex: i });
+                        }
+                    });
+                });
             });
+        };
 
-            closeButton?.addEventListener("click", () => {
-                if (dialog.open) {
-                    dialog.close();
-                }
-            });
-
-            dialog.addEventListener("close", () => {
-                document.body.classList.remove("overflow-hidden");
-            });
-
-            dialog.addEventListener("click", (event) => {
-                const target = event.target;
-                if (!(target instanceof Node)) return;
-
-                if (target === modalImage) return;
-                if (closeButton instanceof HTMLElement && closeButton.contains(target)) return;
-
-                if (dialog.open) {
-                    dialog.close();
-                }
-            });
-        });
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init);
+        } else {
+            init();
+        }
     })();
 </script>
 
@@ -221,6 +169,7 @@ const resolvedImages = await Promise.all(
         text-align: left;
         box-shadow: 0 8px 24px rgb(120 113 108 / 0.2);
         transition: none;
+        cursor: pointer;
     }
 
     .image-carousel-thumb:focus-visible {
@@ -262,61 +211,6 @@ const resolvedImages = await Promise.all(
     .image-carousel-strip::-webkit-scrollbar-thumb {
         border-radius: 9999px;
         background: rgb(120 113 108 / 0.4);
-    }
-
-    .image-lightbox {
-        border: none;
-        padding: 0;
-        background: transparent;
-        width: min(96vw, 1700px);
-        max-width: 96vw;
-    }
-
-    .image-lightbox::backdrop {
-        background: rgb(0 0 0 / 0.82);
-    }
-
-    .image-lightbox__inner {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .image-lightbox__image {
-        display: block;
-        width: auto;
-        max-width: 96vw;
-        max-height: 92vh;
-        height: auto;
-        border-radius: 0.5rem;
-    }
-
-    .image-lightbox__caption {
-        margin: 0.75rem 0 0;
-        text-align: center;
-        color: rgb(255 255 255 / 0.95);
-        font-size: 0.95rem;
-        line-height: 1.4;
-    }
-
-    .image-lightbox__close {
-        position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
-        z-index: 1;
-        border: 1px solid rgb(255 255 255 / 0.7);
-        border-radius: 9999px;
-        background: rgb(0 0 0 / 0.45);
-        padding: 0.25rem 0.75rem;
-        color: white;
-        font-size: 0.85rem;
-        font-weight: 600;
-        line-height: 1;
-    }
-
-    .image-lightbox__close:hover {
-        background: rgb(255 255 255 / 0.14);
     }
 
     :global(html.dark) .image-carousel-thumb {
