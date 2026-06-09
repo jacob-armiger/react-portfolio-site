@@ -30,6 +30,7 @@ export default {
                     marginTop: '2rem',
                     '@screen lg': {
                         marginTop: '0',
+                        paddingTop: '2rem',
                     },
                 },
             });
