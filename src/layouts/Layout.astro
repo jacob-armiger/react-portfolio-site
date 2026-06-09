@@ -18,6 +18,7 @@ const { title } = Astro.props;
         <meta name="description" content="View Jacob's art or contact him for work!" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="alternate" type="application/rss+xml" title="Articles – JacobLDraws" href="/writing/rss.xml" />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
         <Analytics />
@@ -34,7 +35,7 @@ const { title } = Astro.props;
                 <a href="/art-lessons" class="font-serif hover:underline">LESSONS</a>
                 <a href="/art" class="font-serif hover:underline">ART</a>
                 <a href="/writing" class="font-serif hover:underline">BLOG</a>
-                <a href="/books" class="hidden font-serif hover:underline sm:block">BOOKS</a>
+                <a href="/books" class="hidden font-serif hover:underline md:block">BOOKS</a>
                 <a href="/directory" class="hidden font-serif hover:underline sm:block">DIRECTORY</a>
                 <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
                 <a

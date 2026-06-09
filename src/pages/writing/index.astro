@@ -6,6 +6,7 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import BlogCard from "../../components/BlogCard.astro";
 import Layout from "../../layouts/Layout.astro";
+import RssFeedButton from "../../components/RssFeedButton.astro";
 
 const articles = (await getCollection("article")).sort(
     (a: CollectionEntry<"article">, b: CollectionEntry<"article">) => {
@@ -16,8 +17,9 @@ const articles = (await getCollection("article")).sort(
 
 <Layout title="Writing">
     <main class="col-span-12 lg:col-start-4 lg:col-span-6 px-4 sm:px-6 lg:px-0 page-top">
-        <div class="flex flex-col border-primary pb-6 dark:border-primary-dark">
-            <p class="mb-8 text-left text-5xl font-bold xl:text-nowrap">Articles</p>
+        <div class="flex items-baseline justify-between border-primary pb-6 mb-4 dark:border-primary-dark">
+            <p class="text-left text-5xl font-bold xl:text-nowrap">Articles</p>
+            <RssFeedButton />
         </div>
 
         <div class="grid gap-y-12 sm:grid-cols-2 sm:gap-6 sm:gap-y-8 lg:grid-cols-3">
