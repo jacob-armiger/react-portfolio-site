@@ -5,12 +5,12 @@ interface Props {
 }
 
 const {
-    feedUrl = "https://jacobldraws.vercel.app/writing/rss.xml",
+    feedUrl = "https://jacobarmiger.vercel.app/feed/rss.xml",
     className = "",
 } = Astro.props;
 ---
 
-<div class={`relative flex items-center ${className}`} data-rss-copy-root data-feed-url={feedUrl}>
+<div class={`relative inline-flex mb-[4px] ${className}`} data-rss-copy-root data-feed-url={feedUrl}>
     <span
         data-rss-copy-message
         class="pointer-events-none absolute right-full mr-2 whitespace-nowrap rounded bg-primary px-2 py-1 text-xs text-secondary opacity-0 transition-opacity dark:bg-primary-dark dark:text-secondary-dark"
@@ -22,12 +22,12 @@ const {
         data-rss-copy-button
         aria-label="Copy RSS feed URL"
         title="Copy RSS feed URL"
-        class="flex items-center gap-1.5 rounded border border-primary/30 px-2 py-1 text-xs opacity-60 transition-opacity hover:opacity-100 dark:border-primary-dark/30"
+        class="inline-flex shrink-0 items-center gap-1.5 rounded border border-primary/30 px-2 py-0.5 text-xs leading-none opacity-60 transition-opacity hover:opacity-100 dark:border-primary-dark/30"
     >
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="block shrink-0">
             <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
         </svg>
-        RSS
+        <span class="block leading-none">RSS</span>
     </button>
 </div>
 <script>
