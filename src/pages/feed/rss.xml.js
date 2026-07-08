@@ -8,6 +8,13 @@ const CATEGORY_LABELS = {
     digitalStudies: 'Digital Studies',
 };
 
+const CATEGORY_TITLE_LABELS = {
+    selectedWork: 'Selected Work',
+    drawings: 'Drawing',
+    oilPaintings: 'Oil Painting',
+    digitalStudies: 'Digital Study',
+};
+
 // Manual publish dates for art feed entries.
 // Key format: "category/filename.ext" (for example: "drawings/01.jpeg").
 // Add a date whenever new art is published to keep ordering stable.
@@ -52,7 +59,6 @@ export async function GET(context) {
     });
 
     const artImages = import.meta.glob([
-        '../../assets/selectedWork/*.{png,jpg,jpeg}',
         '../../assets/drawings/*.{png,jpg,jpeg}',
         '../../assets/oilPaintings/*.{png,jpg,jpeg}',
         '../../assets/digitalStudies/*.{png,jpg,jpeg}',
@@ -62,14 +68,18 @@ export async function GET(context) {
         const [category, file] = path.split('/').slice(-2);
         const filename = file.replace(/\.[^.]+$/, '');
         const categoryLabel = CATEGORY_LABELS[category] ?? 'Art';
+        const categoryTitleLabel = CATEGORY_TITLE_LABELS[category] ?? 'Art';
         const dateKey = `${category}/${file}`;
         const pubDate = ART_PUBLISH_DATES[dateKey] ? new Date(ART_PUBLISH_DATES[dateKey]) : undefined;
+        const artLink = `/art#${slugify(categoryLabel)}`;
+        const artUrl = new URL(artLink, context.site).toString();
 
         return {
-            title: `${categoryLabel}: ${toDisplayName(filename)}`,
+            title: `${categoryTitleLabel} ${toDisplayName(filename)}`,
             pubDate,
             description: `New artwork in ${categoryLabel}.`,
-            link: `/art#${slugify(categoryLabel)}`,
+            content: `<p><a href="${artUrl}">Click to view art</a></p>`,
+            link: artLink,
         };
     });
 
@@ -82,8 +92,8 @@ export async function GET(context) {
     });
 
     return rss({
-        title: 'JacobLDraws Combined Feed',
-        description: 'Combined writing and art updates from JacobLDraws',
+        title: 'JacobLDraws Blog and Art Feed',
+        description: 'Writing and art updates from JacobLDraws',
         site: context.site,
         items,
         customData: `<language>en-us</language>`,
