@@ -15,20 +15,20 @@ type LessonGalleryEntry = {
 
 const artModules = import.meta.glob<ArtModule>([
     "../assets/selectedWork/1.png",
-    "../assets/drawings/3.jpeg",
-    "../assets/drawings/IMG_5409.jpeg",
-    "../assets/drawings/5.jpeg",
-    "../assets/oilPaintings/2.png",
-    "../assets/digitalStudies/4.png",
+    "../assets/drawings/03.jpeg",
+    "../assets/drawings/06.jpeg",
+    "../assets/drawings/10.jpeg",
+    "../assets/oilPaintings/02.png",
+    "../assets/digitalStudies/06.png",
 ], { eager: true });
 
 const lessonGallery: LessonGalleryEntry[] = await Promise.all([
     { path: "../assets/selectedWork/1.png", alt: "Portrait painting", label: "Portrait Painting" },
-    { path: "../assets/drawings/3.jpeg", alt: "Graphite drawing study", label: "Drawing" },
-    { path: "../assets/drawings/5.jpeg", alt: "Refined figure drawing", label: "Refined Draftsmanship" },
-    { path: "../assets/oilPaintings/2.png", alt: "Oil painting", label: "Oil Painting" },
-    { path: "../assets/digitalStudies/4.png", alt: "Digital painting study", label: "Digital Painting" },
-    { path: "../assets/drawings/IMG_5409.jpeg", alt: "Sketchbook drawing", label: "Sketch", objectPositionClass: "object-right" },
+    { path: "../assets/drawings/03.jpeg", alt: "Graphite drawing study", label: "Drawing" },
+    { path: "../assets/drawings/06.jpeg", alt: "Refined figure drawing", label: "Refined Draftsmanship" },
+    { path: "../assets/oilPaintings/02.png", alt: "Oil painting", label: "Oil Painting" },
+    { path: "../assets/digitalStudies/06.png", alt: "Digital painting study", label: "Digital Painting" },
+    { path: "../assets/drawings/10.jpeg", alt: "Sketchbook drawing", label: "Sketch", objectPositionClass: "object-right" },
 ].map(async (entry) => {
     const image = artModules[entry.path].default;
     const optimized = await getImage({ src: image, format: "webp", width: 320 });
