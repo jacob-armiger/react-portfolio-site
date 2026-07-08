@@ -17,7 +17,6 @@ const toDisplayName = (filename) =>
 
 export async function GET(context) {
     const artImages = import.meta.glob([
-        '../../assets/selectedWork/*.{png,jpg,jpeg}',
         '../../assets/drawings/*.{png,jpg,jpeg}',
         '../../assets/oilPaintings/*.{png,jpg,jpeg}',
         '../../assets/digitalStudies/*.{png,jpg,jpeg}',
