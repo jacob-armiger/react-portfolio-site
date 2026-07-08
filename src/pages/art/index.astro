@@ -6,6 +6,7 @@ import RssFeedButton from "../../components/RssFeedButton.astro";
 import type { OptimizedImage } from "../../components/ArtMasonryGrid.tsx";
 
 type RawModule = { default: ImageMetadata };
+type GroupedEntry = { path: string; mod: RawModule };
 
 const CATEGORY_ORDER: Array<[string, string]> = [
     ['selectedWork', 'Selected Work'],
@@ -22,24 +23,41 @@ const allModules = import.meta.glob<RawModule>([
     "../../assets/oilPaintings/*.{png,jpg,jpeg}",
 ], { eager: true });
 
-const grouped = new Map<string, RawModule[]>();
-for (const [path, mod] of Object.entries(allModules)) {
-    const folder = path.split('/').at(-2)!;
+const getFileNameFromPath = (path: string) =>
+    path.split('/').at(-1)?.toLowerCase() ?? '';
+
+// Sort once by source path filename so deploy-time hashed asset URLs cannot affect order.
+const sortedEntries: GroupedEntry[] = Object.entries(allModules)
+    .map(([path, mod]) => ({ path, mod }))
+    .sort((a, b) => {
+        const nameDiff = getFileNameFromPath(b.path).localeCompare(
+            getFileNameFromPath(a.path),
+            undefined,
+            { numeric: true, sensitivity: 'base' }
+        );
+        if (nameDiff !== 0) {
+            return nameDiff;
+        }
+
+        // Deterministic tie-breaker for files with similar names.
+        return b.path.localeCompare(a.path);
+    });
+
+const grouped = new Map<string, GroupedEntry[]>();
+// Preserve sorted order within each category while grouping.
+for (const entry of sortedEntries) {
+    const folder = entry.path.split('/').at(-2)!;
     const list = grouped.get(folder) ?? [];
-    list.push(mod);
+    list.push(entry);
     grouped.set(folder, list);
 }
 
-const getFileName = (m: RawModule) =>
-    m.default.src.split('/').at(-1)?.toLowerCase() ?? '';
-
 const images: OptimizedImage[] = await Promise.all(
+    // Flatten categories in explicit display order while preserving per-category sort.
     CATEGORY_ORDER.flatMap(([folder, label]) =>
         [...(grouped.get(folder) ?? [])]
-            // Descending filename order, so names like 010-*.jpg appear before 009-*.jpg.
-            .sort((a, b) => getFileName(b).localeCompare(getFileName(a)))
-            .map(async (m) => {
-            const img = m.default;
+            .map(async ({ mod }) => {
+            const img = mod.default;
             const optimized = await getImage({ src: img, format: "webp", width: 560 });
             return {
                 src: optimized.src,
