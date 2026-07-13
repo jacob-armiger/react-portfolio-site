@@ -14,19 +14,21 @@ const art_images: any = Object.values(
 <Layout title="JacobLDraws">
     <main class="col-span-12 lg:col-span-10 lg:pr-4">
         <div class="relative">
-            <div class="grid w-full grid-cols-12 gap-1 sm:gap-4">
+            <div class="grid w-full grid-cols-12 gap-1 sm:gap-1 lg:auto-rows-[28.5rem]">
                 <div
-                    class="col-span-12 row-span-3 mb-2 h-[1400px] bg-cover bg-top lg:col-span-8"
-                    style="background-image: url(/banner_image2.jpeg)">
-                    <div class="w-2/3 pl-4 pt-12 text-left text-white sm:pt-16">
+                    class="col-span-12 row-span-3 mb-2 h-[1400px] bg-cover bg-top md:bg-left-top lg:row-span-2 lg:mb-0 lg:h-auto"
+                    style="background-image: url(/banner_image2.jpeg); background-position: left top; background-size: 110% auto;">
+                    <div class="w-6/12 pl-4 pt-12 text-left text-secondary md:ml-8 sm:pt-16 lg:pt-16">
                         <p
-                            class="w-11/12 font-serif font-medium text-4xl text-secondary sm:w-7/12 sm:text-5xl md:text-6xl md:tracking-tight lg:w-10/12 2xl:text-7xl dark:text-primary-dark-bright">
-                            Want art lessons or to commission work?
+                            class="hero-title [text-wrap:balance] text-secondary md:tracking-normal dark:text-primary-dark-bright">
+                            <span class="hero-linebox">
+                                <span class="hero-linebox-text">GET ART LESSONS OR COMMISSION WORK</span>
+                            </span>
                         </p>
                         <a href="/contact">
                             <button
-                                class="hover:text-gray mt-8 border-[1px] bg-secondary px-10 py-9 font-bold tracking-wide text-primary hover:bg-primary hover:text-secondary sm:mt-8">
-                                Contact Me
+                                class="hover:text-gray mt-8 border-[1px] bg-secondary px-10 py-9 font-sans font-semibold tracking-[0.08em] text-primary hover:bg-primary hover:text-secondary sm:mt-8">
+                                Contact
                             </button>
                         </a>
                     </div>

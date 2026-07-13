@@ -19,7 +19,7 @@ const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString(
 <form
     action="https://formsubmit.co/jacobldraws@icloud.com"
     method="POST"
-    class="flex flex-col gap-6"
+    class="flex flex-col gap-7 font-sans"
     data-redirect-path={redirectPath}
     data-contact-form
 >
@@ -28,34 +28,34 @@ const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString(
     <input type="hidden" name="_template" value="table" />
     <input type="hidden" name="_next" value={fallbackNextUrl} data-next-input />
 
-    <div class="flex flex-col gap-1">
-        <label for="name" class="text-sm font-semibold uppercase tracking-wide opacity-80">Name</label>
+    <div class="flex flex-col gap-2">
+        <label for="name" class="text-sm font-semibold uppercase tracking-wide text-primary/85 dark:text-primary-dark/90">Name</label>
         <input
             type="text"
             id="name"
             name="name"
             required
             autocomplete="name"
-            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            class="border-b-2 border-primary/50 bg-transparent py-3 text-lg leading-tight text-primary outline-none placeholder:text-primary/45 focus:border-primary dark:border-primary-dark/60 dark:text-primary-dark dark:placeholder:text-primary-dark/45 dark:focus:border-primary-dark"
             placeholder="Your name"
         />
     </div>
 
-    <div class="flex flex-col gap-1">
-        <label for="email" class="text-sm font-semibold uppercase tracking-wide opacity-80">Email</label>
+    <div class="flex flex-col gap-2">
+        <label for="email" class="text-sm font-semibold uppercase tracking-wide text-primary/85 dark:text-primary-dark/90">Email</label>
         <input
             type="email"
             id="email"
             name="email"
             required
             autocomplete="email"
-            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            class="border-b-2 border-primary/50 bg-transparent py-3 text-lg leading-tight text-primary outline-none placeholder:text-primary/45 focus:border-primary dark:border-primary-dark/60 dark:text-primary-dark dark:placeholder:text-primary-dark/45 dark:focus:border-primary-dark"
             placeholder="your@email.com"
         />
     </div>
 
-    <div class="rounded-sm border border-primary/20 px-4 py-3 dark:border-primary-dark/20">
-        <label for="local-to-new-york" class="flex items-start gap-3 text-sm leading-relaxed">
+    <div class="rounded-sm border border-primary/35 bg-primary/5 px-4 py-3 dark:border-primary-dark/35 dark:bg-primary-dark/5">
+        <label for="local-to-new-york" class="flex items-start gap-3 text-base leading-relaxed text-primary/90 dark:text-primary-dark/90">
             <input
                 type="checkbox"
                 id="local-to-new-york"
@@ -64,27 +64,27 @@ const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString(
                 class="mt-1 h-4 w-4 accent-primary dark:accent-primary-dark"
             />
             <span>
-                <span class="block font-semibold uppercase tracking-wide opacity-80">Optional</span>
+                <span class="block text-sm font-semibold uppercase tracking-wide text-primary/75 dark:text-primary-dark/80">Optional</span>
                 <span>I am local to New York City for in-person lessons.</span>
             </span>
         </label>
     </div>
 
-    <div class="flex flex-col gap-1">
-        <label for="message" class="text-sm font-semibold uppercase tracking-wide opacity-80">Message</label>
+    <div class="flex flex-col gap-2">
+        <label for="message" class="text-sm font-semibold uppercase tracking-wide text-primary/85 dark:text-primary-dark/90">Message</label>
         <textarea
             id="message"
             name="message"
-            rows="6"
+            rows="7"
             required
-            class="resize-none border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            class="resize-none border-b-2 border-primary/50 bg-transparent py-3 text-lg leading-relaxed text-primary outline-none placeholder:text-primary/45 focus:border-primary dark:border-primary-dark/60 dark:text-primary-dark dark:placeholder:text-primary-dark/45 dark:focus:border-primary-dark"
             placeholder={messagePlaceholder}
         ></textarea>
     </div>
 
     <button
         type="submit"
-        class="mt-2 self-start border border-primary px-10 py-4 font-semibold tracking-wide text-primary hover:bg-primary hover:text-secondary dark:border-primary-dark dark:text-primary-dark dark:hover:bg-primary-dark dark:hover:text-secondary-dark"
+        class="mt-3 self-start border border-primary bg-primary px-10 py-4 text-base font-semibold tracking-wide text-secondary hover:bg-transparent hover:text-primary dark:border-primary-dark dark:bg-primary-dark dark:text-secondary-dark dark:hover:bg-transparent dark:hover:text-primary-dark"
     >
         {submitLabel}
     </button>
