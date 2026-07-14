@@ -107,6 +107,25 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     toolbar.style.right = '16px';
     toolbar.style.bottom = 'auto';
   }
+  if (showThumbStrip) {
+    // Mobile: portrait images are often width-constrained and never reach
+    // max-height, so centering (with a shrunk max-height that guarantees
+    // bottom clearance) keeps the leftover space symmetric and avoids an
+    // awkward dead gap. Larger screens have room to spare, so anchor the
+    // image near the top instead — that reclaims the space a centered
+    // layout would otherwise waste above the image, letting it render
+    // bigger while still clearing the thumbnail strip below.
+    const isLargeViewport = window.matchMedia('(min-width: 768px)').matches;
+    if (isLargeViewport) {
+      const TOP_MARGIN = 24;
+      const BOTTOM_RESERVE = 90;
+      modal.style.alignItems = 'flex-start';
+      img.style.marginTop = `${TOP_MARGIN}px`;
+      img.style.maxHeight = `calc(100vh - ${TOP_MARGIN + BOTTOM_RESERVE}px)`;
+    } else {
+      img.style.maxHeight = 'calc(95vh - 110px)';
+    }
+  }
   if (isTouchUI) {
     toolbar.append(btnClose);
   } else {
