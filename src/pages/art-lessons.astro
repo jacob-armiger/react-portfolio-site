@@ -10,25 +10,18 @@ type LessonGalleryEntry = {
     height: number;
     alt: string;
     label: string;
-    objectPositionClass?: string;
 };
 
 const artModules = import.meta.glob<ArtModule>([
-    "../assets/selectedWork/1.png",
-    "../assets/drawings/03.jpeg",
-    "../assets/drawings/06.jpeg",
-    "../assets/drawings/10.jpeg",
-    "../assets/oilPaintings/02.png",
-    "../assets/digitalStudies/06.png",
+    "../assets/oilPaintings/2025-10-27.png",
+    "../assets/digitalStudies/2026-07-06.jpeg",
+    "../assets/drawings/2026-06-15.jpeg",
 ], { eager: true });
 
 const lessonGallery: LessonGalleryEntry[] = await Promise.all([
-    { path: "../assets/selectedWork/1.png", alt: "Portrait painting", label: "Portrait Painting" },
-    { path: "../assets/drawings/03.jpeg", alt: "Graphite drawing study", label: "Drawing" },
-    { path: "../assets/drawings/06.jpeg", alt: "Refined figure drawing", label: "Refined Draftsmanship" },
-    { path: "../assets/oilPaintings/02.png", alt: "Oil painting", label: "Oil Painting" },
-    { path: "../assets/digitalStudies/06.png", alt: "Digital painting study", label: "Digital Painting" },
-    { path: "../assets/drawings/10.jpeg", alt: "Sketchbook drawing", label: "Sketch", objectPositionClass: "object-right" },
+    { path: "../assets/oilPaintings/2025-10-27.png", alt: "Oil painting", label: "Oil Painting" },
+    { path: "../assets/digitalStudies/2026-07-06.jpeg", alt: "Digital painting of an athlete", label: "Digital Work" },
+    { path: "../assets/drawings/2026-06-15.jpeg", alt: "Refined figure drawing", label: "Refined Draftsmanship" },
 ].map(async (entry) => {
     const image = artModules[entry.path].default;
     const optimized = await getImage({ src: image, format: "webp", width: 320 });
@@ -39,7 +32,6 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all([
         height: (optimized.attributes.height as number) ?? image.height,
         alt: entry.alt,
         label: entry.label,
-        objectPositionClass: entry.objectPositionClass,
     };
 }));
 ---
@@ -49,20 +41,38 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all([
         <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
         <p class="mb-8 text-base leading-relaxed opacity-80">
-            I offer tailored art lessons for students of all levels. Whether you're a beginner 
-            looking to build foundational skills or an experienced artist seeking to refine your draftsmanship, 
-            I'm here to help you achieve your artistic goals. My teaching approach is flexible and 
-            adjusted to your personal interests.
+            I offer tailored art lessons for students of all levels. Whether you're looking for a new hobby 
+            or an experienced artist seeking to refine your draftsmanship, I'm here to help you achieve 
+            your artistic goals. My teaching approach is flexible and adjusted to your personal interests.
         </p>
 
-        <section class="mb-12">
-            <p class="mb-4 italic text-2xl font-semibold text-center">With my lessons you'll be able to draw or paint
-            anything in any medium.</p>
-            <p class="mb-5 text-base leading-relaxed opacity-80">
-                You'll learn foundational skills and concepts that will enable you to create anything at a high level.
-            </p>
+        <section class="mb-10">
+            <p class="mb-4 text-2xl font-semibold">Get ongoing feedback and structure for your art journey.</p>
+        </section>
 
-            <div class="mx-auto grid max-w-xl grid-cols-2 gap-2 sm:max-w-2xl sm:grid-cols-3 sm:gap-3">
+        <div class="mb-12 flex flex-col gap-6 text-base leading-relaxed">
+            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
+                <p class="font-semibold text-lg">$50 &mdash; One hour, one-on-one</p>
+                <p class="mt-1 opacity-80">Sessions are scheduled at your convenience. Weekly or bi-weekly is generally recommended.</p>
+            </div>
+
+            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
+                <p class="font-semibold text-lg">What to Expect</p>
+                <p class="mt-1 opacity-80">
+                    Sessions typically include a review of your work, demonstrations, short lectures, and hands-on drawing time. Homework and practice recommendations are given at the end of each session. All is meant to be fun and align with any art goals you may have!
+                </p>
+            </div>
+
+            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
+                <p class="font-semibold text-lg">Format</p>
+                <p class="mt-1 opacity-80">
+                    Lessons are available online or in-person for those local to New York City.
+                </p>
+            </div>
+        </div>
+
+        <section class="mb-12">
+            <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3">
                 {
                     lessonGallery.map((piece) => (
                         <figure class="group overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
@@ -74,7 +84,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all([
                                     height={piece.height}
                                     loading="lazy"
                                     decoding="async"
-                                    class={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02] ${piece.objectPositionClass ?? ""}`}
+                                    class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
                                 />
                             </div>
                             <figcaption class="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.16em] opacity-70 sm:text-[11px]">
@@ -85,27 +95,6 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all([
                 }
             </div>
         </section>
-
-        <div class="mb-10 flex flex-col gap-6 text-base leading-relaxed">
-            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
-                <p class="font-semibold text-lg">$50 &mdash; One hour, one-on-one</p>
-                <p class="mt-1 opacity-80">Sessions are scheduled at your convenience. Weekly or bi-weekly is generally recommended.</p>
-            </div>
-
-            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
-                <p class="font-semibold text-lg">Format</p>
-                <p class="mt-1 opacity-80">
-                    Lessons are available online or in-person for those local to New York City.
-                </p>
-            </div>
-
-            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
-                <p class="font-semibold text-lg">What to Expect</p>
-                <p class="mt-1 opacity-80">
-                    All lessons are tailored to your personal needs and goals. Sessions typically include a review of your work, demonstrations, short lectures, and hands-on drawing time. Homework recommendations are available at the end of each session. All is meant to be fun and align with any art goals you may have!
-                </p>
-            </div>
-        </div>
 
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
 

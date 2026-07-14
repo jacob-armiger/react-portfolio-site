@@ -11,7 +11,7 @@ export function preloadImageZoomSrc(src) {
   preloadImg.src = src;
 }
 
-const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
+const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChange, onClose } = {}) => {
   const modal = document.createElement('div');
   modal.style.cssText = `
     position: fixed;
@@ -99,10 +99,15 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
   const btnZoomOut = makeBtn('−');
   const btnClose = makeBtn('×');
   const isTouchUI = window.matchMedia('(pointer: coarse)').matches;
-  if (isTouchUI) {
+  // When there's more than one image, a thumbnail strip is pinned to the
+  // bottom center; keep the toolbar at the top instead so they never overlap.
+  const showThumbStrip = srcs.length > 1;
+  if (isTouchUI || showThumbStrip) {
     toolbar.style.top = '16px';
     toolbar.style.right = '16px';
     toolbar.style.bottom = 'auto';
+  }
+  if (isTouchUI) {
     toolbar.append(btnClose);
   } else {
     toolbar.append(btnZoomIn, btnZoomOut, btnClose);
@@ -352,6 +357,10 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
     }
 
     updateNavState();
+
+    if (didChange) {
+      onIndexChange?.(currentIndex);
+    }
   };
 
   const navigate = (delta) => {
@@ -634,6 +643,8 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
     document.body.style.overflow = '';
     toolbar.remove();
     modal.remove();
+
+    onClose?.();
   };
 
   btnClose.addEventListener('click', (e) => {
@@ -826,6 +837,8 @@ export function openImageZoom(src, {
   startIndex = 0,
   previewSrc,
   previewSrcs = [],
+  onIndexChange,
+  onClose,
 } = {}) {
   const allSrcs = srcs.length > 0 ? srcs : [src];
   const idx = srcs.length > 0 ? startIndex : 0;
@@ -836,6 +849,8 @@ export function openImageZoom(src, {
     srcs: allSrcs,
     startIndex: idx,
     previewSrcs: allPreviewSrcs,
+    onIndexChange,
+    onClose,
   });
   document.body.appendChild(toolbar);
   document.body.appendChild(modal);
