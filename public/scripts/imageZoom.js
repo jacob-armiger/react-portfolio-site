@@ -50,6 +50,10 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
   document.body.style.overflow = 'hidden';
 
   const img = document.createElement('img');
+  img.decoding = 'async';
+  // The main image is what the user is looking at — make sure it's
+  // prioritized over the (already-lightweight) thumbnail strip requests.
+  img.fetchPriority = 'high';
   img.style.cssText = `
     max-width: 95vw; max-height: 95vh;
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
@@ -451,8 +455,14 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       `;
 
       const thumbImg = document.createElement('img');
-      thumbImg.src = src;
+      // Use the already-optimized preview asset (same one the grid rendered,
+      // so it's likely already cached) instead of the full-resolution src —
+      // downloading every full image just for a 42px thumbnail was the main
+      // thing making the modal feel slow to open.
+      thumbImg.src = previewSrcs[i] || src;
       thumbImg.alt = `Preview ${i + 1}`;
+      thumbImg.loading = 'lazy';
+      thumbImg.decoding = 'async';
       thumbImg.style.cssText = `
         width: 100%; height: 100%;
         object-fit: cover;
