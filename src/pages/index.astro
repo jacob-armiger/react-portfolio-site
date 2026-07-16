@@ -16,16 +16,19 @@ const art_images: any = Object.values(
         <div class="relative">
             <div class="grid w-full grid-cols-12 gap-1 sm:gap-4">
                 <div
-                    class="col-span-12 row-span-3 mb-2 h-[1400px] bg-cover bg-top lg:col-span-8"
+                    class="relative col-span-12 row-span-3 mb-2 h-[70vh] min-h-[500px] bg-cover bg-top lg:col-span-8 lg:h-auto"
                     style="background-image: url(/banner_image2.jpeg)">
-                    <div class="w-2/3 pl-4 pt-12 text-left text-white sm:pt-16">
+                    <div
+                        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+                    </div>
+                    <div class="relative flex h-full flex-col justify-end px-6 pb-16 text-left text-white sm:px-10 sm:pb-20 lg:justify-center lg:pb-0">
                         <p
-                            class="w-11/12 font-serif font-medium text-4xl text-secondary sm:w-7/12 sm:text-5xl md:text-6xl md:tracking-tight lg:w-10/12 2xl:text-7xl dark:text-primary-dark-bright">
+                            class="max-w-md font-serif font-medium text-4xl leading-tight text-secondary sm:max-w-lg sm:text-5xl md:text-6xl md:tracking-tight lg:max-w-xl 2xl:text-7xl dark:text-primary-dark-bright">
                             Want art lessons or to commission work?
                         </p>
-                        <a href="/contact">
+                        <a href="/contact" class="mt-8 w-fit">
                             <button
-                                class="hover:text-gray mt-8 border-[1px] bg-secondary px-10 py-9 font-bold tracking-wide text-primary hover:bg-primary hover:text-secondary sm:mt-8">
+                                class="border-[1px] border-secondary bg-secondary px-8 py-4 font-medium tracking-wide text-primary transition-colors duration-200 hover:bg-transparent hover:text-secondary">
                                 Contact Me
                             </button>
                         </a>
