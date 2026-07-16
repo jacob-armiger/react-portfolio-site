@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
+import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Layout from "../layouts/Layout.astro";
 
 const art_images: any = Object.values(
@@ -12,33 +13,58 @@ const art_images: any = Object.values(
 ---
 
 <Layout title="JacobLDraws">
-    <main class="col-span-12 lg:col-span-10 lg:pr-4">
-        <div class="relative">
-            <div class="grid w-full grid-cols-12 gap-1 sm:gap-1 lg:auto-rows-[28.5rem]">
+    <BreakpointIndicator />
+    <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
+        <div class="flex w-full flex-col gap-4 sm:gap-6 lg:gap-12">
+            <section class="relative grid grid-cols-12 lg:items-start lg:gap-x-6 lg:pt-8">
                 <div
-                    class="col-span-12 row-span-3 mb-2 h-[1400px] bg-cover bg-top md:bg-left-top lg:row-span-2 lg:mb-0 lg:h-auto"
-                    style="background-image: url(/banner_image2.jpeg); background-position: left top; background-size: 110% auto;">
-                    <div class="w-6/12 pl-4 pt-12 text-left text-secondary md:ml-8 sm:pt-16 lg:pt-16">
-                        <p
-                            class="hero-title [text-wrap:balance] text-secondary md:tracking-normal dark:text-primary-dark-bright">
-                            <span class="hero-linebox">
-                                <span class="hero-linebox-text">GET ART LESSONS OR COMMISSION WORK</span>
-                            </span>
-                        </p>
-                        <a href="/contact">
-                            <button
-                                class="hover:text-gray mt-8 border-[1px] bg-secondary px-10 py-9 font-sans font-semibold tracking-[0.08em] text-primary hover:bg-primary hover:text-secondary sm:mt-8">
-                                Contact
-                            </button>
+                    class="absolute inset-0 aspect-[15/19] overflow-hidden [--hero-object-position:50%_50%] lg:static lg:col-span-6 lg:col-start-6 lg:row-start-1 lg:aspect-[15/19] lg:w-[600px] lg:justify-self-end min-[1400px]:ml-11 min-[1400px]:justify-self-auto">
+                    <img
+                        src="/phone_img.png"
+                        alt="Person reclining beside a green office chair while using a telephone"
+                        width="1230"
+                        height="1506"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        class="block size-full object-cover [object-position:var(--hero-object-position)]"
+                    />
+                </div>
+                <div
+                    class="lg:max-[1399px] relative col-span-12 flex aspect-[15/19] justify-end px-5 pt-10 sm:px-10 sm:pt-16 lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:block lg:aspect-auto lg:px-0 lg:pt-16">
+                    <div class="flex w-[70%] flex-col text-left sm:w-[52%] lg:w-[calc(100%+3rem)]">
+                        <h1
+                            class="font-playfair text-[1.75rem] leading-[1.08] tracking-[-0.07em] text-white mix-blend-difference sm:text-[3rem] lg:text-nowrap lg:text-[74px] lg:leading-normal">
+                            <span class="block">Contact me to get</span>
+                            <span class="block">art lessons or</span>
+                            <span class="block">commission work</span>
+                        </h1>
+                        <a
+                            href="/contact"
+                            class="relative mt-6 inline-flex min-h-16 min-w-36 items-center justify-center self-end overflow-hidden rounded-[3px] px-6 py-4 font-sans text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:mt-9 sm:min-h-28 sm:min-w-48 sm:self-start sm:px-8 sm:py-6 sm:text-base dark:focus-visible:outline-primary-dark">
+                            <span
+                                aria-hidden="true"
+                                class="absolute inset-0 bg-white mix-blend-difference"></span>
+                            <span class="relative text-white mix-blend-difference">Contact</span>
                         </a>
                     </div>
                 </div>
+                <!-- <div class="absolute inset-0 aspect-[15/19] overflow-hidden [--hero-object-position:50%_50%] lg:static lg:col-span-6 lg:col-start-6 lg:ml-11 lg:w-full lg:aspect-[15/19]">
+                    <img
+                        src="/phone_img.png"
+                        alt="Person reclining beside a green office chair while using a telephone"
+                        width="1230"
+                        height="1506"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        class="block size-full object-cover [object-position:var(--hero-object-position)]"
+                    />
+                </div> -->
+            </section>
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {
                     art_images.map((img: ImageMetadata) => (
-                        <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                        <div>
                             <Image
                                 src={img.src}
-                                alt="Most recent blog image"
+                                alt="Selected work"
                                 width={268}
                                 height={358}
                                 class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
