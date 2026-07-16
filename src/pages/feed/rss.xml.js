@@ -15,12 +15,13 @@ const CATEGORY_TITLE_LABELS = {
     digitalStudies: 'Digital Study',
 };
 
-// Manual publish dates for art feed entries.
-// Key format: "category/filename.ext" (for example: "drawings/01.jpeg").
-// Add a date whenever new art is published to keep ordering stable.
+// Manual publish dates for art feed entries. Only needed to override the date
+// baked into the filename (e.g. for Selected Work pieces, which aren't named
+// by date) or to correct one.
+// Key format: "category/filename.ext" (for example: "drawings/2026-05-01.jpeg").
 const ART_PUBLISH_DATES = {
     // Example:
-    // 'drawings/01.jpeg': '2026-05-01',
+    // 'selectedWork/1.png': '2026-05-01',
 };
 
 const slugify = (value) => value.toLowerCase().replace(/\s+/g, '-');
@@ -30,6 +31,27 @@ const toDisplayName = (filename) =>
         .replace(/[-_]+/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
+
+// Filenames are named by creation date: YYYY-MM-DD, with an optional -1/-2
+// suffix to disambiguate same-day duplicates. Turns "2026-01-24-1" into a
+// readable "January 24, 2026 (1)" title and a real Date for pubDate.
+const DATE_FILENAME_PATTERN = /^(\d{4})-(\d{2})-(\d{2})(?:-(\d+))?$/;
+
+const parseArtPieceDate = (filename) => {
+    const match = filename.match(DATE_FILENAME_PATTERN);
+    if (!match) return null;
+
+    const [, year, month, day, suffix] = match;
+    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+    const label = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        timeZone: 'UTC',
+    });
+
+    return { date, label: suffix ? `${label} (${suffix})` : label };
+};
 
 const toTime = (value) => {
     if (!value) {
@@ -70,12 +92,13 @@ export async function GET(context) {
         const categoryLabel = CATEGORY_LABELS[category] ?? 'Art';
         const categoryTitleLabel = CATEGORY_TITLE_LABELS[category] ?? 'Art';
         const dateKey = `${category}/${file}`;
-        const pubDate = ART_PUBLISH_DATES[dateKey] ? new Date(ART_PUBLISH_DATES[dateKey]) : undefined;
-        const artLink = `/art#${slugify(categoryLabel)}`;
+        const parsed = parseArtPieceDate(filename);
+        const pubDate = ART_PUBLISH_DATES[dateKey] ? new Date(ART_PUBLISH_DATES[dateKey]) : parsed?.date;
+        const artLink = `/art?piece=${slugify(categoryLabel)}-${filename}`;
         const artUrl = new URL(artLink, context.site).toString();
 
         return {
-            title: `${categoryTitleLabel} ${toDisplayName(filename)}`,
+            title: parsed ? `${categoryTitleLabel}: ${parsed.label}` : `${categoryTitleLabel} ${toDisplayName(filename)}`,
             pubDate,
             description: `New artwork in ${categoryLabel}.`,
             content: `<p><a href="${artUrl}">Click to view art</a></p>`,
@@ -97,5 +120,8 @@ export async function GET(context) {
         site: context.site,
         items,
         customData: `<language>en-us</language>`,
+        // Art item links use a `?piece=` query string; a trailing slash would get
+        // appended after the query string and corrupt it, so disable it here.
+        trailingSlash: false,
     });
 }

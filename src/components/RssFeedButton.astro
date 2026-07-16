@@ -13,7 +13,7 @@ const {
 <div class={`relative inline-flex mb-[4px] ${className}`} data-rss-copy-root data-feed-url={feedUrl}>
     <span
         data-rss-copy-message
-        class="pointer-events-none absolute right-0 top-full mt-1 z-10 max-w-[14rem] rounded bg-primary px-2 py-1 text-right text-xs text-secondary opacity-0 transition-opacity whitespace-normal dark:bg-primary-dark dark:text-secondary-dark"
+        class="pointer-events-none absolute left-full top-1/2 ml-2 z-10 w-max max-w-[calc(100vw-2rem)] whitespace-normal rounded bg-primary px-2 py-1 text-left text-xs text-secondary opacity-0 transition-opacity dark:bg-primary-dark dark:text-secondary-dark"
     >
         Copied — paste into your RSS reader
     </span>
@@ -44,9 +44,27 @@ const {
         let timer: ReturnType<typeof setTimeout> | undefined;
 
         if (btn instanceof HTMLButtonElement && msg instanceof HTMLElement && feedUrl) {
+            const VIEWPORT_MARGIN = 12;
+            const MIN_MESSAGE_WIDTH = 80;
+
+            const positionMessage = () => {
+                // Reset any previous adjustment so we measure the message's
+                // natural (CSS-driven) position/size before clamping it.
+                msg.style.transform = 'translateY(-50%)';
+                msg.style.maxWidth = '';
+
+                const rect = msg.getBoundingClientRect();
+                if (rect.right > window.innerWidth - VIEWPORT_MARGIN) {
+                    // Shrink (and let it wrap) instead of shifting horizontally,
+                    // so it never slides left over the button.
+                    const available = window.innerWidth - VIEWPORT_MARGIN - rect.left;
+                    msg.style.maxWidth = `${Math.max(available, MIN_MESSAGE_WIDTH)}px`;
+                }
+            };
+
             btn.addEventListener('click', () => {
                 navigator.clipboard.writeText(feedUrl).then(() => {
-                    msg.textContent = 'Copied — paste into your RSS reader';
+                    positionMessage();
                     msg.style.opacity = '1';
                     clearTimeout(timer);
                     timer = setTimeout(() => {

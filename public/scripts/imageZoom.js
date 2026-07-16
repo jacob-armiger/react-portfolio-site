@@ -11,7 +11,7 @@ export function preloadImageZoomSrc(src) {
   preloadImg.src = src;
 }
 
-const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
+const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChange, onClose } = {}) => {
   const modal = document.createElement('div');
   modal.style.cssText = `
     position: fixed;
@@ -50,6 +50,10 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
   document.body.style.overflow = 'hidden';
 
   const img = document.createElement('img');
+  img.decoding = 'async';
+  // The main image is what the user is looking at — make sure it's
+  // prioritized over the (already-lightweight) thumbnail strip requests.
+  img.fetchPriority = 'high';
   img.style.cssText = `
     max-width: 95vw; max-height: 95vh;
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
@@ -99,10 +103,34 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
   const btnZoomOut = makeBtn('−');
   const btnClose = makeBtn('×');
   const isTouchUI = window.matchMedia('(pointer: coarse)').matches;
-  if (isTouchUI) {
+  // When there's more than one image, a thumbnail strip is pinned to the
+  // bottom center; keep the toolbar at the top instead so they never overlap.
+  const showThumbStrip = srcs.length > 1;
+  if (isTouchUI || showThumbStrip) {
     toolbar.style.top = '16px';
     toolbar.style.right = '16px';
     toolbar.style.bottom = 'auto';
+  }
+  if (showThumbStrip) {
+    // Mobile: portrait images are often width-constrained and never reach
+    // max-height, so centering (with a shrunk max-height that guarantees
+    // bottom clearance) keeps the leftover space symmetric and avoids an
+    // awkward dead gap. Larger screens have room to spare, so anchor the
+    // image near the top instead — that reclaims the space a centered
+    // layout would otherwise waste above the image, letting it render
+    // bigger while still clearing the thumbnail strip below.
+    const isLargeViewport = window.matchMedia('(min-width: 768px)').matches;
+    if (isLargeViewport) {
+      const TOP_MARGIN = 24;
+      const BOTTOM_RESERVE = 90;
+      modal.style.alignItems = 'flex-start';
+      img.style.marginTop = `${TOP_MARGIN}px`;
+      img.style.maxHeight = `calc(100vh - ${TOP_MARGIN + BOTTOM_RESERVE}px)`;
+    } else {
+      img.style.maxHeight = 'calc(95vh - 110px)';
+    }
+  }
+  if (isTouchUI) {
     toolbar.append(btnClose);
   } else {
     toolbar.append(btnZoomIn, btnZoomOut, btnClose);
@@ -352,6 +380,10 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
     }
 
     updateNavState();
+
+    if (didChange) {
+      onIndexChange?.(currentIndex);
+    }
   };
 
   const navigate = (delta) => {
@@ -423,8 +455,14 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
       `;
 
       const thumbImg = document.createElement('img');
-      thumbImg.src = src;
+      // Use the already-optimized preview asset (same one the grid rendered,
+      // so it's likely already cached) instead of the full-resolution src —
+      // downloading every full image just for a 42px thumbnail was the main
+      // thing making the modal feel slow to open.
+      thumbImg.src = previewSrcs[i] || src;
       thumbImg.alt = `Preview ${i + 1}`;
+      thumbImg.loading = 'lazy';
+      thumbImg.decoding = 'async';
       thumbImg.style.cssText = `
         width: 100%; height: 100%;
         object-fit: cover;
@@ -634,6 +672,8 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [] } = {}) => {
     document.body.style.overflow = '';
     toolbar.remove();
     modal.remove();
+
+    onClose?.();
   };
 
   btnClose.addEventListener('click', (e) => {
@@ -826,6 +866,8 @@ export function openImageZoom(src, {
   startIndex = 0,
   previewSrc,
   previewSrcs = [],
+  onIndexChange,
+  onClose,
 } = {}) {
   const allSrcs = srcs.length > 0 ? srcs : [src];
   const idx = srcs.length > 0 ? startIndex : 0;
@@ -836,6 +878,8 @@ export function openImageZoom(src, {
     srcs: allSrcs,
     startIndex: idx,
     previewSrcs: allPreviewSrcs,
+    onIndexChange,
+    onClose,
   });
   document.body.appendChild(toolbar);
   document.body.appendChild(modal);
