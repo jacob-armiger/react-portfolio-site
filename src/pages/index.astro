@@ -15,37 +15,39 @@ const art_images: any = Object.values(
 <Layout title="JacobLDraws">
     <BreakpointIndicator />
     <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
-        <div class="flex w-full flex-col gap-4 sm:gap-6 lg:gap-12">
-            <section class="relative grid grid-cols-12 lg:items-start lg:gap-x-6 lg:pt-8">
-                <div
-                    class="absolute inset-0 aspect-[15/19] overflow-hidden [--hero-object-position:50%_50%] lg:static lg:col-span-6 lg:col-start-6 lg:row-start-1 lg:aspect-[15/19] lg:w-[600px] lg:justify-self-end min-[1400px]:ml-11 min-[1400px]:justify-self-auto">
-                    <img
-                        src="/phone_img.png"
-                        alt="Person reclining beside a green office chair while using a telephone"
-                        width="1230"
-                        height="1506"
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="block size-full object-cover [object-position:var(--hero-object-position)]"
-                    />
-                </div>
-                <div
-                    class="lg:max-[1399px] relative col-span-12 flex aspect-[15/19] justify-end px-5 pt-10 sm:px-10 sm:pt-16 lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:block lg:aspect-auto lg:px-0 lg:pt-16">
-                    <div class="flex w-[70%] flex-col text-left sm:w-[52%] lg:w-[calc(100%+3rem)]">
-                        <h1
-                            class="font-playfair text-[1.75rem] leading-[1.08] tracking-[-0.07em] text-white mix-blend-difference sm:text-[3rem] lg:text-nowrap lg:text-[74px] lg:leading-normal">
+        <div class="flex w-full flex-col gap-4 sm:gap-6 lg:gap-12 ">
+
+            <section class="sm:relative pt-2 lg:pt-16 min-h-[70vh] sm:min-h-[70vh] lg:min-h-[95vh] md:min-h-[90vh]">
+
+                    <div class="flex w-full flex-col pr-2 items-end lg:items-start">
+                        <h1 class="font-playfair text-[2.5rem] leading-[1.08] tracking-[-0.07em] text-white mix-blend-difference sm:text-[3.5rem] md:text-[4rem] lg:text-[74px]  lg:text-nowrap lg:leading-normal">
                             <span class="block">Contact me to get</span>
                             <span class="block">art lessons or</span>
                             <span class="block">commission work</span>
                         </h1>
                         <a
                             href="/contact"
-                            class="relative mt-6 inline-flex min-h-16 min-w-36 items-center justify-center self-end overflow-hidden rounded-[3px] px-6 py-4 font-sans text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:mt-9 sm:min-h-28 sm:min-w-48 sm:self-start sm:px-8 sm:py-6 sm:text-base dark:focus-visible:outline-primary-dark">
+                            class="relative mt-6 inline-flex min-h-16 min-w-36 items-center justify-center overflow-hidden rounded-[3px] px-6 py-4 font-sans text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:mt-9 sm:min-h-28 sm:min-w-48 sm:px-8 sm:py-6 sm:text-base dark:focus-visible:outline-primary-dark">
                             <span
                                 aria-hidden="true"
                                 class="absolute inset-0 bg-white mix-blend-difference"></span>
                             <span class="relative text-white mix-blend-difference">Contact</span>
                         </a>
                     </div>
+
+                    <img
+                        src="/phone_img_wide.png"
+                        alt="Person reclining beside a green office chair while using a telephone"
+                        width="1230"
+                        height="1506"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        class="absolute object-cover -z-10 
+                        -translate-y-[19rem] -translate-x-[20rem] max-w-[760px] 
+                        sm:translate-y-[-26rem] sm:translate-x-[-12rem] sm:max-w-none sm:object-fill sm:w-[760px] 
+                        md:-translate-y-[24rem] md:translate-x-[-12rem] md:w-[880px]
+                        lg:-right-16 lg:-translate-y-[40rem] lg:-translate-x-1"
+                    />
+
                 </div>
                 <!-- <div class="absolute inset-0 aspect-[15/19] overflow-hidden [--hero-object-position:50%_50%] lg:static lg:col-span-6 lg:col-start-6 lg:ml-11 lg:w-full lg:aspect-[15/19]">
                     <img
