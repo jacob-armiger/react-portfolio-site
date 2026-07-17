@@ -17,7 +17,7 @@ const art_images: any = Object.values(
     <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
         <div class="flex w-full flex-col gap-4 sm:gap-6 lg:gap-12 ">
 
-            <section class="sm:relative pt-2 lg:pt-16 min-h-[70vh] sm:min-h-[70vh] lg:min-h-[92vh] md:min-h-[90vh]">
+            <section class="hero-section relative pt-2 lg:pt-16">
 
                     <div class="flex w-full flex-col pr-2 items-end lg:items-start">
                         <h1 class="font-playfair text-[2.5rem] leading-[1.08] tracking-[-0.07em] text-white mix-blend-difference sm:text-[3.5rem] md:text-[4rem] lg:text-[74px]  lg:text-nowrap lg:leading-normal">
@@ -41,23 +41,8 @@ const art_images: any = Object.values(
                         width="1230"
                         height="1506"
                         sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="absolute object-cover -z-10 
-                        -translate-y-[19rem] -translate-x-[20rem] max-w-[760px] 
-                        sm:translate-y-[-26rem] sm:translate-x-[-12rem] sm:max-w-none sm:object-fill sm:w-[760px] 
-                        md:-translate-y-[24rem] md:translate-x-[-12rem] md:w-[880px]
-                        lg:-right-16 lg:-translate-y-[40rem] lg:-translate-x-1"
+                        class="hero-image absolute -z-10"
                     />
-
-                <!-- <div class="absolute inset-0 aspect-[15/19] overflow-hidden [--hero-object-position:50%_50%] lg:static lg:col-span-6 lg:col-start-6 lg:ml-11 lg:w-full lg:aspect-[15/19]">
-                    <img
-                        src="/phone_img.png"
-                        alt="Person reclining beside a green office chair while using a telephone"
-                        width="1230"
-                        height="1506"
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="block size-full object-cover [object-position:var(--hero-object-position)]"
-                    />
-                </div> -->
             </section>
             <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {
@@ -77,3 +62,116 @@ const art_images: any = Object.values(
         </div>
     </main>
 </Layout>
+
+<style>
+    /*
+     * Hero section: min-height is normally a viewport-relative value, but
+     * since the hero image is `position: absolute` it doesn't contribute
+     * to the section's own height. On short viewports (e.g. iPhone SE),
+     * a pure `vh` min-height can end up shorter than the image's actual
+     * bottom edge, letting the image grid below overlap it. On very tall
+     * narrow viewports (e.g. an iPad in portrait), `vh` alone can also
+     * grow far past what's needed, pushing the grid too far away.
+     * `clamp(floor, vh, ceiling)` keeps a `vh`-based feel for normal
+     * screens while guaranteeing the section is always at least tall
+     * enough to contain the image (floor) and never grows unreasonably
+     * tall on portrait/tall-aspect screens (ceiling).
+     *
+     * clamp(MIN, PREFERRED, MAX) arguments:
+     *   MIN       floor - smallest allowed min-height (prevents the
+     *             image grid below from overlapping the hero image on
+     *             short viewports).
+     *   PREFERRED viewport-relative value (`vh`) used as long as it
+     *             falls between MIN and MAX.
+     *   MAX       ceiling - largest allowed min-height (prevents the
+     *             section from growing too tall, and the grid below
+     *             from sitting too far away, on tall/narrow viewports).
+     */
+    /* base (<640px) */
+    .hero-section {
+        min-height: clamp(600px, 89vh, 650px);
+    }
+
+    /* md (768px+) */
+    @media (min-width: 768px) {
+        .hero-section {
+            min-height: clamp(780px, 90vh, 700px);
+        }
+    }
+
+    /* lg (1024px+) */
+    @media (min-width: 1024px) {
+        .hero-section {
+            min-height: clamp(800px, 92vh, 900px);
+        }
+    }
+
+    /*
+     * Hero image: freely positioned/sized per breakpoint via CSS custom
+     * properties instead of a long Tailwind arbitrary-value class string.
+     * To reposition or resize (including swapping in a different image
+     * later), tune the custom properties below rather than the
+     * `top` / `left` / `width` / `height` declarations themselves.
+     *
+     * Custom properties ("arguments"):
+     *   --hero-top  (length, required) vertical offset of the image's
+     *               top edge relative to the section (negative pulls it
+     *               up above the section's own top edge).
+     *   --hero-left (length, required) horizontal offset of the image's
+     *               left edge relative to the section (negative pulls it
+     *               left of the section's own left edge).
+     *   --hero-w    (length, required) rendered width of the image.
+     *   --hero-h    (length, optional, default: none -> `auto`) rendered
+     *               height of the image. Leave unset to preserve the
+     *               image's natural aspect ratio (undistorted). Set it
+     *               only if you need an exact width+height box; the
+     *               image will then be cropped via `object-fit: cover`
+     *               instead of stretched/distorted.
+     */
+    .hero-image {
+        /* base (<640px) */
+        --hero-top: -78.4px;
+        --hero-left: -320px;
+        --hero-w: 760px;
+        top: var(--hero-top);
+        left: var(--hero-left);
+        width: var(--hero-w);
+        max-width: none; /* override Tailwind preflight's img{max-width:100%} */
+        height: var(--hero-h, auto);
+        object-fit: cover;
+    }
+
+    /* sm (640px+) */
+    @media (min-width: 640px) {
+        .hero-image {
+            --hero-top: -78.6px;
+            --hero-left: -192px;
+        }
+    }
+
+    /* md (768px+) */
+    @media (min-width: 768px) {
+        .hero-image {
+            --hero-top: -20.6px;
+            --hero-left: -192px;
+            --hero-w: 880px;
+        }
+    }
+
+    /* lg (1024px+) */
+    @media (min-width: 1024px) {
+        .hero-image {
+            --hero-top: -95px;
+            --hero-left: 230.7px;
+        }
+    }
+
+    /* xl (1280px+) */
+    @media (min-width: 1280px) {
+        .hero-image {
+            --hero-top: -95px;
+            --hero-left: 230.7px;
+            --hero-w: 920px;
+        }
+    }
+</style>
