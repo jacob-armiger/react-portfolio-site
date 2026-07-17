@@ -1,8 +1,14 @@
 ---
 import type { ImageMetadata } from "astro";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import BreakpointIndicator from "../components/BreakpointIndicator.astro";
+import heroImage from "../assets/phone_img_wide.png";
 import Layout from "../layouts/Layout.astro";
+
+const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
+const HERO_SIZES = "(min-width: 1280px) 920px, (min-width: 768px) 880px, 760px";
+const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
+const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 
 const art_images: any = Object.values(
     import.meta.glob<ImageMetadata>("/src/assets/selectedWork/*", {
@@ -35,12 +41,21 @@ const art_images: any = Object.values(
                         </a>
                     </div>
 
-                    <img
-                        src="/phone_img_wide.png"
+                    <!--
+                        Astro defines each AVIF, WebP, and PNG variant here; the image service
+                        generates and caches the files automatically. All three formats preserve
+                        transparency. Keep HERO_SIZES aligned with the --hero-w breakpoints below,
+                        and only expand HERO_VARIANT_WIDTHS when those widths leave this ladder.
+                    -->
+                    <Picture
+                        src={heroImage}
                         alt="Person reclining beside a green office chair while using a telephone"
-                        width="1230"
-                        height="1506"
-                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        formats={["avif", "webp"]}
+                        fallbackFormat="png"
+                        widths={HERO_VARIANT_WIDTHS}
+                        sizes={HERO_SIZES}
+                        quality={80}
+                        priority
                         class="hero-image absolute -z-10"
                     />
             </section>
@@ -48,11 +63,17 @@ const art_images: any = Object.values(
                 {
                     art_images.map((img: ImageMetadata) => (
                         <div>
-                            <Image
-                                src={img.src}
+                            <Picture
+                                src={img}
                                 alt="Selected work"
+                                formats={["avif", "webp"]}
+                                widths={GALLERY_VARIANT_WIDTHS}
+                                sizes={GALLERY_SIZES}
+                                quality={78}
                                 width={268}
                                 height={358}
+                                loading="lazy"
+                                decoding="async"
                                 class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
                             />
                         </div>
@@ -131,7 +152,7 @@ const art_images: any = Object.values(
     .hero-image {
         /* base (<640px) */
         --hero-top: -78.4px;
-        --hero-left: -320px;
+        --hero-left: -300px;
         --hero-w: 760px;
         top: var(--hero-top);
         left: var(--hero-left);
