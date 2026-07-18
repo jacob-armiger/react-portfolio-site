@@ -3,11 +3,27 @@ import Analytics from "@vercel/analytics/astro";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/source-serif-4";
 import "@fontsource-variable/playfair-display";
+import { backgroundTexture } from "../config/backgroundTexture";
 interface Props {
     title: string;
 }
 
 const { title } = Astro.props;
+const textureProperties = {
+    "--texture-light-image": `url("${backgroundTexture.light.asset.src}")`,
+    "--texture-light-opacity": backgroundTexture.light.opacity,
+    "--texture-light-blend-mode": backgroundTexture.light.blendMode,
+    "--texture-light-size": backgroundTexture.light.size,
+    "--texture-light-repeat": backgroundTexture.light.repeat,
+    "--texture-dark-image": `url("${backgroundTexture.dark.asset.src}")`,
+    "--texture-dark-opacity": backgroundTexture.dark.opacity,
+    "--texture-dark-blend-mode": backgroundTexture.dark.blendMode,
+    "--texture-dark-size": backgroundTexture.dark.size,
+    "--texture-dark-repeat": backgroundTexture.dark.repeat,
+};
+const textureStyle = Object.entries(textureProperties)
+    .map(([property, value]) => `${property}: ${value}`)
+    .join("; ");
 ---
 
 <!doctype html>
@@ -30,10 +46,11 @@ const { title } = Astro.props;
         <Analytics />
     </head>
     <body
-        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark">
+        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark"
+        style={textureStyle}>
         <div class="grid min-h-screen grid-cols-12 content-start">
             <nav
-                class="sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-4 gap-y-2 border-b-[1px] border-primary bg-secondary px-2 py-3 text-left font-sans underline-offset-4 backdrop-blur-md sm:gap-8 sm:py-2 sm:text-xl lg:col-span-2 lg:h-screen lg:flex-col lg:flex-nowrap lg:items-start lg:gap-y-0 lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-14 lg:text-[18px] lg:leading-[72px] dark:border-primary-dark dark:bg-secondary-dark/80">
+                class="sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-4 gap-y-2 border-b-[1px] border-primary/50 bg-secondary/80 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none px-2 py-3 text-left font-sans underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:col-span-2 lg:h-screen lg:flex-col lg:flex-nowrap lg:items-start lg:gap-y-0 lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-14 lg:text-[18px] lg:leading-[72px] dark:bg-primary/10 dark:border-primary-dark/50">
                 <a
                     href="/"
                     class="font-serif font-bold hover:underline lg:mb-2 lg:text-[24px] lg:leading-[72px]"
@@ -74,3 +91,37 @@ const { title } = Astro.props;
         <script is:inline type="module" src="/scripts/imageZoom.js"></script>
     </body>
 </html>
+
+<style is:global>
+    body {
+        --texture-image: var(--texture-light-image);
+        --texture-opacity: var(--texture-light-opacity);
+        --texture-blend-mode: var(--texture-light-blend-mode);
+        --texture-size: var(--texture-light-size);
+        --texture-repeat: var(--texture-light-repeat);
+        position: relative;
+    }
+
+    body::before {
+        position: absolute;
+        z-index: -20;
+        inset: 0;
+        background-image: var(--texture-image);
+        background-repeat: var(--texture-repeat);
+        background-size: var(--texture-size);
+        mix-blend-mode: var(--texture-blend-mode);
+        opacity: var(--texture-opacity);
+        pointer-events: none;
+        content: "";
+    }
+
+    @media (prefers-color-scheme: dark) {
+        body {
+            --texture-image: var(--texture-dark-image);
+            --texture-opacity: var(--texture-dark-opacity);
+            --texture-blend-mode: var(--texture-dark-blend-mode);
+            --texture-size: var(--texture-dark-size);
+            --texture-repeat: var(--texture-dark-repeat);
+        }
+    }
+</style>
