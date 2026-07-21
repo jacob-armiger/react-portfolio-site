@@ -9,6 +9,12 @@ const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
 const HERO_SIZES = "(min-width: 1280px) 920px, (min-width: 768px) 880px, 760px";
 const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
 const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
+const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
+const HERO_COPY_CLASS = "flex w-full flex-col items-end pr-2 lg:items-start";
+const HERO_HEADING_CLASS =
+    "font-playfair text-[2.7rem] leading-[1.08] tracking-[-0.07em] sm:text-[3.5rem] md:text-[4rem] lg:text-[74px] lg:text-nowrap lg:leading-normal";
+const HERO_ACTION_CLASS =
+    "relative mt-6 inline-flex min-h-16 min-w-36 items-center justify-center overflow-hidden rounded-[3px] px-6 py-8 font-sans text-sm font-semibold sm:mt-9 sm:min-h-28 sm:min-w-48 sm:px-8 sm:py-6 sm:text-base hover:bg-none hover:border hover:border-primary hover:text-primary"; 
 
 const art_images: any = Object.values(
     import.meta.glob<ImageMetadata>("/src/assets/selectedWork/*", {
@@ -24,21 +30,36 @@ const art_images: any = Object.values(
         <div class="flex w-full flex-col gap-4 sm:gap-6 lg:gap-12 ">
 
             <section class="hero-section relative pt-2 lg:pt-16">
+                    <div class="relative">
+                        <div
+                            aria-hidden="true"
+                            class:list={[HERO_COPY_CLASS, "pointer-events-none absolute inset-0 z-[-15]"]}>
+                            <div class:list={[HERO_HEADING_CLASS, "text-secondary dark:text-secondary-dark"]}>
+                                {HERO_LINES.map((line) => <span class="block">{line}</span>)}
+                            </div>
+                            <div class={HERO_ACTION_CLASS}>
+                                <span
+                                    class="absolute inset-0 bg-secondary dark:bg-secondary-dark"></span>
+                                <span class="relative text-secondary dark:text-secondary-dark">Contact</span>
+                            </div>
+                        </div>
 
-                    <div class="flex w-full flex-col pr-2 items-end lg:items-start">
-                        <h1 class="font-playfair text-[2.5rem] leading-[1.08] tracking-[-0.07em] text-white mix-blend-difference sm:text-[3.5rem] md:text-[4rem] lg:text-[74px]  lg:text-nowrap lg:leading-normal">
-                            <span class="block">Contact me to get</span>
-                            <span class="block">art lessons or</span>
-                            <span class="block">commission work</span>
+                        <div class={HERO_COPY_CLASS}>
+                        <h1 class:list={[HERO_HEADING_CLASS, "text-white mix-blend-difference"]}>
+                            {HERO_LINES.map((line) => <span class="block">{line}</span>)}
                         </h1>
                         <a
                             href="/contact"
-                            class="relative mt-6 inline-flex min-h-16 min-w-36 items-center justify-center overflow-hidden rounded-[3px] px-6 py-4 font-sans text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:mt-9 sm:min-h-28 sm:min-w-48 sm:px-8 sm:py-6 sm:text-base dark:focus-visible:outline-primary-dark">
+                            class:list={[
+                                HERO_ACTION_CLASS,
+                                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark",
+                            ]}>
                             <span
                                 aria-hidden="true"
                                 class="absolute inset-0 bg-white mix-blend-difference"></span>
                             <span class="relative text-white mix-blend-difference">Contact</span>
                         </a>
+                        </div>
                     </div>
 
                     <!--
