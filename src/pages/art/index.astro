@@ -26,6 +26,14 @@ const allModules = import.meta.glob<RawModule>([
 const getFileNameFromPath = (path: string) =>
     path.split('/').at(-1)?.toLowerCase() ?? '';
 
+// Images are named by creation date (YYYY-MM-DD, with an optional -1/-2 suffix
+// to disambiguate same-day duplicates). Selected Work keeps its original names
+// and has no parseable date.
+const getDateFromPath = (path: string) => {
+    const match = getFileNameFromPath(path).match(/^(\d{4}-\d{2}-\d{2}(?:-\d+)?)/);
+    return match ? match[1] : '';
+};
+
 // Sort once by source path filename so deploy-time hashed asset URLs cannot affect order.
 const sortedEntries: GroupedEntry[] = Object.entries(allModules)
     .map(([path, mod]) => ({ path, mod }))
@@ -56,7 +64,7 @@ const images: OptimizedImage[] = await Promise.all(
     // Flatten categories in explicit display order while preserving per-category sort.
     CATEGORY_ORDER.flatMap(([folder, label]) =>
         [...(grouped.get(folder) ?? [])]
-            .map(async ({ mod }) => {
+            .map(async ({ path, mod }) => {
             const img = mod.default;
             const optimized = await getImage({ src: img, format: "webp", width: 560 });
             return {
@@ -65,6 +73,7 @@ const images: OptimizedImage[] = await Promise.all(
                 height: (optimized.attributes.height as number) ?? img.height,
                 originalSrc: img.src,
                 category: label,
+                date: getDateFromPath(path),
             };
             })
     )

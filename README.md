@@ -1,9 +1,12 @@
 # RSS Feeds
+Combined Blog & Art Feed: https://jacobarmiger.vercel.app/feed/rss.xml
+
 Art: https://jacobarmiger.vercel.app/art/rss.xml
 
-Writing: https://jacobarmiger.vercel.app/writing/rss.xml
+Blog: https://jacobarmiger.vercel.app/writing/rss.xml
 
 Books: https://jacobarmiger.vercel.app/rss.xml
+
 
 # Astro Starter Kit: Basics
 

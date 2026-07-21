@@ -10,25 +10,26 @@ const {
 } = Astro.props;
 ---
 
-<div class={`relative inline-flex mb-[4px] ${className}`} data-rss-copy-root data-feed-url={feedUrl}>
-    <span
-        data-rss-copy-message
-        class="pointer-events-none absolute right-0 top-full mt-1 z-10 max-w-[14rem] rounded bg-primary px-2 py-1 text-right text-xs text-secondary opacity-0 transition-opacity whitespace-normal dark:bg-primary-dark dark:text-secondary-dark"
-    >
-        Copied — paste into your RSS reader
-    </span>
+<div class={`relative inline-block mb-[4px] ${className}`} data-rss-copy-root data-feed-url={feedUrl}>
     <button
         type="button"
         data-rss-copy-button
         aria-label="Copy RSS feed URL"
         title="Copy RSS feed URL"
-        class="inline-flex shrink-0 items-center gap-1.5 rounded border border-primary/30 px-2 py-0.5 text-xs leading-none opacity-60 transition-opacity hover:opacity-100 dark:border-primary-dark/30"
+        class="inline-flex items-center gap-1.5 rounded border border-primary/30 px-2 py-0.5 text-xs leading-none opacity-60 transition-opacity hover:opacity-100 dark:border-primary-dark/30"
     >
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="block shrink-0">
             <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
         </svg>
         <span class="block leading-none">RSS</span>
     </button>
+
+    <span
+        data-rss-copy-message
+        class="absolute pointer-events-none sm:left-full sm:top-1/2 ml-2 z-10 rounded bg-primary w-20 sm:w-max px-2 py-1 text-xs text-secondary opacity-0 transition-opacity dark:bg-primary-dark dark:text-secondary-dark"
+    >
+        Copied — paste into your RSS reader
+    </span>
 </div>
 <script>
     document.querySelectorAll('[data-rss-copy-root]').forEach((root) => {
@@ -44,9 +45,27 @@ const {
         let timer: ReturnType<typeof setTimeout> | undefined;
 
         if (btn instanceof HTMLButtonElement && msg instanceof HTMLElement && feedUrl) {
+            const VIEWPORT_MARGIN = 12;
+            const MIN_MESSAGE_WIDTH = 80;
+
+            const positionMessage = () => {
+                // Reset any previous adjustment so we measure the message's
+                // natural (CSS-driven) position/size before clamping it.
+                msg.style.transform = 'translateY(-50%)';
+                msg.style.maxWidth = '';
+
+                const rect = msg.getBoundingClientRect();
+                if (rect.right > window.innerWidth - VIEWPORT_MARGIN) {
+                    // Shrink (and let it wrap) instead of shifting horizontally,
+                    // so it never slides left over the button.
+                    const available = window.innerWidth - VIEWPORT_MARGIN - rect.left;
+                    msg.style.maxWidth = `${Math.max(available, MIN_MESSAGE_WIDTH)}px`;
+                }
+            };
+
             btn.addEventListener('click', () => {
                 navigator.clipboard.writeText(feedUrl).then(() => {
-                    msg.textContent = 'Copied — paste into your RSS reader';
+                    positionMessage();
                     msg.style.opacity = '1';
                     clearTimeout(timer);
                     timer = setTimeout(() => {
