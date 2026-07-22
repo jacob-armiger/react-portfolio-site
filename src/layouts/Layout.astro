@@ -13,11 +13,13 @@ const textureProperties = {
     "--texture-light-image": `url("${backgroundTexture.light.asset.src}")`,
     "--texture-light-opacity": backgroundTexture.light.opacity,
     "--texture-light-blend-mode": backgroundTexture.light.blendMode,
+    "--texture-light-base-size": backgroundTexture.light.baseSize,
     "--texture-light-size": backgroundTexture.light.size,
     "--texture-light-repeat": backgroundTexture.light.repeat,
     "--texture-dark-image": `url("${backgroundTexture.dark.asset.src}")`,
     "--texture-dark-opacity": backgroundTexture.dark.opacity,
     "--texture-dark-blend-mode": backgroundTexture.dark.blendMode,
+    "--texture-dark-base-size": backgroundTexture.dark.baseSize,
     "--texture-dark-size": backgroundTexture.dark.size,
     "--texture-dark-repeat": backgroundTexture.dark.repeat,
 };
@@ -97,9 +99,15 @@ const textureStyle = Object.entries(textureProperties)
         --texture-image: var(--texture-light-image);
         --texture-opacity: var(--texture-light-opacity);
         --texture-blend-mode: var(--texture-light-blend-mode);
-        --texture-size: var(--texture-light-size);
+        --texture-size: var(--texture-light-base-size);
         --texture-repeat: var(--texture-light-repeat);
         position: relative;
+    }
+
+    @media (min-width: 640px) {
+        body {
+            --texture-size: var(--texture-light-size);
+        }
     }
 
     body::before {
@@ -120,8 +128,14 @@ const textureStyle = Object.entries(textureProperties)
             --texture-image: var(--texture-dark-image);
             --texture-opacity: var(--texture-dark-opacity);
             --texture-blend-mode: var(--texture-dark-blend-mode);
-            --texture-size: var(--texture-dark-size);
+            --texture-size: var(--texture-dark-base-size);
             --texture-repeat: var(--texture-dark-repeat);
+        }
+    }
+
+    @media (prefers-color-scheme: dark) and (min-width: 640px) {
+        body {
+            --texture-size: var(--texture-dark-size);
         }
     }
 </style>
