@@ -6,7 +6,6 @@ export interface TextureSettings {
     asset: ImageMetadata;
     opacity: number;
     blendMode: "normal" | "multiply" | "screen" | "overlay" | "soft-light" | "hard-light" | "color-dodge" | "color-burn" | "darken" | "lighten" | "difference" | "exclusion" | "hue" | "saturation" | "color" | "luminosity";
-    baseSize: string;
     size: string;
     repeat: "repeat" | "repeat-x" | "repeat-y" | "no-repeat";
 }
@@ -21,15 +20,13 @@ export const backgroundTexture = {
         asset: lightTexture,
         opacity: 0.1,
         blendMode: "overlay",
-        baseSize: "640px auto",
         size: "1024px auto",
         repeat: "repeat",
     },
     dark: {
         asset: darkTexture,
         opacity: 0.1,
-        blendMode: "multiply",
-        baseSize: "640px auto",
+        blendMode: "overlay",
         size: "1024px auto",
         repeat: "repeat",
     },
