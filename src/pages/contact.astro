@@ -4,12 +4,12 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Contact">
-    <main class="col-span-10 col-start-2 sm:col-span-8 sm:col-start-3 lg:col-start-4 lg:col-span-6 page-top px-4 lg:px-0">
+    <main class="col-span-12 lg:col-start-4 lg:col-span-6 px-4 sm:px-6 lg:px-0 page-top">
         <p class="mb-4 font-sans text-left text-5xl font-bold">Contact Me</p>
         <p class="mb-10 text-lg leading-relaxed text-primary/85 dark:text-primary-dark/85">
             Questions, commissions, or lesson inquiries are all welcome. Fill out the form below and I will get back to you.
         </p>
 
-        <ContactForm subject="Website Contact" />
+        <ContactForm subject="Website Contact" messagePlaceholder="Questions, availability, goals..."/>
     </main>
 </Layout>

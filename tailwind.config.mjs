@@ -26,7 +26,7 @@ export default {
         function ({ addUtilities }) {
             addUtilities({
                 '.page-top': {
-                    marginTop: '2rem',
+                    marginTop: '1.5rem',
                     '@screen lg': {
                         marginTop: '0',
                         paddingTop: '2rem',
