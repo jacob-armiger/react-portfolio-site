@@ -10,7 +10,7 @@ const HERO_SIZES = "(min-width: 1280px) 920px, (min-width: 768px) 880px, 760px";
 const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
 const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
-const HERO_COPY_CLASS = "flex w-full flex-col items-end mt-1 sm:mt-3 pr-2 lg:items-start";
+const HERO_COPY_CLASS = "flex w-full flex-col items-end pr-2 lg:items-start";
 const HERO_HEADING_CLASS =
     "font-playfair text-[2.7rem] font-medium leading-tight tracking-tighter sm:text-[3.5rem] md:text-[4.8rem] lg:text-[5.5rem] lg:text-nowrap ";
 const HERO_ACTION_CLASS =
@@ -30,7 +30,7 @@ const art_images: any = Object.values(
         <div class="flex w-full flex-col gap-4 sm:gap-6 lg:gap-12 ">
 
             <section class="hero-section relative pt-2 lg:pt-16">
-                    <div class="relative">
+                    <div class="relative mt-1 sm:mt-3">
                         <div
                             aria-hidden="true"
                             class:list={[HERO_COPY_CLASS, "pointer-events-none absolute inset-0 z-[-15]"]}>
