@@ -10,9 +10,9 @@ const HERO_SIZES = "(min-width: 1280px) 920px, (min-width: 768px) 880px, 760px";
 const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
 const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
-const HERO_COPY_CLASS = "flex w-full flex-col items-end pr-2 lg:items-start";
+const HERO_COPY_CLASS = "flex w-full flex-col items-end mt-1 sm:mt-3 pr-2 lg:items-start";
 const HERO_HEADING_CLASS =
-    "font-playfair text-[2.7rem] leading-[1.08] tracking-[-0.07em] sm:text-[3.5rem] md:text-[4rem] lg:text-[74px] lg:text-nowrap lg:leading-normal";
+    "font-playfair text-[2.7rem] font-medium leading-tight tracking-tighter sm:text-[3.5rem] md:text-[4.8rem] lg:text-[5.5rem] lg:text-nowrap ";
 const HERO_ACTION_CLASS =
     "relative mt-6 inline-flex min-h-16 min-w-36 items-center justify-center overflow-hidden rounded-[3px] px-6 py-8 font-sans text-sm font-semibold sm:mt-9 sm:min-h-28 sm:min-w-48 sm:px-8 sm:py-6 sm:text-base";
 
@@ -132,13 +132,13 @@ const art_images: any = Object.values(
      */
     /* base (<640px) */
     .hero-section {
-        min-height: clamp(600px, 89vh, 650px);
+        min-height: clamp(725px, 95vh, 650px);
     }
 
     /* md (768px+) */
     @media (min-width: 768px) {
         .hero-section {
-            min-height: clamp(780px, 90vh, 700px);
+            min-height: clamp(860px, 90vh, 700px);
         }
     }
 
@@ -173,7 +173,7 @@ const art_images: any = Object.values(
      */
     .hero-image {
         /* base (<640px) */
-        --hero-top: -75px;
+        --hero-top: -40px;
         --hero-left: -300px;
         --hero-w: 700px;
         top: var(--hero-top);
@@ -214,6 +214,15 @@ const art_images: any = Object.values(
         .hero-image {
             --hero-top: -95px;
             --hero-left: 230.7px;
+            --hero-w: 920px;
+        }
+    }
+
+    /* xl (1280px+) */
+    @media (min-width: 1536px) {
+        .hero-image {
+            --hero-top: -95px;
+            --hero-left: 22rem;
             --hero-w: 920px;
         }
     }
