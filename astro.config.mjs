@@ -11,8 +11,6 @@ import mdx from '@astrojs/mdx';
 export default defineConfig({
     integrations: [tailwind(), react(), mdx()],
     output: 'static',
-    adapter: vercel({
-        imageService: true,
-    }),
+    adapter: vercel(),
     site: 'https://jacobarmiger.vercel.app'
 });

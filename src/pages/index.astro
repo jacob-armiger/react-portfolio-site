@@ -1,53 +1,364 @@
 ---
 import type { ImageMetadata } from "astro";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
+import BreakpointIndicator from "../components/BreakpointIndicator.astro";
+import heroImage from "../assets/contact.webp";
 import Layout from "../layouts/Layout.astro";
 
-const art_images: any = Object.values(
-    import.meta.glob<ImageMetadata>("/src/assets/selectedWork/*", {
+const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
+const HERO_SIZES = "(min-width: 1024px) 76vw, 180vw";
+const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
+const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
+
+const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
+const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
+const HERO_BODY =
+    "I'm a digital illustrator and oil painter based in the United States. I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
+const HERO_BODY_SHORT =
+    "I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
+
+const HERO_ACTION_CLASS =
+    "inline-flex min-h-14 items-center justify-center rounded-full sm:rounded-sm px-5 py-3 font-sans text-sm font-semibold uppercase tracking-[0.2em] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:min-h-16 sm:px-7";
+
+const selectedWorkModules = import.meta.glob<ImageMetadata>(
+    "/src/assets/selectedWork/*.{png,jpg,jpeg}",
+    {
         eager: true,
         import: "default",
-    }),
+    },
 );
+
+// Match the art page's filename ordering so its selected-work deep-link indices stay stable.
+const selectedWorks = Object.entries(selectedWorkModules)
+    .sort(([pathA], [pathB]) =>
+        (pathB.split("/").at(-1) ?? "").localeCompare(pathA.split("/").at(-1) ?? "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+        }),
+    )
+    .map(([, image], index) => ({
+        image,
+        alt: `Selected artwork ${index + 1}`,
+        href: `/art?piece=selected-work-${index}#selected-work`,
+        aspectRatio: image.width / image.height,
+    }));
 ---
 
 <Layout title="JacobLDraws">
-    <main class="col-span-12 lg:col-span-10 lg:pr-4">
-        <div class="relative">
-            <div class="grid w-full grid-cols-12 gap-1 sm:gap-4">
-                <div
-                    class="relative col-span-12 row-span-3 mb-2 h-[70vh] min-h-[500px] bg-cover bg-top lg:col-span-8 lg:h-auto"
-                    style="background-image: url(/banner_image2.jpeg)">
-                    <div
-                        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
-                    </div>
-                    <div class="relative flex h-full flex-col justify-end px-6 pb-16 text-left text-white sm:px-10 sm:pb-20 lg:justify-center lg:pb-0">
-                        <p
-                            class="max-w-md font-serif font-medium text-4xl leading-tight text-secondary sm:max-w-lg sm:text-5xl md:text-7xl md:tracking-tight lg:max-w-xl 2xl:text-7xl dark:text-primary-dark-bright">
-                            Want art lessons or to commission work?
-                        </p>
-                        <a href="/contact" class="mt-8 w-fit">
-                            <button
-                                class="border-[1px] border-secondary bg-secondary px-10 py-8 lg:mb-20 font-medium tracking-wide text-primary transition-colors duration-200 hover:bg-transparent hover:text-secondary">
-                                Contact Me
-                            </button>
+    <BreakpointIndicator />
+    <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
+        <div class="flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-10">
+            <section class="hero-section relative isolate overflow-hidden border border-primary/15 bg-[#d7cfbe] lg:rounded-[1rem] dark:border-primary-dark/15 dark:bg-[#2f2a25]">
+                <p class="hero-eyebrow absolute z-30 font-sans font-semibold uppercase text-primary/70 dark:text-primary-dark/70">
+                    {HERO_EYEBROW}
+                </p>
+
+                <Picture
+                    src={heroImage}
+                    alt="Person reclining beside a green office chair while using a telephone"
+                    formats={["avif", "webp"]}
+                    fallbackFormat="png"
+                    widths={HERO_VARIANT_WIDTHS}
+                    sizes={HERO_SIZES}
+                    quality={80}
+                    priority
+                    class="hero-image absolute z-10 max-w-none"
+                />
+
+                <h1 class="hero-heading absolute z-20 font-playfair font-semibold leading-[0.92] tracking-[-0.05em] text-white mix-blend-difference">
+                    {HERO_LINES.map((line) => <span class="block">{line}</span>)}
+                </h1>
+
+                <div class="hero-actions absolute bottom-5 left-4 z-30 sm:bottom-7 sm:left-7">
+                    <p class="hero-body-full mb-4 max-w-sm font-sans text-sm leading-6 text-primary/80 dark:text-primary-dark/80">
+                        {HERO_BODY}
+                    </p>
+                    <p class="hero-body-short mb-3 font-sans text-primary/80 dark:text-primary-dark/80">
+                        {HERO_BODY_SHORT}
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <a
+                            href="/contact"
+                            class:list={[
+                                HERO_ACTION_CLASS,
+                                "bg-primary text-secondary shadow-[0_16px_40px_rgba(38,41,44,0.22)] focus-visible:outline-primary dark:bg-primary-dark dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
+                            ]}>
+                            Contact
+                        </a>
+                        <a
+                            href="/art-lessons"
+                            class:list={[
+                                HERO_ACTION_CLASS,
+                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md focus-visible:outline-primary dark:border-primary-dark/25 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
+                            ]}>
+                            Learn to Draw
                         </a>
                     </div>
                 </div>
-                {
-                    art_images.map((img: ImageMetadata) => (
-                        <div class="col-span-12 sm:col-span-6 lg:col-span-4">
-                            <Image
-                                src={img.src}
-                                alt="Most recent blog image"
-                                width={268}
-                                height={358}
-                                class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
-                            />
-                        </div>
-                    ))
-                }
-            </div>
+            </section>
+
+            <section aria-labelledby="selected-work-heading" class="pb-2">
+                <div class="flex flex-col gap-4 border-t border-primary/10 px-5 pt-5 sm:px-6 sm:pt-6 lg:flex-row lg:items-end lg:justify-between lg:px-8 dark:border-primary-dark/10">
+                    <div class="max-w-xl">
+                        <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-primary/60 dark:text-primary-dark/60">
+                            Selected work
+                        </p>
+                        <h2 id="selected-work-heading" class="mt-2 font-playfair text-3xl font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
+                            What I can make.
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-2">
+                    {
+                        selectedWorks.map(({ image, alt, href, aspectRatio }) => (
+                            <a
+                                href={href}
+                                style={`--tile-ratio: ${aspectRatio}; --tile-width-mobile: ${aspectRatio * 13}rem; --tile-width-tablet: ${aspectRatio * 17}rem; --tile-width-desktop: ${aspectRatio * 20}rem;`}
+                                class="selected-work-tile group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark"
+                                aria-label={`View ${alt} on the art page`}>
+                                <Picture
+                                    src={image}
+                                    alt={alt}
+                                    formats={["avif", "webp"]}
+                                    widths={GALLERY_VARIANT_WIDTHS}
+                                    sizes={GALLERY_SIZES}
+                                    quality={78}
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="block h-full w-full object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85"
+                                />
+                            </a>
+                        ))
+                    }
+                </div>
+            </section>
         </div>
     </main>
 </Layout>
+
+<style>
+    /*
+     * Justified rows start from each image's ideal width, then share remaining space
+     * in proportion to aspect ratio. Images stay uncropped, every complete row fills
+     * the container, and rows can resolve to different heights.
+     */
+    .selected-work-grid::after {
+        flex: 999 1 13rem;
+        content: "";
+    }
+
+    .selected-work-tile {
+        max-width: 100%;
+        aspect-ratio: var(--tile-ratio);
+        flex-grow: var(--tile-ratio);
+        flex-shrink: 1;
+        flex-basis: var(--tile-width-mobile);
+    }
+
+    @media (min-width: 640px) {
+        .selected-work-grid::after {
+            flex-basis: 17rem;
+        }
+
+        .selected-work-tile {
+            flex-basis: var(--tile-width-tablet);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .selected-work-grid::after {
+            flex-basis: 20rem;
+        }
+
+        .selected-work-tile {
+            flex-basis: var(--tile-width-desktop);
+        }
+    }
+
+    /* Shared hero controls. Breakpoints override these values without changing the composition rules. */
+    .hero-section {
+        --hero-image-top: 6.5rem;
+        --hero-image-left: 48%;
+        --hero-image-right: auto;
+        --hero-image-width: 42rem;
+        --hero-image-transform: translateX(-56%);
+        --hero-heading-top: 10.5rem;
+        --hero-heading-left: 1rem;
+        --hero-heading-width: calc(100% - 2rem);
+        --hero-heading-size: clamp(2.65rem, 11.5vw, 4rem);
+        min-height: clamp(42rem, 88vh, 50rem);
+        background-image:
+            linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
+            linear-gradient(315deg, rgba(141, 189, 182, 0.12), transparent 42%);
+    }
+
+    .hero-eyebrow {
+        top: 1.75rem;
+        left: 1.75rem;
+        font-size: 0.6rem;
+        line-height: 1rem;
+        letter-spacing: 0.26em;
+    }
+
+    .hero-image {
+        top: var(--hero-image-top);
+        right: var(--hero-image-right);
+        left: var(--hero-image-left);
+        width: var(--hero-image-width);
+        aspect-ratio: 2693 / 2773;
+        transform: var(--hero-image-transform);
+    }
+
+    .hero-heading {
+        top: var(--hero-heading-top);
+        left: var(--hero-heading-left);
+        width: var(--hero-heading-width);
+        font-size: var(--hero-heading-size);
+    }
+
+    .hero-body-short {
+        display: none;
+    }
+
+    /* Mobile: headline first, a controlled artwork crop, then copy and actions. */
+    @media (max-width: 639px) {
+        .hero-section {
+            --mobile-inline: 1.25rem;
+            --mobile-eyebrow-optical-offset: 0.125rem;
+            border-top: 0;
+            min-height: 49rem;
+        }
+
+        .hero-eyebrow {
+            top: 1.25rem;
+            /* The small sans-serif O needs a slight nudge to align with Playfair's large C. */
+            left: calc(var(--mobile-inline) + var(--mobile-eyebrow-optical-offset));
+            max-width: calc(100% - (2 * var(--mobile-inline)));
+            font-size: 0.52rem;
+            line-height: 0.85rem;
+            letter-spacing: 0.22em;
+        }
+
+        .hero-heading {
+            top: 3rem;
+            left: var(--mobile-inline);
+            width: calc(100% - (2 * var(--mobile-inline)));
+            font-size: clamp(2.75rem, 12vw, 3.8rem);
+        }
+
+        /* The left-shifted anchor preserves the chair-to-phone diagonal in the mobile frame. */
+        .hero-image {
+            top: 5.25rem;
+            left: calc(50% - 4.5rem);
+            width: 30.5rem;
+            transform: translateX(-48%);
+        }
+
+        .hero-actions {
+            bottom: 1.25rem;
+            right: var(--mobile-inline);
+            left: var(--mobile-inline);
+        }
+
+        .hero-body-full {
+            display: none;
+        }
+
+        .hero-body-short {
+            display: block;
+            max-width: none;
+            font-size: 0.8rem;
+            line-height: 1.25rem;
+        }
+
+        .hero-actions > div {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            width: 100%;
+        }
+
+        .hero-actions a {
+            min-height: 3.5rem;
+            padding-right: 0.8rem;
+            padding-left: 0.8rem;
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+        }
+    }
+
+    /* Horizontal navigation layouts sit flush against the nav divider. */
+    @media (min-width: 640px) {
+        .hero-section {
+            --hero-image-top: 1rem;
+            --hero-image-left: auto;
+            --hero-image-right: -5rem;
+            --hero-image-width: 45rem;
+            --hero-image-transform: none;
+            --hero-heading-top: 9rem;
+            --hero-heading-left: 1.5rem;
+            --hero-heading-width: 60%;
+            --hero-heading-size: clamp(3.6rem, 7vw, 4.6rem);
+            min-height: clamp(42rem, 84vh, 48rem);
+        }
+
+        .hero-eyebrow {
+            top: 1.75rem;
+            left: 1.75rem;
+        }
+    }
+
+    @media (min-width: 640px) and (max-width: 1023px) {
+        .hero-section {
+            border-top: 0;
+            border-right: 0;
+            border-left: 0;
+        }
+    }
+
+    /* Desktop sidebar layout restores the framed poster treatment. */
+    @media (min-width: 1024px) {
+        .hero-section {
+            --hero-image-top: -4rem;
+            --hero-image-right: -4rem;
+            --hero-image-width: min(72vw, 62rem);
+            --hero-heading-top: 8.5rem;
+            --hero-heading-left: 2rem;
+            --hero-heading-width: calc(100% - 4rem);
+            --hero-heading-size: clamp(4.75rem, 7vw, 7rem);
+            min-height: clamp(44rem, 86vh, 52rem);
+        }
+
+    }
+
+    /* Large screens use a smaller, higher crop so the figure remains fully legible. */
+    @media (min-width: 1280px) {
+        .hero-section {
+            --hero-image-top: -8rem;
+            --hero-image-right: 0rem;
+            --hero-image-width: min(67vw, 59rem);
+            --hero-heading-top: 8rem;
+            --hero-heading-size: clamp(5rem, 6.4vw, 7.5rem);
+        }
+    }
+
+    /* Cap the composition on very wide screens rather than continuing to scale it. */
+    @media (min-width: 1536px) {
+        .hero-section {
+            --hero-image-top: -1.5rem;
+            --hero-image-right: 1rem;
+            --hero-image-width: 61rem;
+            --hero-heading-top: 8.5rem;
+            --hero-heading-size: 7.5rem;
+        }
+    }
+
+    /* Preserve the image-derived olive and telephone-blue atmosphere in dark mode. */
+    @media (prefers-color-scheme: dark) {
+        .hero-section {
+            background-image:
+                linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
+                linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);
+        }
+    }
+</style>

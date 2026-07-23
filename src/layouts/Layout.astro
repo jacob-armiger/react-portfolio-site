@@ -1,63 +1,130 @@
 ---
 import Analytics from "@vercel/analytics/astro";
 import "@fontsource-variable/inter";
+import "@fontsource-variable/source-serif-4";
 import "@fontsource-variable/playfair-display";
+import "@fontsource/kumar-one";
+import { backgroundTexture } from "../config/backgroundTexture";
 interface Props {
     title: string;
 }
 
 const { title } = Astro.props;
+const textureProperties = {
+    "--texture-light-image": `url("${backgroundTexture.light.asset.src}")`,
+    "--texture-light-opacity": backgroundTexture.light.opacity,
+    "--texture-light-blend-mode": backgroundTexture.light.blendMode,
+    "--texture-light-size": backgroundTexture.light.size,
+    "--texture-light-repeat": backgroundTexture.light.repeat,
+    "--texture-dark-image": `url("${backgroundTexture.dark.asset.src}")`,
+    "--texture-dark-opacity": backgroundTexture.dark.opacity,
+    "--texture-dark-blend-mode": backgroundTexture.dark.blendMode,
+    "--texture-dark-size": backgroundTexture.dark.size,
+    "--texture-dark-repeat": backgroundTexture.dark.repeat,
+};
+const textureStyle = Object.entries(textureProperties)
+    .map(([property, value]) => `${property}: ${value}`)
+    .join("; ");
 ---
 
 <!doctype html>
 <html lang="en">
     <head>
         <meta property="og:url" content="https://jacobldraws.vercel.app" />
-        <meta property="og:image" content="/banner_image.jpeg" />
+        <meta property="og:image" content="/phone_img.png" />
         <meta charset="UTF-8" />
         <meta name="description" content="View Jacob's art or contact him for work!" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="alternate" type="application/rss+xml" title="Articles – JacobLDraws" href="/writing/rss.xml" />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Articles – JacobLDraws"
+            href="/writing/rss.xml"
+        />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
         <Analytics />
     </head>
-    <body class="bg-secondary text-primary dark:bg-secondary-dark dark:text-primary-dark">
-        <div class="grid min-h-screen content-start grid-cols-12">
+    <body
+        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark"
+        style={textureStyle}>
+        <!-- <div
+            aria-hidden="true"
+            class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-secondary to-transparent dark:from-secondary-dark lg:hidden">
+        </div> -->
+        <div class="relative z-10 grid min-h-screen grid-cols-12 content-start">
             <nav
-                class="text-md sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-6 gap-y-2 border-b-[1px] border-primary
-                 bg-secondary px-2 py-2 text-left tracking-wide underline-offset-4 backdrop-blur-md 
-                 sm:gap-8 sm:py-2 sm:text-xl 
-                 lg:col-span-2 lg:h-screen lg:flex-nowrap lg:flex-col lg:items-start lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-16
-                dark:border-primary-dark dark:bg-secondary-dark/80">
-                <a href="/" class="font-serif font-bold hover:underline">JacobLDraws</a>
-                <a href="/art-lessons" class="font-serif hover:underline">LESSONS</a>
-                <a href="/art" class="font-serif hover:underline">ART</a>
-                <a href="/writing" class="font-serif hover:underline">BLOG</a>
-                <a href="/books" class="hidden font-serif hover:underline md:block">BOOKS</a>
-                <a href="/directory" class="hidden font-serif hover:underline sm:block">DIRECTORY</a>
+                class="sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-4 gap-y-2 border-b-[1px] border-primary/50 bg-secondary/80 backdrop-blur-md lg:bg-transparent lg:backdrop-blur-none px-2 py-3 text-left font-sans underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:col-span-2 lg:h-screen lg:flex-col lg:flex-nowrap lg:items-start lg:gap-y-0 lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-14 lg:text-[18px] lg:leading-[72px] dark:bg-primary/10 dark:border-primary-dark/50">
+                <a
+                    href="/"
+                    class="font-serif font-bold hover:underline lg:mb-2 lg:text-[24px] lg:leading-[72px]"
+                    >JacobLDraws</a
+                >
+                <a href="/art-lessons" class="font-sans font-normal hover:underline">LESSONS</a>
+                <a href="/art" class="font-sans font-normal hover:underline">ART</a>
+                <a href="/writing" class="font-sans font-normal hover:underline">BLOG</a>
+                <a href="/books" class="hidden font-sans font-normal hover:underline md:block"
+                    >BOOKS</a
+                >
+                <a href="/directory" class="hidden font-sans font-normal hover:underline sm:block"
+                    >DIRECTORY</a
+                >
                 <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
                 <a
                     href="https://www.instagram.com/jacobldraws/"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="JacobLDraws on Instagram"
-                    class="dark:hidden"
-                    ><img src="/Instagram_Glyph_Black.svg" width="20" /></a
+                    class="lg:inline-flex lg:h-[72px] lg:items-center dark:hidden"
+                    ><img src="/Instagram_Glyph_Black.svg" alt="" width="20" height="20" /></a
                 >
                 <a
                     href="https://www.instagram.com/jacobldraws/"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="JacobLDraws on Instagram"
-                    class="hidden dark:block"><img src="/Instagram_Glyph_White.svg" width="20" /></a
+                    class="hidden lg:h-[72px] lg:items-center dark:block dark:lg:inline-flex"
+                    ><img src="/Instagram_Glyph_White.svg" alt="" width="20" height="20" /></a
                 >
             </nav>
             <!-- slot goes directly in grid so each page's root element can be a grid item -->
             <slot />
-            <div aria-hidden="true" class="col-span-12 h-12 lg:col-span-10 lg:col-start-3 sm:h-16"></div>
+            <div aria-hidden="true" class="col-span-12 h-12 sm:h-16 lg:col-span-10 lg:col-start-3">
+            </div>
         </div>
         <script is:inline type="module" src="/scripts/imageZoom.js"></script>
     </body>
 </html>
+
+<style is:global>
+    body {
+        --texture-image: var(--texture-light-image);
+        --texture-opacity: var(--texture-light-opacity);
+        --texture-blend-mode: var(--texture-light-blend-mode);
+        --texture-size: var(--texture-light-size);
+        --texture-repeat: var(--texture-light-repeat);
+        position: relative;
+    }
+
+    body::before {
+        position: absolute;
+        z-index: -20;
+        inset: 0;
+        background-image: var(--texture-image);
+        background-repeat: var(--texture-repeat);
+        background-size: var(--texture-size);
+        mix-blend-mode: var(--texture-blend-mode);
+        opacity: var(--texture-opacity);
+        pointer-events: none;
+        content: "";
+    }
+
+    html.dark body {
+        --texture-image: var(--texture-dark-image);
+        --texture-opacity: var(--texture-dark-opacity);
+        --texture-blend-mode: var(--texture-dark-blend-mode);
+        --texture-size: var(--texture-dark-size);
+        --texture-repeat: var(--texture-dark-repeat);
+    }
+</style>
