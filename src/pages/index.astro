@@ -6,224 +6,359 @@ import heroImage from "../assets/contact.webp";
 import Layout from "../layouts/Layout.astro";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
-const HERO_SIZES = "(min-width: 1280px) 920px, (min-width: 768px) 880px, 760px";
+const HERO_SIZES = "(min-width: 1024px) 76vw, 180vw";
 const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
 const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
-const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
-const HERO_COPY_CLASS = "flex w-full flex-col items-end pr-2 lg:items-start";
-const HERO_HEADING_CLASS =
-    "font-playfair text-[2.7rem] font-medium leading-tight tracking-tighter sm:text-[3.5rem] md:text-[4.8rem] lg:text-[5.5rem] lg:text-nowrap ";
-const HERO_ACTION_CLASS =
-    "relative mt-6 inline-flex min-h-16 min-w-36 items-center justify-center overflow-hidden rounded-[3px] px-6 py-8 font-sans text-sm font-semibold sm:mt-9 sm:min-h-28 sm:min-w-48 sm:px-8 sm:py-6 sm:text-base";
 
-const art_images: any = Object.values(
-    import.meta.glob<ImageMetadata>("/src/assets/selectedWork/*", {
+const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
+const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
+const HERO_BODY =
+    "I'm a digital illustrator and oil painter based in the United States. I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
+const HERO_BODY_SHORT =
+    "I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
+
+const HERO_ACTION_CLASS =
+    "inline-flex min-h-14 items-center justify-center rounded-full sm:rounded-sm px-5 py-3 font-sans text-sm font-semibold uppercase tracking-[0.2em] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:min-h-16 sm:px-7";
+
+const selectedWorkModules = import.meta.glob<ImageMetadata>(
+    "/src/assets/selectedWork/*.{png,jpg,jpeg}",
+    {
         eager: true,
         import: "default",
-    }),
+    },
 );
+
+// Match the art page's filename ordering so its selected-work deep-link indices stay stable.
+const selectedWorks = Object.entries(selectedWorkModules)
+    .sort(([pathA], [pathB]) =>
+        (pathB.split("/").at(-1) ?? "").localeCompare(pathA.split("/").at(-1) ?? "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+        }),
+    )
+    .map(([, image], index) => ({
+        image,
+        alt: `Selected artwork ${index + 1}`,
+        href: `/art?piece=selected-work-${index}#selected-work`,
+        aspectRatio: image.width / image.height,
+    }));
 ---
 
 <Layout title="JacobLDraws">
     <BreakpointIndicator />
     <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
-        <div class="flex w-full flex-col gap-4 sm:gap-6 lg:gap-12 ">
+        <div class="flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-10">
+            <section class="hero-section relative isolate overflow-hidden border border-primary/15 bg-[#d7cfbe] lg:rounded-[1rem] dark:border-primary-dark/15 dark:bg-[#2f2a25]">
+                <p class="hero-eyebrow absolute z-30 font-sans font-semibold uppercase text-primary/70 dark:text-primary-dark/70">
+                    {HERO_EYEBROW}
+                </p>
 
-            <section class="hero-section relative pt-2 lg:pt-16">
-                    <div class="relative mt-1 sm:mt-3">
-                        <div
-                            aria-hidden="true"
-                            class:list={[HERO_COPY_CLASS, "pointer-events-none absolute inset-0 z-[-15]"]}>
-                            <div class:list={[HERO_HEADING_CLASS, "text-secondary dark:text-secondary-dark"]}>
-                                {HERO_LINES.map((line) => <span class="block">{line}</span>)}
-                            </div>
-                            <div class={HERO_ACTION_CLASS}>
-                                <span
-                                    class="absolute inset-0 bg-secondary dark:bg-secondary-dark"></span>
-                                <span class="relative text-secondary dark:text-secondary-dark">Contact</span>
-                            </div>
-                        </div>
+                <Picture
+                    src={heroImage}
+                    alt="Person reclining beside a green office chair while using a telephone"
+                    formats={["avif", "webp"]}
+                    fallbackFormat="png"
+                    widths={HERO_VARIANT_WIDTHS}
+                    sizes={HERO_SIZES}
+                    quality={80}
+                    priority
+                    class="hero-image absolute z-10 max-w-none"
+                />
 
-                        <div class={HERO_COPY_CLASS}>
-                        <h1 class:list={[HERO_HEADING_CLASS, "text-white mix-blend-difference"]}>
-                            {HERO_LINES.map((line) => <span class="block">{line}</span>)}
-                        </h1>
+                <h1 class="hero-heading absolute z-20 font-playfair font-semibold leading-[0.92] tracking-[-0.05em] text-white mix-blend-difference">
+                    {HERO_LINES.map((line) => <span class="block">{line}</span>)}
+                </h1>
+
+                <div class="hero-actions absolute bottom-5 left-4 z-30 sm:bottom-7 sm:left-7">
+                    <p class="hero-body-full mb-4 max-w-sm font-sans text-sm leading-6 text-primary/80 dark:text-primary-dark/80">
+                        {HERO_BODY}
+                    </p>
+                    <p class="hero-body-short mb-3 font-sans text-primary/80 dark:text-primary-dark/80">
+                        {HERO_BODY_SHORT}
+                    </p>
+                    <div class="flex flex-wrap gap-3">
                         <a
                             href="/contact"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "group border border-transparent transition-colors duration-200 hover:border-primary focus-visible:border-primary dark:hover:border-primary-dark dark:focus-visible:border-primary-dark",
-                                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark",
+                                "bg-primary text-secondary shadow-[0_16px_40px_rgba(38,41,44,0.22)] focus-visible:outline-primary dark:bg-primary-dark dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
                             ]}>
-                            <span
-                                aria-hidden="true"
-                                class="absolute inset-0 bg-white mix-blend-difference transition-[background-color,mix-blend-mode] duration-200 group-hover:bg-secondary group-hover:mix-blend-normal group-focus-visible:bg-secondary group-focus-visible:mix-blend-normal dark:group-hover:bg-secondary-dark dark:group-focus-visible:bg-secondary-dark"></span>
-                            <span class="relative text-white mix-blend-difference transition-[color,mix-blend-mode] duration-200 group-hover:text-primary group-hover:mix-blend-normal group-focus-visible:text-primary group-focus-visible:mix-blend-normal dark:group-hover:text-primary-dark dark:group-focus-visible:text-primary-dark">Contact</span>
+                            Contact
                         </a>
-                        </div>
+                        <a
+                            href="/art-lessons"
+                            class:list={[
+                                HERO_ACTION_CLASS,
+                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md focus-visible:outline-primary dark:border-primary-dark/25 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
+                            ]}>
+                            Learn to Draw
+                        </a>
                     </div>
-
-                    <!--
-                        Astro defines each AVIF, WebP, and PNG variant here; the image service
-                        generates and caches the files automatically. All three formats preserve
-                        transparency. Keep HERO_SIZES aligned with the --hero-w breakpoints below,
-                        and only expand HERO_VARIANT_WIDTHS when those widths leave this ladder.
-                    -->
-                    <Picture
-                        src={heroImage}
-                        alt="Person reclining beside a green office chair while using a telephone"
-                        formats={["avif", "webp"]}
-                        fallbackFormat="png"
-                        widths={HERO_VARIANT_WIDTHS}
-                        sizes={HERO_SIZES}
-                        quality={80}
-                        priority
-                        class="hero-image absolute -z-10"
-                    />
+                </div>
             </section>
-            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {
-                    art_images.map((img: ImageMetadata) => (
-                        <div>
-                            <Picture
-                                src={img}
-                                alt="Selected work"
-                                formats={["avif", "webp"]}
-                                widths={GALLERY_VARIANT_WIDTHS}
-                                sizes={GALLERY_SIZES}
-                                quality={78}
-                                width={268}
-                                height={358}
-                                loading="lazy"
-                                decoding="async"
-                                class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
-                            />
-                        </div>
-                    ))
-                }
-            </div>
+
+            <section aria-labelledby="selected-work-heading" class="pb-2">
+                <div class="flex flex-col gap-4 border-t border-primary/10 px-5 pt-5 sm:px-6 sm:pt-6 lg:flex-row lg:items-end lg:justify-between lg:px-8 dark:border-primary-dark/10">
+                    <div class="max-w-xl">
+                        <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-primary/60 dark:text-primary-dark/60">
+                            Selected work
+                        </p>
+                        <h2 id="selected-work-heading" class="mt-2 font-playfair text-3xl font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
+                            What I can make.
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-2">
+                    {
+                        selectedWorks.map(({ image, alt, href, aspectRatio }) => (
+                            <a
+                                href={href}
+                                style={`--tile-ratio: ${aspectRatio}; --tile-width-mobile: ${aspectRatio * 13}rem; --tile-width-tablet: ${aspectRatio * 17}rem; --tile-width-desktop: ${aspectRatio * 20}rem;`}
+                                class="selected-work-tile group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark"
+                                aria-label={`View ${alt} on the art page`}>
+                                <Picture
+                                    src={image}
+                                    alt={alt}
+                                    formats={["avif", "webp"]}
+                                    widths={GALLERY_VARIANT_WIDTHS}
+                                    sizes={GALLERY_SIZES}
+                                    quality={78}
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="block h-full w-full object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85"
+                                />
+                            </a>
+                        ))
+                    }
+                </div>
+            </section>
         </div>
     </main>
 </Layout>
 
 <style>
     /*
-     * Hero section: min-height is normally a viewport-relative value, but
-     * since the hero image is `position: absolute` it doesn't contribute
-     * to the section's own height. On short viewports (e.g. iPhone SE),
-     * a pure `vh` min-height can end up shorter than the image's actual
-     * bottom edge, letting the image grid below overlap it. On very tall
-     * narrow viewports (e.g. an iPad in portrait), `vh` alone can also
-     * grow far past what's needed, pushing the grid too far away.
-     * `clamp(floor, vh, ceiling)` keeps a `vh`-based feel for normal
-     * screens while guaranteeing the section is always at least tall
-     * enough to contain the image (floor) and never grows unreasonably
-     * tall on portrait/tall-aspect screens (ceiling).
-     *
-     * clamp(MIN, PREFERRED, MAX) arguments:
-     *   MIN       floor - smallest allowed min-height (prevents the
-     *             image grid below from overlapping the hero image on
-     *             short viewports).
-     *   PREFERRED viewport-relative value (`vh`) used as long as it
-     *             falls between MIN and MAX.
-     *   MAX       ceiling - largest allowed min-height (prevents the
-     *             section from growing too tall, and the grid below
-     *             from sitting too far away, on tall/narrow viewports).
+     * Justified rows start from each image's ideal width, then share remaining space
+     * in proportion to aspect ratio. Images stay uncropped, every complete row fills
+     * the container, and rows can resolve to different heights.
      */
-    /* base (<640px) */
-    .hero-section {
-        min-height: clamp(725px, 95vh, 650px);
+    .selected-work-grid::after {
+        flex: 999 1 13rem;
+        content: "";
     }
 
-    /* md (768px+) */
-    @media (min-width: 768px) {
-        .hero-section {
-            min-height: clamp(860px, 90vh, 700px);
-        }
+    .selected-work-tile {
+        max-width: 100%;
+        aspect-ratio: var(--tile-ratio);
+        flex-grow: var(--tile-ratio);
+        flex-shrink: 1;
+        flex-basis: var(--tile-width-mobile);
     }
 
-    /* lg (1024px+) */
-    @media (min-width: 1024px) {
-        .hero-section {
-            min-height: clamp(800px, 92vh, 900px);
-        }
-    }
-
-    /*
-     * Hero image: freely positioned/sized per breakpoint via CSS custom
-     * properties instead of a long Tailwind arbitrary-value class string.
-     * To reposition or resize (including swapping in a different image
-     * later), tune the custom properties below rather than the
-     * `top` / `left` / `width` / `height` declarations themselves.
-     *
-     * Custom properties ("arguments"):
-     *   --hero-top  (length, required) vertical offset of the image's
-     *               top edge relative to the section (negative pulls it
-     *               up above the section's own top edge).
-     *   --hero-left (length, required) horizontal offset of the image's
-     *               left edge relative to the section (negative pulls it
-     *               left of the section's own left edge).
-     *   --hero-w    (length, required) rendered width of the image.
-     *   --hero-h    (length, optional, default: none -> `auto`) rendered
-     *               height of the image. Leave unset to preserve the
-     *               image's natural aspect ratio (undistorted). Set it
-     *               only if you need an exact width+height box; the
-     *               image will then be cropped via `object-fit: cover`
-     *               instead of stretched/distorted.
-     */
-    .hero-image {
-        /* base (<640px) */
-        --hero-top: -40px;
-        --hero-left: -300px;
-        --hero-w: 700px;
-        top: var(--hero-top);
-        left: var(--hero-left);
-        width: var(--hero-w);
-        max-width: none; /* override Tailwind preflight's img{max-width:100%} */
-        height: var(--hero-h, auto);
-        object-fit: cover;
-    }
-
-    /* sm (640px+) */
     @media (min-width: 640px) {
-        .hero-image {
-            --hero-top: -60px;
-            --hero-left: -180px;
+        .selected-work-grid::after {
+            flex-basis: 17rem;
+        }
+
+        .selected-work-tile {
+            flex-basis: var(--tile-width-tablet);
         }
     }
 
-    /* md (768px+) */
-    @media (min-width: 768px) {
-        .hero-image {
-            --hero-top: -55px;
-            --hero-left: -180px;
-            --hero-w: 880px;
-        }
-    }
-
-    /* lg (1024px+) */
     @media (min-width: 1024px) {
-        .hero-image {
-            --hero-top: -95px;
-            --hero-left: 230.7px;
+        .selected-work-grid::after {
+            flex-basis: 20rem;
+        }
+
+        .selected-work-tile {
+            flex-basis: var(--tile-width-desktop);
         }
     }
 
-    /* xl (1280px+) */
+    /* Shared hero controls. Breakpoints override these values without changing the composition rules. */
+    .hero-section {
+        --hero-image-top: 6.5rem;
+        --hero-image-left: 48%;
+        --hero-image-right: auto;
+        --hero-image-width: 42rem;
+        --hero-image-transform: translateX(-56%);
+        --hero-heading-top: 10.5rem;
+        --hero-heading-left: 1rem;
+        --hero-heading-width: calc(100% - 2rem);
+        --hero-heading-size: clamp(2.65rem, 11.5vw, 4rem);
+        min-height: clamp(42rem, 88vh, 50rem);
+        background-image:
+            linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
+            linear-gradient(315deg, rgba(141, 189, 182, 0.12), transparent 42%);
+    }
+
+    .hero-eyebrow {
+        top: 1.75rem;
+        left: 1.75rem;
+        font-size: 0.6rem;
+        line-height: 1rem;
+        letter-spacing: 0.26em;
+    }
+
+    .hero-image {
+        top: var(--hero-image-top);
+        right: var(--hero-image-right);
+        left: var(--hero-image-left);
+        width: var(--hero-image-width);
+        aspect-ratio: 2693 / 2773;
+        transform: var(--hero-image-transform);
+    }
+
+    .hero-heading {
+        top: var(--hero-heading-top);
+        left: var(--hero-heading-left);
+        width: var(--hero-heading-width);
+        font-size: var(--hero-heading-size);
+    }
+
+    .hero-body-short {
+        display: none;
+    }
+
+    /* Mobile: headline first, a controlled artwork crop, then copy and actions. */
+    @media (max-width: 639px) {
+        .hero-section {
+            --mobile-inline: 1.25rem;
+            --mobile-eyebrow-optical-offset: 0.125rem;
+            border-top: 0;
+            min-height: 49rem;
+        }
+
+        .hero-eyebrow {
+            top: 1.25rem;
+            /* The small sans-serif O needs a slight nudge to align with Playfair's large C. */
+            left: calc(var(--mobile-inline) + var(--mobile-eyebrow-optical-offset));
+            max-width: calc(100% - (2 * var(--mobile-inline)));
+            font-size: 0.52rem;
+            line-height: 0.85rem;
+            letter-spacing: 0.22em;
+        }
+
+        .hero-heading {
+            top: 3rem;
+            left: var(--mobile-inline);
+            width: calc(100% - (2 * var(--mobile-inline)));
+            font-size: clamp(2.75rem, 12vw, 3.8rem);
+        }
+
+        /* The left-shifted anchor preserves the chair-to-phone diagonal in the mobile frame. */
+        .hero-image {
+            top: 5.25rem;
+            left: calc(50% - 4.5rem);
+            width: 30.5rem;
+            transform: translateX(-48%);
+        }
+
+        .hero-actions {
+            bottom: 1.25rem;
+            right: var(--mobile-inline);
+            left: var(--mobile-inline);
+        }
+
+        .hero-body-full {
+            display: none;
+        }
+
+        .hero-body-short {
+            display: block;
+            max-width: none;
+            font-size: 0.8rem;
+            line-height: 1.25rem;
+        }
+
+        .hero-actions > div {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            width: 100%;
+        }
+
+        .hero-actions a {
+            min-height: 3.5rem;
+            padding-right: 0.8rem;
+            padding-left: 0.8rem;
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+        }
+    }
+
+    /* Horizontal navigation layouts sit flush against the nav divider. */
+    @media (min-width: 640px) {
+        .hero-section {
+            --hero-image-top: 1rem;
+            --hero-image-left: auto;
+            --hero-image-right: -5rem;
+            --hero-image-width: 45rem;
+            --hero-image-transform: none;
+            --hero-heading-top: 9rem;
+            --hero-heading-left: 1.5rem;
+            --hero-heading-width: 60%;
+            --hero-heading-size: clamp(3.6rem, 7vw, 4.6rem);
+            min-height: clamp(42rem, 84vh, 48rem);
+        }
+
+        .hero-eyebrow {
+            top: 1.75rem;
+            left: 1.75rem;
+        }
+    }
+
+    @media (min-width: 640px) and (max-width: 1023px) {
+        .hero-section {
+            border-top: 0;
+            border-right: 0;
+            border-left: 0;
+        }
+    }
+
+    /* Desktop sidebar layout restores the framed poster treatment. */
+    @media (min-width: 1024px) {
+        .hero-section {
+            --hero-image-top: -4rem;
+            --hero-image-right: -4rem;
+            --hero-image-width: min(72vw, 62rem);
+            --hero-heading-top: 8.5rem;
+            --hero-heading-left: 2rem;
+            --hero-heading-width: calc(100% - 4rem);
+            --hero-heading-size: clamp(4.75rem, 7vw, 7rem);
+            min-height: clamp(44rem, 86vh, 52rem);
+        }
+
+    }
+
+    /* Large screens use a smaller, higher crop so the figure remains fully legible. */
     @media (min-width: 1280px) {
-        .hero-image {
-            --hero-top: -95px;
-            --hero-left: 230.7px;
-            --hero-w: 920px;
+        .hero-section {
+            --hero-image-top: -8rem;
+            --hero-image-right: 0rem;
+            --hero-image-width: min(67vw, 59rem);
+            --hero-heading-top: 8rem;
+            --hero-heading-size: clamp(5rem, 6.4vw, 7.5rem);
         }
     }
 
-    /* xl (1280px+) */
+    /* Cap the composition on very wide screens rather than continuing to scale it. */
     @media (min-width: 1536px) {
-        .hero-image {
-            --hero-top: -95px;
-            --hero-left: 22rem;
-            --hero-w: 920px;
+        .hero-section {
+            --hero-image-top: -1.5rem;
+            --hero-image-right: 1rem;
+            --hero-image-width: 61rem;
+            --hero-heading-top: 8.5rem;
+            --hero-heading-size: 7.5rem;
+        }
+    }
+
+    /* Preserve the image-derived olive and telephone-blue atmosphere in dark mode. */
+    @media (prefers-color-scheme: dark) {
+        .hero-section {
+            background-image:
+                linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
+                linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);
         }
     }
 </style>

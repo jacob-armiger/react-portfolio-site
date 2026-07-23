@@ -10,7 +10,7 @@ export default {
                 sans: ['Inter Variable', ...defaultTheme.fontFamily.sans],
                 serif: ['"Source Serif 4 Variable"', ...defaultTheme.fontFamily.serif],
                 playfair: ['"Playfair Display Variable"', ...defaultTheme.fontFamily.serif],
-                display: ['"Castoro Titling"', ...defaultTheme.fontFamily.serif]
+                display: ['"Kumar One"', ...defaultTheme.fontFamily.serif]
             },
             colors: {
                 'primary': '#26292C',

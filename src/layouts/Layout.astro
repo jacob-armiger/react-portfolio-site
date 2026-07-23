@@ -3,6 +3,7 @@ import Analytics from "@vercel/analytics/astro";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/source-serif-4";
 import "@fontsource-variable/playfair-display";
+import "@fontsource/kumar-one";
 import { backgroundTexture } from "../config/backgroundTexture";
 interface Props {
     title: string;
@@ -48,13 +49,13 @@ const textureStyle = Object.entries(textureProperties)
     <body
         class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark"
         style={textureStyle}>
-        <div
+        <!-- <div
             aria-hidden="true"
             class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-secondary to-transparent dark:from-secondary-dark lg:hidden">
-        </div>
+        </div> -->
         <div class="relative z-10 grid min-h-screen grid-cols-12 content-start">
             <nav
-                class="sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-4 gap-y-2 border-b-[1px] border-primary/50 bg-secondary/80 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none px-2 py-3 text-left font-sans underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:col-span-2 lg:h-screen lg:flex-col lg:flex-nowrap lg:items-start lg:gap-y-0 lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-14 lg:text-[18px] lg:leading-[72px] dark:bg-primary/10 dark:border-primary-dark/50">
+                class="sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-4 gap-y-2 border-b-[1px] border-primary/50 bg-secondary/80 backdrop-blur-md lg:bg-transparent lg:backdrop-blur-none px-2 py-3 text-left font-sans underline-offset-4 sm:gap-8 sm:py-2 sm:text-xl lg:col-span-2 lg:h-screen lg:flex-col lg:flex-nowrap lg:items-start lg:gap-y-0 lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-14 lg:text-[18px] lg:leading-[72px] dark:bg-primary/10 dark:border-primary-dark/50">
                 <a
                     href="/"
                     class="font-serif font-bold hover:underline lg:mb-2 lg:text-[24px] lg:leading-[72px]"
