@@ -47,6 +47,9 @@ importers:
       '@fontsource/castoro-titling':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/kumar-one':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource/source-serif-4':
         specifier: ^5.2.9
         version: 5.2.9
@@ -676,6 +679,9 @@ packages:
 
   '@fontsource/castoro-titling@5.2.8':
     resolution: {integrity: sha512-W+BTuhrdreBZTC2uXuksyoU0jR9cOrd8jJNi0sXLdMBZUHlv+QH+4NECuEKaxF8tBRDeMGJO/I5JlJGtvYKxAQ==}
+
+  '@fontsource/kumar-one@5.3.0':
+    resolution: {integrity: sha512-eVYGAuUE2jkYiosI5rTU/6t8ktWDsAmX3IPGcCxjkSuI34MYhDqwBYJ/PpoXLga5Qz3ikJu05ip7R4FpAMF9MQ==}
 
   '@fontsource/source-serif-4@5.2.9':
     resolution: {integrity: sha512-er/Pym9emsEVJNf947umJ4kXarXfsiN6CN7kTYinefKRaHLwiquiiHOZvKvxWgkV8JMCf3pV3g0NcsPFpVCH9w==}
@@ -4595,6 +4601,8 @@ snapshots:
   '@fontsource-variable/source-serif-4@5.2.9': {}
 
   '@fontsource/castoro-titling@5.2.8': {}
+
+  '@fontsource/kumar-one@5.3.0': {}
 
   '@fontsource/source-serif-4@5.2.9': {}
 
