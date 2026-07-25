@@ -11,11 +11,12 @@ const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
 const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 
 const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
-const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
+const HERO_PRIMARY_LINE = "Contact me";
+const HERO_SUPPORT_LINES = ["for art lessons or to", "commission work"];
 const HERO_BODY =
     "I'm a digital illustrator and oil painter based in the United States. I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
 const HERO_BODY_SHORT =
-    "I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
+    "Traditional art training, personalized drawing lessons, and commissions in digital or traditional media.";
 
 const HERO_ACTION_CLASS =
     "inline-flex min-h-14 items-center justify-center rounded-full sm:rounded-sm px-5 py-3 font-sans text-sm font-semibold uppercase tracking-[0.2em] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:min-h-16 sm:px-7";
@@ -48,7 +49,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
     <BreakpointIndicator />
     <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
         <div class="flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-10">
-            <section class="hero-section relative isolate overflow-hidden border border-primary/15 bg-[#d7cfbe] lg:rounded-[1rem] dark:border-primary-dark/15 dark:bg-[#2f2a25]">
+            <section class="hero-section relative isolate overflow-visible border border-primary/15 bg-[#d7cfbe] lg:rounded-[1rem] lg:rounded-tr-full dark:border-primary-dark/15 dark:bg-[#2f2a25]">
                 <p class="hero-eyebrow absolute z-30 font-sans font-semibold uppercase text-primary/70 dark:text-primary-dark/70">
                     {HERO_EYEBROW}
                 </p>
@@ -65,8 +66,13 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     class="hero-image absolute z-10 max-w-none"
                 />
 
-                <h1 class="hero-heading absolute z-20 font-playfair font-semibold leading-[0.92] tracking-[-0.05em] text-white mix-blend-difference">
-                    {HERO_LINES.map((line) => <span class="block">{line}</span>)}
+                <div aria-hidden="true" class="hero-heading-scrim absolute z-[15]"></div>
+
+                <h1 class="hero-heading absolute z-20 font-display font-semibold leading-[0.92] tracking-[-0.05em] text-white mix-blend-difference">
+                    <span class="hero-heading-primary block">{HERO_PRIMARY_LINE}</span>
+                    <span class="hero-heading-support block">
+                        {HERO_SUPPORT_LINES.map((line) => <span class="block">{line}</span>)}
+                    </span>
                 </h1>
 
                 <div class="hero-actions absolute bottom-5 left-4 z-30 sm:bottom-7 sm:left-7">
@@ -221,13 +227,17 @@ const selectedWorks = Object.entries(selectedWorkModules)
         display: none;
     }
 
-    /* Mobile: headline first, a controlled artwork crop, then copy and actions. */
+    .hero-heading-scrim {
+        display: none;
+    }
+
+    /* Mobile: the headline leads into an oversized figure, with the phone as the visual endpoint. */
     @media (max-width: 639px) {
         .hero-section {
             --mobile-inline: 1.25rem;
             --mobile-eyebrow-optical-offset: 0.125rem;
             border-top: 0;
-            min-height: 49rem;
+            min-height: 47rem;
         }
 
         .hero-eyebrow {
@@ -244,15 +254,38 @@ const selectedWorks = Object.entries(selectedWorkModules)
             top: 3rem;
             left: var(--mobile-inline);
             width: calc(100% - (2 * var(--mobile-inline)));
-            font-size: clamp(2.75rem, 12vw, 3.8rem);
+            font-size: clamp(3.6rem, 16vw, 5rem);
         }
 
-        /* The left-shifted anchor preserves the chair-to-phone diagonal in the mobile frame. */
+        .hero-heading-scrim {
+            top: 0;
+            right: 0;
+            left: 0;
+            display: block;
+            height: 14rem;
+            background: linear-gradient(
+                to bottom,
+                #d7cfbe 0%,
+                #d7cfbe 50%,
+                rgba(215, 207, 190, 0.72) 80%,
+                rgba(215, 207, 190, 0) 100%
+            );
+            pointer-events: none;
+        }
+
+        .hero-heading-support {
+            margin-top: 0.18em;
+            font-size: 0.58em;
+            line-height: 0.98;
+        }
+
+        /* Anchor from the figure instead of the image center so the head and phone stay visible. */
         .hero-image {
-            top: 5.25rem;
-            left: calc(50% - 4.5rem);
-            width: 30.5rem;
-            transform: translateX(-48%);
+            top: -2rem;
+            right: -1.5rem;
+            left: auto;
+            width: 38rem;
+            transform: none;
         }
 
         .hero-actions {
@@ -267,7 +300,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
         .hero-body-short {
             display: block;
-            max-width: none;
+            max-width: 32ch;
             font-size: 0.8rem;
             line-height: 1.25rem;
         }
