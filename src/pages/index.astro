@@ -221,7 +221,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
         display: none;
     }
 
-    /* Mobile: headline first, a controlled artwork crop, then copy and actions. */
+    /* Mobile: headline first, a controlled artwork crop, then actions and copy. */
     @media (max-width: 639px) {
         .hero-section {
             --mobile-inline: 1.25rem;
@@ -259,6 +259,8 @@ const selectedWorks = Object.entries(selectedWorkModules)
             bottom: 1.25rem;
             right: var(--mobile-inline);
             left: var(--mobile-inline);
+            display: flex;
+            flex-direction: column;
         }
 
         .hero-body-full {
@@ -268,14 +270,17 @@ const selectedWorks = Object.entries(selectedWorkModules)
         .hero-body-short {
             display: block;
             max-width: none;
+            margin-bottom: 0;
             font-size: 0.8rem;
             line-height: 1.25rem;
         }
 
         .hero-actions > div {
+            order: -1;
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             width: 100%;
+            margin-bottom: 1.25rem;
         }
 
         .hero-actions a {
