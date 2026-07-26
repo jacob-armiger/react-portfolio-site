@@ -81,8 +81,8 @@ const images: OptimizedImage[] = await Promise.all(
 ---
 
 <Layout title="Art">
-    <main class="lg:col-span-10 lg:col-start-3 col-span-12 px-0 sm:px-6 lg:px-0 pt-6 lg:pt-8">
-        <div class="mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 px-4 sm:px-0 lg:pl-28">
+    <main class="col-span-12 px-0 pt-6 lg:col-span-10 lg:col-start-3 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
+        <div class="mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 px-4 sm:px-6 lg:mb-0 lg:items-baseline lg:px-0">
             <h1 class="text-left text-5xl font-bold leading-none xl:text-nowrap">Art</h1>
             <RssFeedButton />
         </div>

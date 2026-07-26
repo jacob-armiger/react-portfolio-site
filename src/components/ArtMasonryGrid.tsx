@@ -60,7 +60,7 @@ function useResponsiveGridProps() {
     const getProps = () => {
         const w = window.innerWidth;
         if (w < 400) return { frameWidth: 150, gap: 2 };   // md
-        return               { frameWidth: 280, gap: 10 };  // lg+
+        return               { frameWidth: 280, gap: 5 };  // lg+
     };
 
     const [props, setProps] = useState(getProps);
@@ -153,9 +153,9 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
     }, [artEntries, pieceSlugMap]);
 
     return (
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-4">
-            {/* Vertical filter nav */}
-            <nav className="flex flex-row flex-wrap justify-center gap-x-4 gap-y-2 lg:justify-start lg:flex-col lg:gap-y-3 lg:w-24 lg:shrink-0 lg:pt-10">
+        <div className="flex flex-col gap-4 lg:contents">
+            {/* Filter nav */}
+            <nav className="flex flex-row flex-wrap justify-center sm:justify-start gap-x-3 gap-y-2 px-1 sm:px-6 lg:col-start-2 lg:flex-nowrap lg:justify-start lg:px-0">
                 {categories.map((cat) => (
                     <a
                         key={cat}
@@ -174,7 +174,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
             </nav>
 
             {/* Grid */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 lg:col-span-2 lg:row-start-2">
                 <MasonryGrid frameWidth={frameWidth} gap={gap}>
                     {visible.map((img, i) => (
                         <Frame key={img.originalSrc + i} width={img.width} height={img.height}>
