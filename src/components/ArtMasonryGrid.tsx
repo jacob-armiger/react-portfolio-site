@@ -165,7 +165,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             setActive(cat);
                         }}
                         className={`text-left font-serif text-xs leading-none tracking-wide transition-opacity hover:opacity-100 ${
-                            active === cat ? 'font-semibold opacity-100 underline underline-offset-2' : 'opacity-60'
+                            active === cat ? 'font-semibold opacity-100 underline underline-offset-2' : 'opacity-75'
                         }`}
                     >
                         {cat}
