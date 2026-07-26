@@ -181,7 +181,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             <img
                                 src={img.src}
                                 alt="Artwork"
-                                className="zoomable cursor-pointer"
+                                className="zoomable cursor-zoom-in"
                                 loading="lazy"
                                 width={img.width}
                                 height={img.height}
