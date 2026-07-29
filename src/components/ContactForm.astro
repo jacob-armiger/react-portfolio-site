@@ -54,6 +54,19 @@ const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString(
         />
     </div>
 
+
+    <div class="flex flex-col gap-2">
+        <label for="message" class="text-sm font-semibold uppercase tracking-wide text-primary/85 dark:text-primary-dark/90">Message</label>
+        <textarea
+            id="message"
+            name="message"
+            rows="7"
+            required
+            class="resize-none border-b-2 border-primary/50 bg-transparent py-3 text-lg leading-relaxed text-primary outline-none placeholder:text-primary/45 focus:border-primary dark:border-primary-dark/60 dark:text-primary-dark dark:placeholder:text-primary-dark/45 dark:focus:border-primary-dark"
+            placeholder={messagePlaceholder}
+        ></textarea>
+    </div>
+
     <div class="rounded-sm border border-primary/35 bg-primary/5 px-4 py-3 dark:border-primary-dark/35 dark:bg-primary-dark/5">
         <label for="local-to-new-york" class="flex items-start gap-3 text-base leading-relaxed text-primary/90 dark:text-primary-dark/90">
             <input
@@ -70,17 +83,8 @@ const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString(
         </label>
     </div>
 
-    <div class="flex flex-col gap-2">
-        <label for="message" class="text-sm font-semibold uppercase tracking-wide text-primary/85 dark:text-primary-dark/90">Message</label>
-        <textarea
-            id="message"
-            name="message"
-            rows="7"
-            required
-            class="resize-none border-b-2 border-primary/50 bg-transparent py-3 text-lg leading-relaxed text-primary outline-none placeholder:text-primary/45 focus:border-primary dark:border-primary-dark/60 dark:text-primary-dark dark:placeholder:text-primary-dark/45 dark:focus:border-primary-dark"
-            placeholder={messagePlaceholder}
-        ></textarea>
-    </div>
+    <!-- <label for="image_upload" class="bg-slate-200 w-[18rem] p-1 text-center border border-black cursor-pointer text-black font-mono rounded-sm"> Upload examples of your work</label>
+    <input type="file" name="attachment" id="image_upload" style="display:none" accept="image/png, image/jpeg"> -->
 
     <button
         type="submit"

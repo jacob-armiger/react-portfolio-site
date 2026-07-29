@@ -12,100 +12,172 @@ type LessonGalleryEntry = {
     label: string;
 };
 
-const artModules = import.meta.glob<ArtModule>([
-    "../assets/oilPaintings/2025-10-27.png",
-    "../assets/digitalStudies/2026-07-06.jpeg",
-    "../assets/drawings/2026-06-15.jpeg",
-], { eager: true });
+const artModules = import.meta.glob<ArtModule>(
+    [
+        "../assets/oilPaintings/2025-10-27.png",
+        "../assets/digitalStudies/2026-07-06.jpeg",
+        "../assets/drawings/2026-06-15.jpeg",
+    ],
+    { eager: true },
+);
 
-const lessonGallery: LessonGalleryEntry[] = await Promise.all([
-    { path: "../assets/oilPaintings/2025-10-27.png", alt: "Oil painting", label: "Oil Painting" },
-    { path: "../assets/digitalStudies/2026-07-06.jpeg", alt: "Digital painting of an athlete", label: "Digital Work" },
-    { path: "../assets/drawings/2026-06-15.jpeg", alt: "Refined figure drawing", label: "Refined Draftsmanship" },
-].map(async (entry) => {
-    const image = artModules[entry.path].default;
-    const optimized = await getImage({ src: image, format: "webp", width: 320 });
+const steps: string[] = [
+    "Your ability to draw is the foundation of all your work. I’ll help you refine your approach, so you can draw any subject and do it skillfully.",
+    "Strengthen your grasp on painting processes and materials, whether it’s oil, digital, or any other medium.",
+    "A solid foundation enables you to build anything. I can help you through exploratory projects and creative drawing.",
+];
 
-    return {
-        src: optimized.src,
-        width: (optimized.attributes.width as number) ?? image.width,
-        height: (optimized.attributes.height as number) ?? image.height,
-        alt: entry.alt,
-        label: entry.label,
-    };
-}));
+const lessonGallery: LessonGalleryEntry[] = await Promise.all(
+    [
+        {
+            path: "../assets/drawings/2026-06-15.jpeg",
+            alt: "Refined figure drawing",
+            label: "Refine your Draftsmanship",
+        },
+        {
+            path: "../assets/oilPaintings/2025-10-27.png",
+            alt: "Oil painting",
+            label: "LEARN TO PAINT",
+        },
+        {
+            path: "../assets/digitalStudies/2026-07-06.jpeg",
+            alt: "Digital painting of an athlete",
+            label: "Flex your skills",
+        },
+    ].map(async (entry) => {
+        const image = artModules[entry.path].default;
+        const optimized = await getImage({ src: image, format: "webp", width: 320 });
+
+        return {
+            src: optimized.src,
+            width: (optimized.attributes.width as number) ?? image.width,
+            height: (optimized.attributes.height as number) ?? image.height,
+            alt: entry.alt,
+            label: entry.label,
+        };
+    }),
+);
 ---
 
 <Layout title="Art Lessons">
-    <main class="col-span-12 lg:col-start-4 lg:col-span-6 px-4 sm:px-6 lg:px-0 page-top">
+    <main class="col-span-12 px-1 page-top sm:px-4 lg:col-span-8 lg:col-start-3 lg:px-0">
         <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
         <p class="mb-8 text-base leading-relaxed opacity-80">
-            I offer tailored art lessons for students of all levels. Whether you're looking for a new hobby 
-            or an experienced artist seeking to refine your draftsmanship, I'm here to help you achieve 
-            your artistic goals. My teaching approach is flexible and adjusted to your personal interests.
+            I offer lessons to artists of all levels. Whether you’re looking for a new hobby or an
+            experienced artist seeking to refine your draftsmanship, I'm here to help you achieve
+            your artistic goals.
         </p>
 
-        <section class="mb-10">
-            <p class="mb-4 text-2xl font-semibold">Get ongoing feedback and structure for your art journey.</p>
+        <section
+            class="relative h-auto w-full rounded-sm sm:bg-cover bg-[size:260%] bg-[75%_150%] sm:bg-center bg-no-repeat p-4 text-secondary mb-2 "
+            style="background-image: url(/lessons2.PNG)">
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/30 via-55% to-transparent">
+            </div>
+
+            <div class="relative mb-8">
+                <p class="text-6xl sm:text-7xl font-semibold">Practice Boldly. Get Structure.</p>
+            </div>
+
+            <div class=" relative mb-4 flex w-2/3 sm:w-1/2 flex-col gap-8 text-base leading-relaxed">
+                <div class="sm:border-l-2 border-secondary sm:pl-4 dark:border-primary-dark">
+                    <p class="text-lg font-semibold">$50 &mdash; One hour, one-on-one</p>
+                    <p class="mt-1 opacity-90">Sessions are scheduled at your convenience.</p>
+                </div>
+
+                <div class="sm:border-l-2 border-secondary sm:pl-4 dark:border-primary-dark">
+                    <p class="text-lg font-semibold">What to Expect</p>
+                    <p class="mt-1 opacity-90">
+                        I’ll teach you the craftsmanship of making art as well as how to practice at
+                        home on your own. Sessions typically include a review of your work,
+                        demonstrations, and hands-on drawing time.
+                    </p>
+                </div>
+
+                <div class="sm:border-l-2 border-secondary sm:pl-4 dark:border-primary-dark">
+                    <p class="text-lg font-semibold">Format</p>
+                    <p class="mt-1 opacity-90">
+                        Lessons are available online or in-person for those local to New York City.
+                    </p>
+                </div>
+            </div>
         </section>
 
-        <div class="mb-12 flex flex-col gap-6 text-base leading-relaxed">
-            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
-                <p class="font-semibold text-lg">$50 &mdash; One hour, one-on-one</p>
-                <p class="mt-1 opacity-80">Sessions are scheduled at your convenience. Weekly or bi-weekly is generally recommended.</p>
-            </div>
-
-            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
-                <p class="font-semibold text-lg">What to Expect</p>
-                <p class="mt-1 opacity-80">
-                    Sessions typically include a review of your work, demonstrations, short lectures, and hands-on drawing time. Homework and practice recommendations are given at the end of each session. All is meant to be fun and align with any art goals you may have!
-                </p>
-            </div>
-
-            <div class="border-l-2 border-primary pl-4 dark:border-primary-dark">
-                <p class="font-semibold text-lg">Format</p>
-                <p class="mt-1 opacity-80">
-                    Lessons are available online or in-person for those local to New York City.
-                </p>
-            </div>
-        </div>
-
-        <section class="mb-12">
-            <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3">
+        <section class="mb-12 pt-8 ">
+            <!-- <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3"> -->
+            <div class="mx-0 sm:m-auto mb-8 grid w-full grid-cols-2 sm:grid-cols-3 gap-x-1 sm:gap-x-4 gap-y-4 sm:gap-y-2">
                 {
-                    lessonGallery.map((piece) => (
-                        <figure class="group overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
-                            <div class="aspect-[5/6] overflow-hidden">
-                                <img
-                                    src={piece.src}
-                                    alt={piece.alt}
-                                    width={piece.width}
-                                    height={piece.height}
-                                    loading="lazy"
-                                    decoding="async"
-                                    class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
-                                />
-                            </div>
-                            <figcaption class="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.16em] opacity-70 sm:text-[11px]">
-                                {piece.label}
-                            </figcaption>
+                    lessonGallery.map((piece, i) => (
+                        <figure class="max-h-80 sm:max-h-none overflow-hidden rounded-sm bg-primary/5 dark:bg-primary-dark/5">
+                            <img
+                                src={piece.src}
+                                alt={piece.alt}
+                                loading="lazy"
+                                decoding="async"
+                                class="sm:h-full object-cover"
+                            />
                         </figure>
+                        <div class="sm:hidden text-left mx-2 self-center">
+                            <h2 class="sm:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
+                                {piece.label}
+                            </h2>
+                            <p class="font-sans opacity-70">{steps.at(i)}</p>
+                        </div>
+
                     ))
                 }
+
+                {
+                    steps.map((step, i) => (
+                        <div class="h-fit hidden sm:block">
+                            <h2 class="md:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
+                                {lessonGallery.at(i)?.label}
+                            </h2>
+                            <p class="font-sans opacity-70">{step}</p>
+                        </div>
+                    ))
+                }
+
+                <!-- // <div class="flex flex-row h-96">
+                        // <p>{steps.at(i)}</p>
+
+                        // <figure class="h-96 group overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
+                        //     <div class="aspect-[5/6] overflow-hidden">
+                        //         <img
+                        //             src={piece.src}
+                        //             alt={piece.alt}
+                        //             loading="lazy"
+                        //             decoding="async"
+                        //             class="object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
+                        //         />
+                        //     </div>
+                        //     <figcaption class="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.16em] opacity-70 sm:text-[11px]">
+                        //         {piece.label}
+                        //     </figcaption>
+                        // </figure>
+                            
+                        // </div> -->
             </div>
         </section>
+        <p class="font-sans mb-8 text-xl italic leading-snug max-w-prose mx-auto text-center text-balance">
+            This isn’t just an art lesson. It’s an ongoing mentorship that can put you on the
+            right track in your art journey. I’ll help you solve problems in your art and in
+            your practice by diagnosing what you need most and bringing you to it.
+        </p>
 
+        <div class="w-full mx-1 sm:w-5/6 sm:mx-auto">
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
 
-        <p class="mb-4 text-left font-serif text-3xl font-semibold">Get in Touch</p>
-        <p class="mb-8 text-base leading-relaxed opacity-80">
-            Let me know if you have any questions, what days and times work for your schedule, and what interests you.
+        <p class="col mb-4 text-left font-serif text-3xl font-semibold">Start Learning</p>
+        <p class="mb-8 text-base leading-relaxed opacity-90">
+            Let me know what questions you have, when you want to schedule, and what interests you.
         </p>
 
         <ContactForm
             subject="Art Lessons Inquiry"
             messagePlaceholder="Questions, availability, goals..."
         />
+            
+        </div>
     </main>
 </Layout>
