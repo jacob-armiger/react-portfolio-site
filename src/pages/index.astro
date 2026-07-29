@@ -1,23 +1,21 @@
 ---
 import type { ImageMetadata } from "astro";
 import { Picture } from "astro:assets";
-import heroImage from "../assets/contact.webp";
+import heroImage from "../assets/contactr.webp";
 import Layout from "../layouts/Layout.astro";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
-const HERO_SIZES = "(min-width: 1024px) 76vw, 180vw";
+const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 110vw";
 const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
 const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 
 const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
-const HERO_LINES = ["Contact me to get", "art lessons or", "commission work"];
 const HERO_BODY =
-    "I'm a digital illustrator and oil painter based in the United States. I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
-const HERO_BODY_SHORT =
-    "I've followed the training of 19th century masters to rapidly improve my skills and I can help you do the same! I am also accepting commissions for digital and traditional work.";
+    "I've followed the training of 19th century masters to rapidly improve my skills and with my lessons you can do the same. I am also accepting commissions for digital and traditional work.";
 
+// Shape and behaviour only. Size, padding and typography come from the --hero-action-* dials.
 const HERO_ACTION_CLASS =
-    "inline-flex min-h-14 items-center justify-center rounded-full sm:rounded-sm px-5 py-3 font-sans text-sm font-semibold uppercase tracking-[0.2em] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:min-h-16 sm:px-7";
+    "inline-flex items-center justify-center rounded-full sm:rounded-sm font-sans font-semibold uppercase transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4";
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg}",
@@ -45,7 +43,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
 <Layout title="JacobLDraws">
     <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
-        <div class="flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-10">
+        <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-10">
             <section class="hero-section relative isolate overflow-hidden border border-primary/15 bg-[#d7cfbe] dark:border-primary-dark/15 dark:bg-[#2f2a25]">
                 <p class="hero-eyebrow absolute z-30 font-sans font-semibold uppercase text-primary/70 dark:text-primary-dark/70">
                     {HERO_EYEBROW}
@@ -63,18 +61,15 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     class="hero-image absolute z-10 max-w-none"
                 />
 
-                <h1 class="hero-heading absolute z-20 font-playfair font-semibold leading-[0.92] tracking-[-0.05em] text-white mix-blend-difference">
-                    {HERO_LINES.map((line) => <span class="block">{line}</span>)}
+                <h1 class="hero-heading absolute z-20 font-playfair font-extrabold leading-[0.92] tracking-[-0.05em] text-orange-100 mix-blend-difference">
+                    Contact me to get art lessons or commission work
                 </h1>
 
-                <div class="hero-actions absolute bottom-5 left-4 z-30 sm:bottom-7 sm:left-7">
-                    <p class="hero-body-full mb-4 max-w-sm font-sans text-sm leading-6 text-primary/80 dark:text-primary-dark/80">
+                <div class="hero-actions absolute z-30">
+                    <p class="hero-body font-sans text-sm leading-6 text-primary/80 dark:text-primary-dark/80">
                         {HERO_BODY}
                     </p>
-                    <p class="hero-body-short mb-3 font-sans text-primary/80 dark:text-primary-dark/80">
-                        {HERO_BODY_SHORT}
-                    </p>
-                    <div class="flex flex-wrap gap-3">
+                    <div class="hero-action-row">
                         <a
                             href="/contact"
                             class:list={[
@@ -96,7 +91,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
             </section>
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
-                <div class="flex flex-col gap-4 border-t border-primary/10 px-5 pt-5 sm:px-6 sm:pt-6 lg:flex-row lg:items-end lg:justify-between lg:px-8 dark:border-primary-dark/10">
+                <div class="section-header flex flex-col gap-4 border-t border-primary/10 pt-5 sm:pt-6 lg:flex-row lg:items-end lg:justify-between dark:border-primary-dark/10">
                     <div class="max-w-xl">
                         <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-primary/60 dark:text-primary-dark/60">
                             Selected work
@@ -142,6 +137,30 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
 <style>
     /*
+     * One horizontal inset for the whole page. The hero eyebrow, hero headline, hero actions and
+     * the Selected Work heading all measure from this, so their left edges line up down the page.
+     */
+    .page-sections {
+        --page-inset: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+        .page-sections {
+            --page-inset: 1.75rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .page-sections {
+            --page-inset: 2rem;
+        }
+    }
+
+    .section-header {
+        padding-inline: var(--page-inset);
+    }
+
+    /*
      * Justified rows start from each image's ideal width, then share remaining space
      * in proportion to aspect ratio. Images stay uncropped, every complete row fills
      * the container, and rows can resolve to different heights.
@@ -182,14 +201,46 @@ const selectedWorks = Object.entries(selectedWorkModules)
     /* Shared hero controls. Breakpoints override these values without changing the composition rules. */
     .hero-section {
         --hero-image-top: 6.5rem;
+        --hero-image-bottom: auto;
         --hero-image-left: 48%;
         --hero-image-right: auto;
         --hero-image-width: 42rem;
         --hero-image-transform: translateX(-56%);
-        --hero-heading-top: 10.5rem;
-        --hero-heading-left: 1rem;
-        --hero-heading-width: calc(100% - 2rem);
         --hero-heading-size: clamp(2.65rem, 11.5vw, 4rem);
+        /*
+         * Wrap dial. The heading box width is derived from the font size, so the line breaks stay
+         * identical at every viewport width instead of drifting with a percentage width.
+         * Measured in Playfair Display at tracking -0.05em, the safe bands are:
+         *   4 lines (Contact me to / get art lessons / or commission / work) -> 6.15 to 7.14
+         *   3 lines (Contact me to get / art lessons or / commission work)   -> 7.37 to 8.50
+         * Re-measure these bands if the headline copy or letter-spacing changes.
+         */
+        --hero-heading-ratio: 6.4;
+        /*
+         * Vertical rhythm. The headline is stacked under the eyebrow's line box, so changing the
+         * inset or the eyebrow's leading keeps the pair together instead of drifting apart.
+         */
+        --hero-eyebrow-line: 1rem;
+        --hero-eyebrow-gap: 1rem;
+        --hero-heading-top: calc(
+            var(--page-inset) + var(--hero-eyebrow-line) + var(--hero-eyebrow-gap)
+        );
+        /*
+         * Playfair's cap carries ~0.039em of left side bearing. Pulling the box left by that much
+         * puts the painted edge of the headline on --page-inset, level with the eyebrow and the
+         * Selected Work heading below.
+         */
+        --hero-heading-optical-pull: calc(var(--hero-heading-size) * 0.039);
+        --hero-heading-left: var(--page-inset);
+        --hero-body-width: 23rem;
+        --hero-body-gap: 1.5rem;
+        --hero-actions-bottom: var(--page-inset);
+        --hero-actions-left: var(--page-inset);
+        --hero-action-gap: 0.75rem;
+        --hero-action-min-h: 3.5rem;
+        --hero-action-px: 1.25rem;
+        --hero-action-font-size: 0.75rem;
+        --hero-action-tracking: 0.2em;
         min-height: clamp(42rem, 88vh, 50rem);
         background-image:
             linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
@@ -197,8 +248,8 @@ const selectedWorks = Object.entries(selectedWorkModules)
     }
 
     .hero-eyebrow {
-        top: 1.75rem;
-        left: 1.75rem;
+        top: var(--page-inset);
+        left: var(--page-inset);
         font-size: 0.6rem;
         line-height: 1rem;
         letter-spacing: 0.26em;
@@ -207,6 +258,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
     .hero-image {
         top: var(--hero-image-top);
         right: var(--hero-image-right);
+        bottom: var(--hero-image-bottom);
         left: var(--hero-image-left);
         width: var(--hero-image-width);
         aspect-ratio: 2693 / 2773;
@@ -215,104 +267,114 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
     .hero-heading {
         top: var(--hero-heading-top);
-        left: var(--hero-heading-left);
-        width: var(--hero-heading-width);
+        left: calc(var(--hero-heading-left) - var(--hero-heading-optical-pull));
+        width: calc(var(--hero-heading-size) * var(--hero-heading-ratio));
         font-size: var(--hero-heading-size);
     }
 
-    .hero-body-short {
-        display: none;
+    .hero-body {
+        max-width: var(--hero-body-width);
+        margin-bottom: var(--hero-body-gap);
     }
 
-    /* Mobile: headline first, a controlled artwork crop, then actions and copy. */
+    .hero-actions {
+        bottom: var(--hero-actions-bottom);
+        left: var(--hero-actions-left);
+    }
+
+    .hero-action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--hero-action-gap);
+    }
+
+    .hero-actions a {
+        min-height: var(--hero-action-min-h);
+        padding-block: 0.75rem;
+        padding-inline: var(--hero-action-px);
+        font-size: var(--hero-action-font-size);
+        letter-spacing: var(--hero-action-tracking);
+    }
+
+    /* Mobile: headline first, a controlled artwork crop, then the actions. */
     @media (max-width: 639px) {
         .hero-section {
-            --mobile-inline: 1.25rem;
-            --mobile-eyebrow-optical-offset: 0.125rem;
+            --hero-eyebrow-line: 0.85rem;
+            --hero-eyebrow-gap: 1rem;
+            --hero-heading-ratio: 6.4;
+            --hero-heading-size: min(14vw, 3.55rem);
+            --hero-image-top: 7rem;
+            --hero-image-bottom: auto;
+            --hero-image-left: 60%;
+            --hero-image-right: auto;
+            --hero-image-width: 29rem;
+            --hero-image-transform: translateX(-48%);
+            --hero-action-gap: 0.75rem;
+            --hero-action-min-h: 3.5rem;
+            --hero-action-px: 0.8rem;
+            --hero-action-font-size: 0.68rem;
+            --hero-action-tracking: 0.14em;
             border-top: 0;
-            min-height: 49rem;
+            min-height: 43rem;
         }
 
         .hero-eyebrow {
-            top: 1.25rem;
-            /* The small sans-serif O needs a slight nudge to align with Playfair's large C. */
-            left: calc(var(--mobile-inline) + var(--mobile-eyebrow-optical-offset));
-            max-width: calc(100% - (2 * var(--mobile-inline)));
+            max-width: calc(100% - (2 * var(--page-inset)));
             font-size: 0.52rem;
             line-height: 0.85rem;
             letter-spacing: 0.22em;
         }
 
-        .hero-heading {
-            top: 3rem;
-            left: var(--mobile-inline);
-            width: calc(100% - (2 * var(--mobile-inline)));
-            font-size: clamp(2.75rem, 12vw, 3.8rem);
-        }
-
-        /* The left-shifted anchor preserves the chair-to-phone diagonal in the mobile frame. */
-        .hero-image {
-            top: 5.25rem;
-            left: calc(50% - 4.5rem);
-            width: 30.5rem;
-            transform: translateX(-48%);
-        }
-
-        .hero-actions {
-            bottom: 1.25rem;
-            right: var(--mobile-inline);
-            left: var(--mobile-inline);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .hero-body-full {
+        /* The intro copy is dropped so the shorter frame can breathe. */
+        .hero-body {
             display: none;
         }
 
-        .hero-body-short {
-            display: block;
-            max-width: none;
-            margin-bottom: 0;
-            font-size: 0.8rem;
-            line-height: 1.25rem;
+        .hero-actions {
+            right: var(--page-inset);
         }
 
-        .hero-actions > div {
-            order: -1;
+        .hero-action-row {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             width: 100%;
-            margin-bottom: 1.25rem;
-        }
-
-        .hero-actions a {
-            min-height: 3.5rem;
-            padding-right: 0.8rem;
-            padding-left: 0.8rem;
-            font-size: 0.68rem;
-            letter-spacing: 0.14em;
         }
     }
 
     /* Horizontal navigation layouts sit flush against the nav divider. */
     @media (min-width: 640px) {
         .hero-section {
-            --hero-image-top: 1rem;
+            --hero-eyebrow-gap: 1rem;
+            --hero-heading-ratio: 7.9;
+            --hero-heading-size: min(11.6vw, 6.25rem);
+            --hero-image-top: auto;
+            --hero-image-bottom: 0;
             --hero-image-left: auto;
-            --hero-image-right: -5rem;
-            --hero-image-width: 45rem;
+            --hero-image-right: -6rem;
+            --hero-image-width: min(72vw, 34rem);
             --hero-image-transform: none;
-            --hero-heading-top: 9rem;
-            --hero-heading-left: 1.5rem;
-            --hero-heading-width: 60%;
-            --hero-heading-size: clamp(3.6rem, 7vw, 4.6rem);
-            min-height: clamp(42rem, 84vh, 48rem);
+            --hero-body-width: 23rem;
+            --hero-body-gap: 1.5rem;
+            --hero-action-gap: 1rem;
+            --hero-action-min-h: 3.6rem;
+            --hero-action-px: 1.5rem;
+            --hero-action-font-size: 0.72rem;
+            --hero-action-tracking: 0.18em;
+            /*
+             * The floor is what keeps the bottom-anchored copy clear of the headline at the top of
+             * this band, where the headline is at its 6.25rem cap but the frame is shortest.
+             */
+            min-height: clamp(43rem, 78vh, 44rem);
         }
 
-        .hero-eyebrow {
-            top: 1.75rem;
-            left: 1.75rem;
+        /* Stacked, equal-width actions read as a single column beside the artwork. */
+        .hero-action-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .hero-actions a {
+            width: 14rem;
         }
     }
 
@@ -324,40 +386,55 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
     }
 
+    @media (min-width: 768px) {
+        .hero-section {
+            --hero-image-right: -5rem;
+            --hero-image-width: min(66vw, 36rem);
+        }
+    }
+
     /* Desktop sidebar layout restores the framed poster treatment. */
     @media (min-width: 1024px) {
         .hero-section {
-            --hero-image-top: -4rem;
-            --hero-image-right: -4rem;
-            --hero-image-width: min(72vw, 62rem);
-            --hero-heading-top: 8.5rem;
-            --hero-heading-left: 2rem;
-            --hero-heading-width: calc(100% - 4rem);
-            --hero-heading-size: clamp(4.75rem, 7vw, 7rem);
+            /* The sidebar nav narrows the section here, so the headline needs a smaller cap. */
+            --hero-heading-size: min(9.6vw, 7rem);
+            --hero-image-top: auto;
+            --hero-image-bottom: 0;
+            --hero-image-right: -5rem;
+            --hero-image-width: min(60%, 44rem);
+            --hero-body-width: 22.5rem;
+            --hero-body-gap: 1.5rem;
+            --hero-action-gap: 1.25rem;
+            --hero-action-min-h: 3.8rem;
+            --hero-action-px: 1.6rem;
+            --hero-action-font-size: 0.875rem;
+            --hero-action-tracking: 0.2em;
             min-height: clamp(44rem, 86vh, 52rem);
         }
 
+        .hero-action-row {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .hero-actions a {
+            width: auto;
+        }
     }
 
-    /* Large screens use a smaller, higher crop so the figure remains fully legible. */
     @media (min-width: 1280px) {
         .hero-section {
-            --hero-image-top: -8rem;
-            --hero-image-right: 0rem;
-            --hero-image-width: min(67vw, 59rem);
-            --hero-heading-top: 8rem;
-            --hero-heading-size: clamp(5rem, 6.4vw, 7.5rem);
+            --hero-image-right: -10rem;
+            --hero-image-width: min(75%, 50rem);
         }
     }
 
     /* Cap the composition on very wide screens rather than continuing to scale it. */
     @media (min-width: 1536px) {
         .hero-section {
-            --hero-image-top: -1.5rem;
-            --hero-image-right: 1rem;
-            --hero-image-width: 61rem;
-            --hero-heading-top: 8.5rem;
-            --hero-heading-size: 7.5rem;
+            --hero-image-bottom: 0;
+            --hero-image-right: 2rem;
+            --hero-image-width: 50rem;
         }
     }
 

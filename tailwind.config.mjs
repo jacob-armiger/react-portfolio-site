@@ -13,7 +13,7 @@ export default {
                 display: ['"Kumar One"', ...defaultTheme.fontFamily.serif]
             },
             colors: {
-                'primary': '#26292C',
+                'primary': '#2A231B',
                 'secondary': '#E5E2DA',
                 'primary-dark': '#E5E2DA',
                 'secondary-dark': '#26292C',
