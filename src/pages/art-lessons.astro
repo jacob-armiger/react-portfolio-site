@@ -60,17 +60,13 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 ---
 
 <Layout title="Art Lessons">
-    <main class="col-span-12 px-1 page-top sm:px-4 lg:col-span-8 lg:col-start-3 lg:px-0">
-        <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
+    <main class="col-span-12 lg:page-top lg:col-span-8 lg:col-start-3 px-o mx-0">
+        <!-- <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
-        <p class="mb-8 text-base leading-relaxed opacity-80">
-            I offer lessons to artists of all levels. Whether you’re looking for a new hobby or an
-            experienced artist seeking to refine your draftsmanship, I'm here to help you achieve
-            your artistic goals.
-        </p>
+        -->
 
         <section
-            class="relative h-auto w-full rounded-sm sm:bg-cover bg-[size:260%] bg-[75%_150%] sm:bg-center bg-no-repeat p-4 text-secondary mb-2 "
+            class="relative h-auto w-full rounded-sm sm:bg-cover bg-[size:260%] bg-[75%_0%] sm:bg-center bg-no-repeat p-4 text-secondary mb-8"
             style="background-image: url(/lessons2.PNG)">
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/30 via-55% to-transparent">
             </div>
@@ -103,7 +99,11 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             </div>
         </section>
 
-        <section class="mb-12 pt-8 ">
+        <p class="mb-8 italic max-w-prose mx-auto text-base leading-relaxed opacity-80 text-balance text-center ">
+            I offer lessons to artists of all levels. Whether you’re looking for a new hobby or an experienced artist seeking to refine your draftsmanship, I'm here to help you achieve your artistic goals.
+        </p> 
+
+        <section class="mb-12 px-1">
             <!-- <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3"> -->
             <div class="mx-0 sm:m-auto mb-8 grid w-full grid-cols-2 sm:grid-cols-3 gap-x-1 sm:gap-x-4 gap-y-4 sm:gap-y-2">
                 {
@@ -117,11 +117,11 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                                 class="sm:h-full object-cover"
                             />
                         </figure>
-                        <div class="sm:hidden text-left mx-2 self-center">
-                            <h2 class="sm:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
+                        <div class="sm:hidden text-left mx-2 place-self-center">
+                            <h2 class="sm:text-nowrap mb-4 mt-0 sm:mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
                                 {piece.label}
                             </h2>
-                            <p class="font-sans opacity-70">{steps.at(i)}</p>
+                            <p class="font-sans text-balance opacity-70">{steps.at(i)}</p>
                         </div>
 
                     ))
@@ -165,11 +165,11 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             your practice by diagnosing what you need most and bringing you to it.
         </p>
 
-        <div class="w-full mx-1 sm:w-5/6 sm:mx-auto">
+        <div class="w-full px-2 sm:w-5/6 sm:mx-auto">
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
 
-        <p class="col mb-4 text-left font-serif text-3xl font-semibold">Start Learning</p>
-        <p class="mb-8 text-base leading-relaxed opacity-90">
+        <p class="col mb-4 ml-2 text-left font-serif text-3xl font-semibold">Start Learning</p>
+        <p class="mb-8 ml-2 text-base opacity-90">
             Let me know what questions you have, when you want to schedule, and what interests you.
         </p>
 
