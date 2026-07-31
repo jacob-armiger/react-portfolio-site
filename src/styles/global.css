@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+/*
+ * Ports `darkMode: 'class'` from the old tailwind.config.mjs. The site keys its
+ * hand-written CSS off `html.dark` (see Layout.astro, BlogCard.astro,
+ * ImageCarousel.astro), so the variant must match a `.dark` ancestor rather than
+ * `prefers-color-scheme`.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /*
+     * Font stacks keep the variable-font first and fall back to Tailwind's own
+     * defaults, which is what `...defaultTheme.fontFamily.*` expanded to in v3.
+     */
+    --font-sans:
+        "Inter Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-serif:
+        "Source Serif 4 Variable", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-playfair:
+        "Playfair Display Variable", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+    --color-primary: #2a231b;
+    --color-secondary: #e5e2da;
+    --color-primary-dark: #e5e2da;
+    --color-secondary-dark: #26292c;
+}
+
+/* Ported from the inline plugin in the old tailwind.config.mjs. */
+@utility page-top {
+    margin-top: 1.5rem;
+
+    @variant lg {
+        margin-top: 0;
+        padding-top: 2rem;
+    }
+}

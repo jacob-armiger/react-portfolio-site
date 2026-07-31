@@ -95,7 +95,7 @@ const resolvedImages = await Promise.all(
                             loading={index === 0 ? "eager" : "lazy"}
                             fetchpriority={index === 0 ? "high" : "auto"}
                             decoding="async"
-                            class="image-carousel-thumb-image !m-0 block"
+                            class="image-carousel-thumb-image m-0! block"
                         />
                     </button>
                     {showCaptions && image.caption ? (
