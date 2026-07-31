@@ -6,7 +6,7 @@ const projects = await getCollection('projects');
 ---
 
 <Layout title="Art">
-    <main class="col-span-12 lg:col-span-8 page-top">
+    <main class="site-main page-top mx-auto max-w-3xl">
         {
             projects.map((project) => (
                 <div class="hover:bg-primary hover:text-secondary mb-8 h-fit rounded-md font-mono">

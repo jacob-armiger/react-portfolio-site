@@ -186,18 +186,19 @@ const resolvedImages = await Promise.all(
         flex-direction: column;
         align-items: center;
         overflow: hidden;
-        border: 1px solid rgb(var(--color-primary) / 0.2);
+        /* The theme's `primary` written literally: the palette lives as plain hex in
+           tailwind.config, so there is no --color-primary custom property to read. */
+        border: 1px solid rgb(42 35 27 / 0.2);
         border-radius: 0.75rem;
         background: rgb(255 255 255 / 0.7);
         padding: 0.5rem;
         text-align: left;
         box-shadow: 0 8px 24px rgb(120 113 108 / 0.2);
-        transition: none;
         cursor: pointer;
     }
 
     .image-carousel-thumb:focus-visible {
-        outline: 2px solid rgb(var(--color-primary));
+        outline: 2px solid #2a231b;
         outline-offset: 2px;
     }
 
@@ -237,8 +238,10 @@ const resolvedImages = await Promise.all(
         background: rgb(120 113 108 / 0.4);
     }
 
-    :global(html.dark) .image-carousel-thumb {
-        border-color: rgb(var(--color-primary-dark) / 0.3);
+    /* Plain `html.dark`, not `:global(html.dark)`: this block is is:inline, so Astro
+       ships it verbatim and the browser drops :global() as an unknown pseudo-class. */
+    html.dark .image-carousel-thumb {
+        border-color: rgb(229 226 218 / 0.3);
         background: rgb(28 25 23 / 0.85);
     }
 </style>

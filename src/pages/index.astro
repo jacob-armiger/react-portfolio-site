@@ -1,7 +1,7 @@
 ---
 import type { ImageMetadata } from "astro";
 import { Picture } from "astro:assets";
-import heroImage from "../assets/contactr.webp";
+import heroImage from "../assets/contactr_final.webp";
 import Layout from "../layouts/Layout.astro";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
@@ -42,7 +42,12 @@ const selectedWorks = Object.entries(selectedWorkModules)
 ---
 
 <Layout title="JacobLDraws">
-    <main class="col-span-12 overflow-hidden lg:col-span-10 lg:pr-4">
+    <!-- No .site-main: the hero is full-bleed and its own --page-inset sets the text's
+         left edge. The 6xl cap is looser than the other pages' so the splash keeps most
+         of its width, and it only engages above 1152px, leaving mobile and tablet
+         untouched. Safe for the hero's wrap bands: --hero-heading-size is viewport-based,
+         so capping the container does not move the line breaks. -->
+    <main class="site-gap mx-auto max-w-6xl overflow-hidden">
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-10">
             <section class="hero-section relative isolate overflow-hidden border border-primary/15 bg-[#d7cfbe] dark:border-primary-dark/15 dark:bg-[#2f2a25]">
                 <p class="hero-eyebrow absolute z-30 font-sans font-semibold uppercase text-primary/70 dark:text-primary-dark/70">
@@ -141,19 +146,9 @@ const selectedWorks = Object.entries(selectedWorkModules)
      * the Selected Work heading all measure from this, so their left edges line up down the page.
      */
     .page-sections {
-        --page-inset: 1.25rem;
-    }
-
-    @media (min-width: 640px) {
-        .page-sections {
-            --page-inset: 1.75rem;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .page-sections {
-            --page-inset: 2rem;
-        }
+        /* From the shell, so the hero's text edge and every other page's content edge
+           are the same value by construction. */
+        --page-inset: var(--site-gutter);
     }
 
     .section-header {
@@ -438,12 +433,15 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
     }
 
-    /* Preserve the image-derived olive and telephone-blue atmosphere in dark mode. */
-    @media (prefers-color-scheme: dark) {
-        .hero-section {
-            background-image:
-                linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
-                linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);
-        }
+    /*
+     * Preserve the image-derived olive and telephone-blue atmosphere in dark mode.
+     * Keyed to html.dark rather than (prefers-color-scheme: dark) because the site's
+     * dark mode is class-based; the OS preference alone would paint these gradients
+     * over an otherwise light page.
+     */
+    :global(html.dark) .hero-section {
+        background-image:
+            linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
+            linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);
     }
 </style>

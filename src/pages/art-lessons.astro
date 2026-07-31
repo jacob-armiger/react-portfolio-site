@@ -6,11 +6,20 @@ import Layout from "../layouts/Layout.astro";
 type ArtModule = { default: ImageMetadata };
 type LessonGalleryEntry = {
     src: string;
+    srcSet: string | undefined;
     width: number;
     height: number;
     alt: string;
     label: string;
 };
+
+/*
+ * The pieces render about 330px wide at lg (max-w-5xl, three columns) and about half
+ * the viewport below sm. These widths cover 1x through 3x of the largest box; every
+ * source is at least 1680px wide, so none upscale.
+ */
+const lessonImageWidths = [320, 480, 660, 990];
+const lessonImageSizes = "(min-width: 640px) 33vw, 50vw";
 
 const artModules = import.meta.glob<ArtModule>(
     [
@@ -46,10 +55,17 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         },
     ].map(async (entry) => {
         const image = artModules[entry.path].default;
-        const optimized = await getImage({ src: image, format: "webp", width: 320 });
+        const optimized = await getImage({
+            src: image,
+            format: "webp",
+            quality: 82,
+            widths: lessonImageWidths,
+            sizes: lessonImageSizes,
+        });
 
         return {
             src: optimized.src,
+            srcSet: optimized.srcSet.attribute || undefined,
             width: (optimized.attributes.width as number) ?? image.width,
             height: (optimized.attributes.height as number) ?? image.height,
             alt: entry.alt,
@@ -60,19 +76,27 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 ---
 
 <Layout title="Art Lessons">
-    <main class="col-span-12 lg:page-top lg:col-span-8 lg:col-start-3 px-o mx-0">
+    <!-- No .site-main, and the cap is lg-only: below lg the page runs full width so the
+         hero bleeds edge-to-edge, and the rest takes the gutter via .site-inset. At lg
+         the page centres in its track. -->
+    <main class="site-gap lg:page-top mx-auto lg:max-w-5xl">
         <!-- <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
         -->
 
+        <!-- Square corners while full-bleed; rounding only makes sense once the section
+             is inset at lg. -->
         <section
-            class="relative h-auto w-full rounded-sm sm:bg-cover bg-[size:260%] bg-[75%_0%] sm:bg-center bg-no-repeat p-4 text-secondary mb-8"
-            style="background-image: url(/lessons2.PNG)">
+            class="relative mb-8 h-auto w-full bg-[size:260%] bg-[75%_0%] bg-no-repeat p-4 text-secondary sm:bg-cover sm:bg-center lg:rounded-sm"
+            style="background-image: url(/lessons2_final.webp)">
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/30 via-55% to-transparent">
             </div>
 
             <div class="relative mb-8">
-                <p class="text-6xl sm:text-7xl font-semibold">Practice Boldly. Get Structure.</p>
+                <!-- Smaller below sm so "Structure." still fits inside the gutter. -->
+                <p class="text-5xl font-semibold sm:text-7xl">
+                    Practice Boldly. Get Structure.
+                </p>
             </div>
 
             <div class=" relative mb-4 flex w-2/3 sm:w-1/2 flex-col gap-8 text-base leading-relaxed">
@@ -99,9 +123,12 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             </div>
         </section>
 
+        <!-- Everything after the hero takes the gutter as one block, leaving the hero the
+             only full-bleed element. -->
+        <div class="site-inset">
         <p class="mb-8 italic max-w-prose mx-auto text-base leading-relaxed opacity-80 text-balance text-center ">
             I offer lessons to artists of all levels. Whether you’re looking for a new hobby or an experienced artist seeking to refine your draftsmanship, I'm here to help you achieve your artistic goals.
-        </p> 
+        </p>
 
         <section class="mb-12 px-1">
             <!-- <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3"> -->
@@ -111,10 +138,12 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                         <figure class="max-h-80 sm:max-h-none overflow-hidden rounded-sm bg-primary/5 dark:bg-primary-dark/5">
                             <img
                                 src={piece.src}
+                                srcset={piece.srcSet}
+                                sizes={lessonImageSizes}
                                 alt={piece.alt}
                                 loading="lazy"
                                 decoding="async"
-                                class="sm:h-full object-cover"
+                                class="w-full sm:h-full object-cover"
                             />
                         </figure>
                         <div class="sm:hidden text-left mx-2 place-self-center">
@@ -177,7 +206,8 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             subject="Art Lessons Inquiry"
             messagePlaceholder="Questions, availability, goals..."
         />
-            
+
+        </div>
         </div>
     </main>
 </Layout>

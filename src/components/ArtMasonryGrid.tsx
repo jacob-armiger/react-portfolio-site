@@ -155,7 +155,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
     return (
         <div className="flex flex-col gap-4 lg:contents">
             {/* Filter nav */}
-            <nav className="flex flex-row flex-wrap justify-center sm:justify-start gap-x-3 gap-y-2 px-1 sm:px-6 lg:col-start-2 lg:flex-nowrap lg:justify-start lg:px-0">
+            <nav className="site-inset flex flex-row flex-wrap justify-center sm:justify-start gap-x-3 gap-y-2 lg:col-start-2 lg:flex-nowrap lg:justify-start">
                 {categories.map((cat) => (
                     <a
                         key={cat}

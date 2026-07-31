@@ -81,8 +81,10 @@ const images: OptimizedImage[] = await Promise.all(
 ---
 
 <Layout title="Art">
-    <main class="col-span-12 px-0 pt-6 lg:col-span-10 lg:col-start-3 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
-        <div class="mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 px-4 sm:px-6 lg:mb-0 lg:items-baseline lg:px-0">
+    <!-- No .site-main: the grid runs edge-to-edge. The heading takes the gutter on its
+         own so only the artwork is full-bleed. -->
+    <main class="site-gap pt-6 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
+        <div class="site-inset mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 lg:mb-0 lg:items-baseline">
             <h1 class="text-left text-5xl font-bold leading-none xl:text-nowrap">Art</h1>
             <RssFeedButton />
         </div>

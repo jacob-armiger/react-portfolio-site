@@ -1,14 +1,15 @@
 ---
 // https://jahir.dev/blog/astro-reading-time
 import { Image } from "astro:assets";
-// import { getReadingTime } from '../scripts/reading-time';
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
     art: CollectionEntry<"article">;
+    /** Lead story: image on top, larger headline, longer excerpt. */
+    featured?: boolean;
 }
 
-const { art } = Astro.props;
+const { art, featured = false } = Astro.props;
 const excerpt = (art.body ?? "")
     .replace(/^import\s.+$/gm, "")
     .replace(/^export\s.+$/gm, "")
@@ -20,23 +21,202 @@ const excerpt = (art.body ?? "")
     .replace(/\s+/g, " ")
     .trim();
 
-// const readingTime = getReadingTime(art.body);
+// "JUNE 2, 2026". Fixed to UTC so the frontmatter date is the one that prints,
+// whatever the reader's timezone.
+const dateLabel = art.data.date
+    .toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "UTC",
+    })
+    .toUpperCase();
+
+const wordCount = excerpt ? excerpt.split(" ").length : 0;
+const readingTime = Math.max(1, Math.round(wordCount / 220));
 ---
 
 <a
     href={"/writing/" + art.id}
-    class="mb-2 block w-full decoration-primary/50 hover:underline dark:decoration-primary-dark/50">
-    <Image
-        src={art.data.image}
-        alt="Gallery image"
-        width={300}
-        class="w-full border-[1px] object-cover p-1 shadow-md shadow-stone-500 sm:h-[48vw] lg:h-[24vw] dark:shadow-none"
-    />
-    <div class="mt-1 flex flex-col">
-        <span class="font-serif text-lg font-bold tracking-wider"> {art.data.title} </span>
-        <span class="pr-1 font-serif text-sm"> {String(art.data.date.toISOString().slice(0, 10))} </span>
-        <p class="mt-1 line-clamp-2 text-sm">
-            {excerpt}
-        </p>
-    </div>
+    class:list={["blog-card group block", featured && "blog-card--featured"]}>
+    <article
+        class:list={[
+            "grid gap-x-7 gap-y-4",
+            featured
+                ? "grid-cols-1"
+                : "sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] md:grid-cols-[minmax(0,13rem)_minmax(0,1fr)]",
+        ]}>
+        <!-- Hairline rule directly on the image, no mat: the edge stays a single
+             crisp line at any zoom. -->
+        <figure class="blog-card__plate">
+            <Image
+                src={art.data.image}
+                alt=""
+                width={featured ? 1000 : 560}
+                format="webp"
+                quality={80}
+                class:list={[
+                    "w-full object-cover object-[50%_20%]",
+                    featured ? "aspect-[16/9]" : "aspect-[3/2] sm:aspect-[4/5]",
+                ]}
+            />
+        </figure>
+
+        <div class="flex flex-col">
+            <p class="blog-card__dateline font-sans">
+                <span>{dateLabel}</span>
+                <span aria-hidden="true" class="blog-card__bullet">&bull;</span>
+                <span>{readingTime} min read</span>
+            </p>
+
+            <h2
+                class:list={[
+                    "mt-2 font-serif font-bold leading-[1.15] tracking-tight decoration-[1.5px] underline-offset-[6px] group-hover:underline",
+                    featured ? "text-3xl sm:text-4xl" : "text-2xl",
+                ]}>
+                {art.data.title}
+            </h2>
+
+            {
+                art.data.reference ? (
+                    <p class="mt-1 font-serif text-sm italic opacity-70">
+                        After {art.data.reference}
+                    </p>
+                ) : null
+            }
+
+            <p
+                class:list={[
+                    "mt-3 font-serif text-[15px] leading-relaxed opacity-80",
+                    featured ? "line-clamp-3 sm:text-base" : "line-clamp-3",
+                ]}>
+                {excerpt}
+            </p>
+
+            <p class="blog-card__more font-sans">
+                Continue reading <span aria-hidden="true">&rarr;</span>
+            </p>
+        </div>
+    </article>
 </a>
+
+<style>
+    /*
+     * A sheet, not a panel: 1px rule all the way round and a hard offset shadow - zero
+     * blur - so the card reads as a physical thing lifted off the page and every edge
+     * stays a single pixel. No fill, so the body texture stays continuous underneath.
+     */
+    .blog-card {
+        /* The card's one accent ink: shadow, dateline bullet, hover arrow. */
+        --card-accent: #284334;
+
+        display: block;
+        padding: 1.25rem;
+        border: 1px solid rgb(42 35 27 / 0.55);
+        background-color: transparent;
+        box-shadow: 6px 6px 0 var(--card-accent);
+        transition:
+            box-shadow 120ms ease-out,
+            transform 120ms ease-out;
+    }
+
+    /* Hover presses the sheet down: it slides toward its shadow and the shadow
+       shortens by the same amount, so the bottom-right corner stays put. */
+    .blog-card:hover {
+        border-color: var(--card-accent);
+        box-shadow: 2px 2px 0 var(--card-accent);
+        transform: translate(4px, 4px);
+    }
+
+    @media (min-width: 640px) {
+        .blog-card {
+            padding: 1.5rem;
+        }
+
+        .blog-card--featured {
+            padding: 1.75rem;
+        }
+    }
+
+    /* The accent lifted for the dark page, where it measures 4.7:1 - enough for the
+       bullet and arrow to read at 11px. */
+    :global(html.dark) .blog-card {
+        --card-accent: #6f9d7f;
+
+        border-color: rgb(229 226 218 / 0.4);
+    }
+
+    /* Hairline only - a second hard shadow would fight the sheet's own. */
+    .blog-card__plate {
+        border: 1px solid rgb(42 35 27 / 0.45);
+        line-height: 0;
+    }
+
+    :global(html.dark) .blog-card__plate {
+        border-color: rgb(229 226 218 / 0.25);
+    }
+
+    /* The one piece of sans on the card, tracked like a newspaper kicker so it
+       sits under the headline without competing. */
+    .blog-card__dateline {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        opacity: 0.65;
+        text-transform: uppercase;
+    }
+
+    .blog-card__bullet {
+        color: var(--card-accent);
+        font-size: 9px;
+        /* Full strength against the dateline's 0.65, so it reads as a deliberate
+           mark rather than a stray dot. */
+        opacity: 1;
+    }
+
+    .blog-card__more {
+        /* Pinned to the bottom of the text column so every entry ends on the same
+           line however short its excerpt is. */
+        margin-top: auto;
+        padding-top: 0.9rem;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        opacity: 0.6;
+        text-transform: uppercase;
+        transition: opacity 150ms ease;
+    }
+
+    .blog-card:hover .blog-card__more {
+        opacity: 1;
+    }
+
+    .blog-card__more span {
+        display: inline-block;
+        transition:
+            transform 200ms ease,
+            color 150ms ease;
+    }
+
+    .blog-card:hover .blog-card__more span {
+        color: var(--card-accent);
+        transform: translateX(3px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .blog-card,
+        .blog-card__more,
+        .blog-card__more span {
+            transition: none;
+        }
+
+        /* Keep the shadow change - it is the affordance - but drop the movement. */
+        .blog-card:hover,
+        .blog-card:hover .blog-card__more span {
+            transform: none;
+        }
+    }
+</style>
