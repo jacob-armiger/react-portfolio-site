@@ -12,16 +12,14 @@
 
 @theme {
     /*
-     * Font stacks keep the variable-font first and fall back to Tailwind's own
-     * defaults, which is what `...defaultTheme.fontFamily.*` expanded to in v3.
+     * --font-inter / --font-source-serif / --font-playfair-display come from the
+     * `fonts` config in astro.config.mjs and are emitted by the <Font> components
+     * in Layout.astro. Astro appends its own generated fallback metrics to each,
+     * so the generic families here are only a last resort if the API is removed.
      */
-    --font-sans:
-        "Inter Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-serif:
-        "Source Serif 4 Variable", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-playfair:
-        "Playfair Display Variable", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-sans: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
+    --font-serif: var(--font-source-serif, ui-serif, Georgia, Cambria, Times, serif);
+    --font-playfair: var(--font-playfair-display, ui-serif, Georgia, Cambria, Times, serif);
 
     --color-primary: #2a231b;
     --color-secondary: #e5e2da;
