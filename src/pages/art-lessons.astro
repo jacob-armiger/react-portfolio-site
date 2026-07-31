@@ -2,6 +2,7 @@
 import ContactForm from "../components/ContactForm.astro";
 import { getImage } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import heroSource from "../assets/lessons2_final.webp";
 
 type ArtModule = { default: ImageMetadata };
 type LessonGalleryEntry = {
@@ -20,6 +21,23 @@ type LessonGalleryEntry = {
  */
 const lessonImageWidths = [320, 480, 660, 990];
 const lessonImageSizes = "(min-width: 640px) 33vw, 50vw";
+
+/*
+ * Full-bleed below lg, capped at max-w-5xl from lg up, and zoomed to 260% below sm --
+ * so the small-viewport entry asks for more pixels than the viewport is wide.
+ */
+const heroWidths = [800, 1200, 1600, 2048];
+const heroSizes = "(min-width: 1024px) 1024px, (min-width: 640px) 100vw, 260vw";
+
+const hero = await getImage({
+    src: heroSource,
+    format: "webp",
+    quality: 78,
+    // Without this the plain-src fallback stays at the source's full 3377px.
+    width: 2048,
+    widths: heroWidths,
+    sizes: heroSizes,
+});
 
 const artModules = import.meta.glob<ArtModule>(
     [
@@ -86,9 +104,21 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
         <!-- Square corners while full-bleed; rounding only makes sense once the section
              is inset at lg. -->
+        <!-- An img rather than a background so the preload scanner finds the LCP element
+             without waiting on the stylesheet. The 260% zoom overflows the box by 160%,
+             and the framing it replaces sat 75% into that overflow: hence -120%. -->
         <section
-            class="relative mb-8 h-auto w-full bg-[size:260%] bg-[75%_0%] bg-no-repeat p-4 text-secondary sm:bg-cover sm:bg-center lg:rounded-sm"
-            style="background-image: url(/lessons2_final.webp)">
+            class="relative mb-8 h-auto w-full overflow-hidden p-4 text-secondary lg:rounded-sm">
+            <img
+                src={hero.src}
+                srcset={hero.srcSet.attribute || undefined}
+                sizes={heroSizes}
+                alt=""
+                fetchpriority="high"
+                decoding="async"
+                class="absolute left-[-120%] top-0 h-auto w-[260%] max-w-none sm:left-0 sm:h-full sm:w-full sm:object-cover sm:object-center"
+            />
+
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/30 via-55% to-transparent">
             </div>
 
