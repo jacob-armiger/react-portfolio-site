@@ -1,6 +1,5 @@
-<!-- Wordmark mark: the "J" of JacobLDraws, outlined from Source Serif 4 Bold
-     (the same face as the site wordmark) so the tab icon and the header are
-     the same letterform. Paper on ink, fully opaque, so it reads the same
+<!-- The "J" of JacobLDraws, outlined from Source Serif 4 Bold so the tab icon and
+     the site wordmark share a letterform. Opaque paper-on-ink, so it reads the same
      against light or dark browser chrome. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="JacobLDraws">
     <rect width="64" height="64" fill="#2A231B"/>
