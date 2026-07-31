@@ -21,7 +21,7 @@ const { Content } = await render(entry);
 ---
 
 <Layout title={entry.data.title ?? "Writing Post"}>
-    <main class="site-main page-top mx-auto max-w-2xl">
+    <main class="site-main page-top mx-auto w-full max-w-2xl">
         {entry.data.image ? (
             <figure class="mx-auto w-full">
                 <Image

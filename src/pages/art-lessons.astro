@@ -29,10 +29,15 @@ const lessonImageSizes = "(min-width: 640px) 33vw, 50vw";
 const heroWidths = [800, 1200, 1600, 2048];
 const heroSizes = "(min-width: 1024px) 1024px, (min-width: 640px) 100vw, 260vw";
 
+/*
+ * 70 rather than the default: the left 55% sits under an opaque-to-transparent black
+ * gradient and the source is already a lossy webp, so the detail a higher quality
+ * preserves is mostly re-encoded noise. Costs ~40% of the LCP bytes.
+ */
 const hero = await getImage({
     src: heroSource,
     format: "webp",
-    quality: 78,
+    quality: 70,
     // Without this the plain-src fallback stays at the source's full 3377px.
     width: 2048,
     widths: heroWidths,
@@ -94,10 +99,23 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 ---
 
 <Layout title="Art Lessons">
+    <!-- The preload scanner would find the hero anyway, but only after parsing the head's
+         inline analytics module. Preloading in the head starts the fetch at the same
+         moment as the stylesheet instead of after it. imagesrcset/imagesizes must stay
+         identical to the img's, or the browser fetches a second copy. -->
+    <link
+        slot="head"
+        rel="preload"
+        as="image"
+        href={hero.src}
+        imagesrcset={hero.srcSet.attribute || undefined}
+        imagesizes={heroSizes}
+        fetchpriority="high"
+    />
     <!-- No .site-main, and the cap is lg-only: below lg the page runs full width so the
          hero bleeds edge-to-edge, and the rest takes the gutter via .site-inset. At lg
          the page centres in its track. -->
-    <main class="site-gap lg:page-top mx-auto lg:max-w-5xl">
+    <main class="site-gap lg:page-top mx-auto w-full lg:max-w-5xl">
         <!-- <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
         -->
@@ -106,7 +124,9 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
              is inset at lg. -->
         <!-- An img rather than a background so the preload scanner finds the LCP element
              without waiting on the stylesheet. The 260% zoom overflows the box by 160%,
-             and the framing it replaces sat 75% into that overflow: hence -120%. -->
+             and the framing it replaces sat 75% into that overflow: hence -120%.
+             No decoding="async" on purpose: it frees the browser to paint a frame with
+             the hero still missing, which is the frame that sets a later LCP. -->
         <section
             class="relative mb-8 h-auto w-full overflow-hidden p-4 text-secondary lg:rounded-sm">
             <img
@@ -115,7 +135,6 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                 sizes={heroSizes}
                 alt=""
                 fetchpriority="high"
-                decoding="async"
                 class="absolute left-[-120%] top-0 h-auto w-[260%] max-w-none sm:left-0 sm:h-full sm:w-full sm:object-cover sm:object-center"
             />
 

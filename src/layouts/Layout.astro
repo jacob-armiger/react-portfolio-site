@@ -50,6 +50,9 @@ const textureStyle = Object.entries(textureProperties)
         />
         <meta name="generator" content={Astro.generator} />
         <title class="font-serif">{title}</title>
+        <!-- Ahead of <Analytics />, whose inline module is ~5KB the parser walks before
+             reaching the body: a page's LCP preload should not queue behind it. -->
+        <slot name="head" />
         <Analytics />
     </head>
     <body
@@ -64,10 +67,11 @@ const textureStyle = Object.entries(textureProperties)
             <nav
                 class="site-nav sticky top-0 z-50 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-primary/50 bg-secondary/80 py-3 font-sans underline-offset-4 backdrop-blur-md sm:gap-x-6 sm:py-2 sm:text-xl lg:flex-col lg:items-start lg:self-start lg:border-none lg:bg-transparent lg:pb-4 lg:pt-8 lg:text-[18px] lg:backdrop-blur-none dark:border-primary-dark/50 dark:bg-primary/10">
                 <!--
-                    At lg the wordmark shares a baseline with the page heading in the next
-                    column. The 48px line box is the page headings' own (text-5xl is 3rem /
-                    line-height 1); both columns start at lg:pt-8, so matching line boxes
-                    align the baselines without an offset.
+                    The 48px line box is the page headings' own (text-5xl is 3rem /
+                    line-height 1). Both columns start at lg:pt-8, so the wordmark's line box
+                    and the next column's first block share a top edge -- that is the rule the
+                    page follows. Their baselines do not meet: 20px against a 48px heading
+                    gives a different half-leading, leaving this baseline ~10px higher.
 
                     mb-6 stacks on the column's row-gap so the wordmark reads as identity
                     above the list, not the first item in it.
@@ -202,6 +206,12 @@ const textureStyle = Object.entries(textureProperties)
     .site-inset {
         padding-inline: var(--site-gutter);
     }
+
+    /*
+     * Every <main> pairs mx-auto with w-full. Auto inline margins on an auto-width grid
+     * item mean shrink-to-fit, so without w-full the page width tracks its content and
+     * creeps outward as images load. w-full is load-bearing, not redundant.
+     */
 
     /*
      * A grid item's automatic minimum size is its min-content width, so one long word

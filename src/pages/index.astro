@@ -47,8 +47,10 @@ const selectedWorks = Object.entries(selectedWorkModules)
          of its width, and it only engages above 1152px, leaving mobile and tablet
          untouched. Safe for the hero's wrap bands: --hero-heading-size is viewport-based,
          so capping the container does not move the line breaks. -->
-    <main class="site-gap mx-auto max-w-6xl overflow-hidden">
-        <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-10">
+    <main class="site-gap mx-auto w-full max-w-6xl overflow-hidden">
+        <!-- lg:pt-8 matches the nav's own lg:pt-8, so the hero's top edge starts level with
+             the wordmark's line box like every other page's first block. -->
+        <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
             <section class="hero-section relative isolate overflow-hidden border border-primary/15 bg-[#d7cfbe] dark:border-primary-dark/15 dark:bg-[#2f2a25]">
                 <p class="hero-eyebrow absolute z-30 font-sans font-semibold uppercase text-primary/70 dark:text-primary-dark/70">
                     {HERO_EYEBROW}
