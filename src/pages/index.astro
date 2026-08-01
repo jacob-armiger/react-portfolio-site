@@ -396,7 +396,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
             /* The sidebar nav narrows the section here, so the headline needs a smaller cap. */
             --hero-heading-size: min(9.6vw, 7rem);
             --hero-image-top: auto;
-            --hero-image-bottom: 0;
+            --hero-image-bottom: 0rem;
             --hero-image-right: -5rem;
             --hero-image-width: min(60%, 44rem);
             --hero-body-width: 22.5rem;
@@ -406,7 +406,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
             --hero-action-px: 1.6rem;
             --hero-action-font-size: 0.875rem;
             --hero-action-tracking: 0.2em;
-            min-height: clamp(44rem, 86vh, 52rem);
+            min-height: clamp(46rem, 88vh, 52rem);
         }
 
         .hero-action-row {
@@ -421,6 +421,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
     @media (min-width: 1280px) {
         .hero-section {
+            --hero-image-bottom: -2rem;
             --hero-image-right: -10rem;
             --hero-image-width: min(75%, 50rem);
         }
@@ -429,8 +430,8 @@ const selectedWorks = Object.entries(selectedWorkModules)
     /* Cap the composition on very wide screens rather than continuing to scale it. */
     @media (min-width: 1536px) {
         .hero-section {
-            --hero-image-bottom: 0;
-            --hero-image-right: 2rem;
+            --hero-image-bottom: -2rem;
+            --hero-image-right: -10rem;
             --hero-image-width: 50rem;
         }
     }
