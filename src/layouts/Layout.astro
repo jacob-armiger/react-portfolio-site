@@ -79,8 +79,8 @@ const textureStyle = Object.entries(textureProperties)
             cost 18 pages a request they never use; it still self-hosts and swaps in
             over Astro's generated fallback metrics.
         -->
-        <Font cssVariable="--font-inter" preload />
-        <Font cssVariable="--font-source-serif" preload />
+        <Font cssVariable="--font-inter" preload={[{ style: "normal" }]} />
+        <Font cssVariable="--font-source-serif" preload={[{ style: "normal" }]} />
         <Font cssVariable="--font-playfair-display" />
         <!-- Ahead of <Analytics />, whose inline module is ~5KB the parser walks before
              reaching the body: a page's LCP preload should not queue behind it. -->
