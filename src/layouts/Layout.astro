@@ -10,7 +10,7 @@ import "../styles/global.css";
 import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Footer from "../components/Footer.astro";
 import InstagramGlyph from "../components/InstagramGlyph.astro";
-import { backgroundTexture } from "../config/backgroundTexture";
+import { backgroundTexture, type TextureSettings } from "../config/backgroundTexture";
 interface Props {
     title: string;
 }
@@ -34,21 +34,11 @@ const NAV_LINK_CLASS =
 const NAV_INK_REST =
     "text-primary/70 hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark";
 const NAV_INK_CURRENT = "text-primary dark:text-primary-dark";
-const textureProperties = {
-    "--texture-light-image": `url("${backgroundTexture.light.asset.src}")`,
-    "--texture-light-opacity": backgroundTexture.light.opacity,
-    "--texture-light-blend-mode": backgroundTexture.light.blendMode,
-    "--texture-light-size": backgroundTexture.light.size,
-    "--texture-light-repeat": backgroundTexture.light.repeat,
-    "--texture-dark-image": `url("${backgroundTexture.dark.asset.src}")`,
-    "--texture-dark-opacity": backgroundTexture.dark.opacity,
-    "--texture-dark-blend-mode": backgroundTexture.dark.blendMode,
-    "--texture-dark-size": backgroundTexture.dark.size,
-    "--texture-dark-repeat": backgroundTexture.dark.repeat,
-};
-const textureStyle = Object.entries(textureProperties)
-    .map(([property, value]) => `${property}: ${value}`)
-    .join("; ");
+// Emitted as raw CSS rather than custom properties: the dials live in
+// backgroundTexture.ts, and only the hashed asset URLs need to be dynamic.
+const textureRule = ({ asset, opacity, blendMode, size, repeat }: TextureSettings) =>
+    `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode}; opacity: ${opacity};`;
+const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } html.dark body::before { ${textureRule(backgroundTexture.dark)} }`;
 ---
 
 <!doctype html>
@@ -86,10 +76,10 @@ const textureStyle = Object.entries(textureProperties)
              reaching the body: a page's LCP preload should not queue behind it. -->
         <slot name="head" />
         <Analytics />
+        <style set:html={textureCss}></style>
     </head>
     <body
-        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark"
-        style={textureStyle}>
+        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark">
         <!-- <div
             aria-hidden="true"
             class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-secondary to-transparent dark:from-secondary-dark lg:hidden">
@@ -150,63 +140,19 @@ const textureStyle = Object.entries(textureProperties)
     /*
      * Shared site container: a content-sized nav track, an explicit gutter to the
      * content, and both inside one capped, centred frame that every page and the
-     * footer share, so no page decides its own margins.
+     * footer share, so no page decides its own margins. The tokens these rules
+     * consume (--site-max-width, --site-gutter, --site-nav-gap, --plate-*) live in
+     * global.css so every site-wide dial reads from one place.
      */
-    :root {
-        /* 96rem = 1536px, the same cap the home hero uses, so the hero and the page
-           frame stop growing at the same moment. */
-        --site-max-width: 96rem;
-        /* Also the home page's --page-inset, so the splash and every other page share
-           one content edge. */
-        --site-gutter: 1.25rem;
-        /*
-         * Separation between the nav column and content that fills the track. Applied
-         * symmetrically by .site-gap, not as a grid column-gap, so it can't tilt centred
-         * content -- the deliberate one-sided offset is --site-nav-offset below.
-         */
-        --site-nav-gap: 2rem;
-        /*
-         * One-sided offset of the content column, equal to the gutter the shell puts on
-         * the content's right, which makes the margin beside the nav and the margin at
-         * the screen edge the same (see .site-shell). Always --site-gutter -- named
-         * separately so the reason it exists survives the value changing.
-         */
-        --site-nav-offset: var(--site-gutter);
-        /*
-         * Plate: the treatment for any framed image -- blog card thumbnails, article
-         * covers. A hairline directly on the image plus a hard zero-blur offset, so the
-         * edge stays one crisp pixel at any zoom. Shared here rather than per component
-         * because the card and the cover drifted apart once already.
-         */
-        --plate-rule: rgb(42 35 27 / 0.45);
-        --plate-accent: #284334;
-    }
-
-    /* Lifted for the dark page, where it measures 4.7:1 -- enough for the dateline
-       bullet and the hover arrow to read at 11px. */
-    html.dark {
-        --plate-rule: rgb(229 226 218 / 0.25);
-        --plate-accent: #6f9d7f;
-    }
-
-    @media (min-width: 640px) {
-        :root {
-            --site-gutter: 1rem;
-        }
-    }
 
     /* Classic sticky footer: the shell takes the slack, the footer sits under it.
-       position: relative anchors the texture layer painted by body::before. */
+       position: relative anchors the texture layer painted by body::before, whose
+       image and blend values are emitted from backgroundTexture.ts in <head>. */
     body {
         position: relative;
         display: flex;
         min-height: 100vh;
         flex-direction: column;
-        --texture-image: var(--texture-light-image);
-        --texture-opacity: var(--texture-light-opacity);
-        --texture-blend-mode: var(--texture-light-blend-mode);
-        --texture-size: var(--texture-light-size);
-        --texture-repeat: var(--texture-light-repeat);
     }
 
     .site-shell {
@@ -226,12 +172,12 @@ const textureStyle = Object.entries(textureProperties)
             grid-template-columns: max-content minmax(0, 1fr);
             grid-template-rows: minmax(0, 1fr);
             /*
-             * Not separation -- .site-gap does that, symmetrically. This exists only to
-             * cancel the shell's right padding: the max-content nav track ends on the
-             * nav's visual edge, so without the offset every page sits one gutter closer
-             * to the nav than to the screen.
+             * Not separation -- .site-gap does that, symmetrically. This one-sided offset
+             * only cancels the shell's right padding: the max-content nav track ends on
+             * the nav's visual edge, so without it every page sits one gutter closer to
+             * the nav than to the screen.
              */
-            column-gap: var(--site-nav-offset);
+            column-gap: var(--site-gutter);
             padding-inline: var(--site-gutter);
         }
     }
@@ -278,8 +224,7 @@ const textureStyle = Object.entries(textureProperties)
     }
 
     .site-main,
-    .site-inset,
-    .site-footer {
+    .site-inset {
         overflow-wrap: anywhere;
     }
 
@@ -298,8 +243,11 @@ const textureStyle = Object.entries(textureProperties)
          * the links and the Instagram glyph falls into rhythm without its own height.
          */
         .site-nav {
-            --site-nav-rhythm: 3.5rem;
-            row-gap: calc(var(--site-nav-rhythm) - 1.5em);
+            /* 3.5rem is the baseline-to-baseline pitch of the sidebar links. The spacing
+               is a row-gap rather than an inflated line-height, so hit areas stay the
+               size of the links and the Instagram glyph falls into rhythm without its
+               own height. */
+            row-gap: calc(3.5rem - 1.5em);
             line-height: 1.5;
         }
 
@@ -314,42 +262,11 @@ const textureStyle = Object.entries(textureProperties)
         }
     }
 
-    /* Full-width band under the shell, sharing the same cap and gutters. */
-    .site-footer {
-        width: 100%;
-        max-width: var(--site-max-width);
-        flex: 0 0 auto;
-        /* Breathing room so the footer reads as a separate band, not a continuation
-           of the page. */
-        margin-top: 5rem;
-        margin-inline: auto;
-        padding-inline: var(--site-gutter);
-    }
-
-    @media (min-width: 1024px) {
-        .site-footer {
-            margin-top: 7rem;
-        }
-    }
-
     body::before {
         position: absolute;
         z-index: -20;
         inset: 0;
-        background-image: var(--texture-image);
-        background-repeat: var(--texture-repeat);
-        background-size: var(--texture-size);
-        mix-blend-mode: var(--texture-blend-mode);
-        opacity: var(--texture-opacity);
         pointer-events: none;
         content: "";
-    }
-
-    html.dark body {
-        --texture-image: var(--texture-dark-image);
-        --texture-opacity: var(--texture-dark-opacity);
-        --texture-blend-mode: var(--texture-dark-blend-mode);
-        --texture-size: var(--texture-dark-size);
-        --texture-repeat: var(--texture-dark-repeat);
     }
 </style>

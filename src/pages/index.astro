@@ -13,9 +13,11 @@ const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
 const HERO_BODY =
     "I've followed the training of 19th century masters to rapidly improve my skills and with my lessons you can do the same. I am also accepting commissions for digital and traditional work.";
 
-// Shape and behaviour only. Size, padding and typography come from the --hero-action-* dials.
+// Shape, behaviour and the per-breakpoint size/type steps. lg tracking eases to
+// 0.16em so the labels sit with the footer's 0.18em while staying open enough
+// for uppercase Inter.
 const HERO_ACTION_CLASS =
-    "inline-flex items-center justify-center rounded-full sm:rounded-xs font-sans font-semibold uppercase transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4";
+    "inline-flex items-center justify-center rounded-full sm:rounded-xs font-sans font-semibold uppercase transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg}",
@@ -65,7 +67,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     sizes={HERO_SIZES}
                     quality={80}
                     priority
-                    class="hero-image absolute z-10 max-w-none"
+                    class="absolute z-10 aspect-[2693/2773] max-w-none top-28 left-[60%] w-[29rem] -translate-x-[48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
                 <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-tighter sm:tracking-[-0.04em] text-orange-100 mix-blend-difference">
@@ -81,11 +83,18 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     Contact me for <br/> art lessons or to commission work.
                 </div>
 
-                <div class="hero-actions absolute z-30">
-                    <p class="hero-body font-serif text-primary/85 dark:text-primary-dark/85">
+                <!-- bottom-6 deliberately larger than the eyebrow's top inset: the cluster is a
+                     60px button block, and matching the 16px top inset left it kissing the frame
+                     edge. right is only pinned below sm, where the buttons grid to full width. -->
+                <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
+                    <!-- Hidden below sm so the shorter frame can breathe. Source Serif runs
+                         optically smaller than Inter at the same px; measure stays ~58 characters. -->
+                    <p class="max-sm:hidden mb-6 max-w-[23rem] text-[1rem] leading-[1.6] font-serif text-primary/85 lg:mb-7 lg:max-w-[24.5rem] lg:text-[1.0625rem] lg:leading-[1.65] dark:text-primary-dark/85">
                         {HERO_BODY}
                     </p>
-                    <div class="hero-action-row">
+                    <!-- Below sm: two equal grid columns. From sm: a stacked column of equal-width
+                         buttons beside the artwork. At lg: back to a row. -->
+                    <div class="flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
                         <a
                             href="/contact"
                             class:list={[
@@ -132,7 +141,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                         selectedWorks.map(({ image, alt, href, aspectRatio }) => (
                             <a
                                 href={href}
-                                style={`--tile-ratio: ${aspectRatio}; --tile-width-mobile: ${aspectRatio * 13}rem; --tile-width-tablet: ${aspectRatio * 17}rem; --tile-width-desktop: ${aspectRatio * 20}rem;`}
+                                style={`--tile-ratio: ${aspectRatio};`}
                                 class="selected-work-tile group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark"
                                 aria-label={`View ${alt} on the art page`}>
                                 <Picture
@@ -164,19 +173,12 @@ const selectedWorks = Object.entries(selectedWorkModules)
         /* From the shell, so the hero's text edge and every other page's content edge
            are the same value by construction. */
         --page-inset: var(--site-gutter);
-    }
-
-    .section-header {
-        padding-inline: var(--page-inset);
-    }
-
-    /*
-     * One token for every small caps label on the page -- hero eyebrow, Selected Work
-     * kicker, See all work. They are peers, so they share a size, tracking and weight
-     * rather than each picking one. Tracking opens as the size drops; below ~9px the
-     * caps need it to stay separable.
-     */
-    .page-sections {
+        /*
+         * One token for every small caps label on the page -- hero eyebrow, Selected Work
+         * kicker, See all work. They are peers, so they share a size, tracking and weight
+         * rather than each picking one. Tracking opens as the size drops; below ~9px the
+         * caps need it to stay separable.
+         */
         --eyebrow-size: 0.5625rem;
         --eyebrow-tracking: 0.26em;
     }
@@ -188,6 +190,10 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
     }
 
+    .section-header {
+        padding-inline: var(--page-inset);
+    }
+
     .eyebrow {
         font-size: var(--eyebrow-size);
         font-weight: 500;
@@ -196,9 +202,10 @@ const selectedWorks = Object.entries(selectedWorkModules)
     }
 
     /*
-     * Justified rows start from each image's ideal width, then share remaining space
-     * in proportion to aspect ratio. Images stay uncropped, every complete row fills
-     * the container, and rows can resolve to different heights.
+     * Justified rows start from each image's ideal width (ratio x the row's base
+     * height, set per breakpoint), then share remaining space in proportion to aspect
+     * ratio. Images stay uncropped, every complete row fills the container, and rows
+     * can resolve to different heights. --tile-ratio comes from each tile's inline style.
      */
     .selected-work-grid::after {
         flex: 999 1 13rem;
@@ -210,7 +217,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
         aspect-ratio: var(--tile-ratio);
         flex-grow: var(--tile-ratio);
         flex-shrink: 1;
-        flex-basis: var(--tile-width-mobile);
+        flex-basis: calc(var(--tile-ratio) * 13rem);
     }
 
     @media (min-width: 640px) {
@@ -219,7 +226,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
 
         .selected-work-tile {
-            flex-basis: var(--tile-width-tablet);
+            flex-basis: calc(var(--tile-ratio) * 17rem);
         }
     }
 
@@ -229,19 +236,16 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
 
         .selected-work-tile {
-            flex-basis: var(--tile-width-desktop);
+            flex-basis: calc(var(--tile-ratio) * 20rem);
         }
     }
 
-    /* Shared hero controls. Breakpoints override these values without changing the composition rules. */
+    /*
+     * Hero composition dials, mobile-first. Only the values that several rules share
+     * (or that a calc composes from) live here; single-consumer sizes -- image
+     * position, body copy, button metrics -- are Tailwind classes in the markup.
+     */
     .hero-section {
-        --hero-image-top: 6.5rem;
-        --hero-image-bottom: auto;
-        --hero-image-left: 48%;
-        --hero-image-right: auto;
-        --hero-image-width: 42rem;
-        --hero-image-transform: translateX(-56%);
-        --hero-heading-size: clamp(2.65rem, 11.5vw, 4rem);
         /*
          * Wrap dial. The heading box width is derived from the font size, so the line breaks stay
          * identical at every viewport width instead of drifting with a percentage width.
@@ -251,60 +255,24 @@ const selectedWorks = Object.entries(selectedWorkModules)
          * Re-measure these bands if the headline copy or letter-spacing changes.
          */
         --hero-heading-ratio: 6.4;
+        --hero-heading-size: min(14vw, 3.55rem);
         /*
-         * Vertical rhythm. The headline is stacked under the eyebrow's line box, so changing the
-         * inset or the eyebrow's leading keeps the pair together instead of drifting apart.
+         * Vertical rhythm. The headline is stacked under the eyebrow's line box (1.45 is
+         * .eyebrow's line-height, 1rem the gap under it), so changing the inset or the
+         * eyebrow's leading keeps the pair together instead of drifting apart.
          */
-        /* Derived from the shared eyebrow scale so the headline restacks itself
-           whenever that size changes. 1.45 is .eyebrow's line-height. */
-        --hero-eyebrow-line: calc(var(--eyebrow-size) * 1.45);
-        --hero-eyebrow-gap: 1rem;
-        --hero-heading-top: calc(
-            var(--page-inset) + var(--hero-eyebrow-line) + var(--hero-eyebrow-gap)
-        );
-        /*
-         * Playfair's cap carries ~0.039em of left side bearing. Pulling the box left by that much
-         * puts the painted edge of the headline on --page-inset, level with the eyebrow and the
-         * Selected Work heading below.
-         */
-        --hero-heading-optical-pull: calc(var(--hero-heading-size) * 0.039);
-        --hero-heading-left: var(--hero-inline-inset);
-        --hero-body-width: 23rem;
-        /* Source Serif runs optically smaller than Inter at the same px, so the lead sits
-           a step above where it did as sans. Measure stays ~58 characters. */
-        --hero-body-size: 1rem;
-        --hero-body-leading: 1.6;
-        --hero-body-gap: 1.5rem;
-        /*
-         * Deliberately larger than the eyebrow's top inset: the bottom cluster is a 60px
-         * button block, and matching the 16px top inset left it kissing the frame edge.
-         */
-        --hero-actions-bottom: 1.5rem;
-        --hero-actions-left: var(--hero-inline-inset);
-        --hero-action-gap: 0.75rem;
-        --hero-action-min-h: 3.5rem;
-        --hero-action-px: 1.25rem;
-        --hero-action-font-size: 0.75rem;
-        --hero-action-tracking: 0.2em;
-        /* Double-rule frame. Both rules live here rather than on a Tailwind border
-           utility so the inner one can subtract the outer's width and stay
-           concentric through the corner. Below lg the panel is full bleed; the
-           card margin comes out of --hero-inline-inset so the text's screen-x
-           stays aligned with the Selected Work heading. */
-        --hero-frame-radius: 0rem;
-        --hero-frame-border: 1px;
-        --hero-frame-gap: 0.25rem;
-        --hero-frame-margin: 0rem;
+        --hero-heading-top: calc(var(--page-inset) + (var(--eyebrow-size) * 1.45) + 1rem);
+        /* Full bleed with a bottom hairline until the sidebar layout: the inner rule
+           of the framed-card treatment reads broken without a top edge, so the double
+           frame is held back for lg. */
+        --hero-frame-border: 0px;
+        --hero-frame-line: rgba(42, 35, 27, 0.15);
         /* Absolutely-positioned children measure from the padding box, so the frame's
            own width has to come back out or the text sits inboard of the heading. */
-        --hero-inline-inset: calc(
-            var(--page-inset) - var(--hero-frame-margin) - var(--hero-frame-border)
-        );
-        --hero-frame-line: rgba(42, 35, 27, 0.15);
-        margin-inline: var(--hero-frame-margin);
+        --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
         border: var(--hero-frame-border) solid var(--hero-frame-line);
-        border-radius: var(--hero-frame-radius);
-        min-height: clamp(42rem, 88vh, 50rem);
+        border-bottom-width: 1px;
+        min-height: 43rem;
         background-image:
             linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
             linear-gradient(315deg, rgba(141, 189, 182, 0.12), transparent 42%);
@@ -315,162 +283,35 @@ const selectedWorks = Object.entries(selectedWorkModules)
         left: var(--hero-inline-inset);
     }
 
-    /* Inner rule of the double frame: above the artwork (z-15 > image's z-10),
-       under the text layers. */
-    .hero-section::before {
-        position: absolute;
-        z-index: 15;
-        inset: var(--hero-frame-gap);
-        border: 1px solid var(--hero-frame-line);
-        border-radius: calc(
-            1rem - var(--hero-frame-border) - var(--hero-frame-gap)
-        );
-        pointer-events: none;
-        content: "";
-    }
-
-    .hero-image {
-        top: var(--hero-image-top);
-        right: var(--hero-image-right);
-        bottom: var(--hero-image-bottom);
-        left: var(--hero-image-left);
-        width: var(--hero-image-width);
-        aspect-ratio: 2693 / 2773;
-        transform: var(--hero-image-transform);
+    @media (max-width: 639px) {
+        .hero-eyebrow {
+            max-width: calc(100% - (2 * var(--hero-inline-inset)));
+        }
     }
 
     .hero-heading {
         top: var(--hero-heading-top);
-        left: calc(var(--hero-heading-left) - var(--hero-heading-optical-pull));
+        /*
+         * Playfair's cap carries ~0.039em of left side bearing. Pulling the box left by that much
+         * puts the painted edge of the headline on --page-inset, level with the eyebrow and the
+         * Selected Work heading below.
+         */
+        left: calc(var(--hero-inline-inset) - (var(--hero-heading-size) * 0.039));
         width: calc(var(--hero-heading-size) * var(--hero-heading-ratio));
         font-size: var(--hero-heading-size);
-    }
-
-    .hero-body {
-        max-width: var(--hero-body-width);
-        margin-bottom: var(--hero-body-gap);
-        font-size: var(--hero-body-size);
-        line-height: var(--hero-body-leading);
-    }
-
-    .hero-actions {
-        bottom: var(--hero-actions-bottom);
-        left: var(--hero-actions-left);
-    }
-
-    .hero-action-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--hero-action-gap);
-    }
-
-    .hero-actions a {
-        min-height: var(--hero-action-min-h);
-        padding-block: 0.75rem;
-        padding-inline: var(--hero-action-px);
-        font-size: var(--hero-action-font-size);
-        letter-spacing: var(--hero-action-tracking);
-    }
-
-    /* Mobile: headline first, a controlled artwork crop, then the actions. */
-    @media (max-width: 639px) {
-        .hero-section {
-            --hero-eyebrow-gap: 1rem;
-            --hero-heading-ratio: 6.4;
-            --hero-heading-size: min(14vw, 3.55rem);
-            --hero-image-top: 7rem;
-            --hero-image-bottom: auto;
-            --hero-image-left: 60%;
-            --hero-image-right: auto;
-            --hero-image-width: 29rem;
-            --hero-image-transform: translateX(-48%);
-            --hero-action-gap: 0.75rem;
-            --hero-action-min-h: 3.5rem;
-            --hero-action-px: 0.8rem;
-            --hero-action-font-size: 0.6875rem;
-            --hero-action-tracking: 0.12em;
-            min-height: 43rem;
-        }
-
-        .hero-eyebrow {
-            max-width: calc(100% - (2 * var(--hero-inline-inset)));
-        }
-
-        /* The intro copy is dropped so the shorter frame can breathe. */
-        .hero-body {
-            display: none;
-        }
-
-        .hero-actions {
-            right: var(--hero-inline-inset);
-        }
-
-        .hero-action-row {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            width: 100%;
-        }
     }
 
     /* Horizontal navigation layouts sit flush against the nav divider. */
     @media (min-width: 640px) {
         .hero-section {
-            --hero-eyebrow-gap: 1rem;
             --hero-heading-ratio: 7.9;
             --hero-heading-size: min(11.6vw, 6.25rem);
-            --hero-image-top: auto;
-            --hero-image-bottom: 0;
-            --hero-image-left: auto;
-            --hero-image-right: -6rem;
-            --hero-image-width: min(72vw, 34rem);
-            --hero-image-transform: none;
-            --hero-body-width: 23rem;
-            --hero-body-gap: 1.5rem;
-            --hero-actions-bottom: 2rem;
-            --hero-action-gap: 1rem;
-            --hero-action-min-h: 3.5rem;
-            --hero-action-px: 1.5rem;
-            --hero-action-font-size: 0.75rem;
-            --hero-action-tracking: 0.15em;
             /*
              * The floor is what keeps the bottom-anchored copy clear of the headline at the top of
              * this band, where the headline is at its 6.25rem cap but the frame is shortest. Sized
              * for the serif lead: 43rem left the two overlapping at 860-1023px on short screens.
              */
             min-height: clamp(46.5rem, 78vh, 47.5rem);
-        }
-
-        /* Stacked, equal-width actions read as a single column beside the artwork. */
-        .hero-action-row {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .hero-actions a {
-            width: 14rem;
-        }
-    }
-
-    /* Full bleed until the sidebar layout: the panel runs to both screen edges, so
-       the framed-card treatment (and its inner rule, which reads broken without a
-       top edge) is held back for lg. A hairline closes the panel at the bottom. */
-    @media (max-width: 1023px) {
-        .hero-section {
-            --hero-frame-margin: 0rem;
-            --hero-frame-radius: 0;
-            --hero-frame-border: 0px;
-            border-bottom-width: 1px;
-        }
-
-        .hero-section::before {
-            content: none;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .hero-section {
-            --hero-image-right: -5rem;
-            --hero-image-width: min(66vw, 36rem);
         }
     }
 
@@ -479,49 +320,21 @@ const selectedWorks = Object.entries(selectedWorkModules)
         .hero-section {
             /* The sidebar nav narrows the section here, so the headline needs a smaller cap. */
             --hero-heading-size: min(9.6vw, 7rem);
-            --hero-image-top: auto;
-            --hero-image-bottom: 0rem;
-            --hero-image-right: -5rem;
-            --hero-image-width: min(60%, 44rem);
-            --hero-body-width: 24.5rem;
-            --hero-body-size: 1.0625rem;
-            --hero-body-leading: 1.65;
-            --hero-body-gap: 1.75rem;
-            --hero-actions-bottom: 2.5rem;
-            --hero-action-gap: 1.25rem;
-            --hero-action-min-h: 3.6rem;
-            --hero-action-px: 1.75rem;
-            --hero-action-font-size: 0.875rem;
-            /* 0.2em read as a tracked-out label rather than a button; this sits with the
-               footer's 0.18em while staying open enough for uppercase Inter. */
-            --hero-action-tracking: 0.16em;
+            --hero-frame-border: 1px;
             min-height: clamp(46rem, 88vh, 52rem);
         }
 
-        .hero-action-row {
-            flex-direction: row;
-            align-items: center;
-        }
-
-        .hero-actions a {
-            width: auto;
-        }
-    }
-
-    @media (min-width: 1280px) {
-        .hero-section {
-            --hero-image-bottom: -2rem;
-            --hero-image-right: -10rem;
-            --hero-image-width: min(75%, 50rem);
-        }
-    }
-
-    /* Cap the composition on very wide screens rather than continuing to scale it. */
-    @media (min-width: 1536px) {
-        .hero-section {
-            --hero-image-bottom: -2rem;
-            --hero-image-right: -10rem;
-            --hero-image-width: 50rem;
+        /* Inner rule of the double frame: above the artwork (z-15 > image's z-10),
+           under the text layers. Not a Tailwind border utility because the radius
+           subtracts the outer rule's width to stay concentric through the corner. */
+        .hero-section::before {
+            position: absolute;
+            z-index: 15;
+            inset: 0.25rem;
+            border: 1px solid var(--hero-frame-line);
+            border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
+            pointer-events: none;
+            content: "";
         }
     }
 

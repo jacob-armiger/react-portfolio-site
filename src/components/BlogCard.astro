@@ -83,15 +83,13 @@ const readingTime = readingMinutes(excerpt);
      * stays a single pixel. No fill, so the body texture stays continuous underneath.
      */
     .blog-card {
-        /* The card's one accent ink: shadow and hover arrow. Shared with the article
-           cover's plate, so both themes come from the layout's tokens. */
-        --card-accent: var(--plate-accent);
-
         display: block;
         padding: 1.25rem;
         border: 1px solid rgb(42 35 27 / 0.55);
         background-color: transparent;
-        box-shadow: 6px 6px 0 var(--card-accent);
+        /* Shadow, hover border and hover arrow all take the layout's plate accent,
+           shared with the article cover so both themes come from one token. */
+        box-shadow: 6px 6px 0 var(--plate-accent);
         transition:
             box-shadow 120ms ease-out,
             transform 120ms ease-out;
@@ -100,8 +98,8 @@ const readingTime = readingMinutes(excerpt);
     /* Hover presses the sheet down: it slides toward its shadow and the shadow
        shortens by the same amount, so the bottom-right corner stays put. */
     .blog-card:hover {
-        border-color: var(--card-accent);
-        box-shadow: 2px 2px 0 var(--card-accent);
+        border-color: var(--plate-accent);
+        box-shadow: 2px 2px 0 var(--plate-accent);
         transform: translate(4px, 4px);
     }
 
@@ -230,7 +228,7 @@ const readingTime = readingMinutes(excerpt);
     }
 
     .blog-card:hover .blog-card__more span {
-        color: var(--card-accent);
+        color: var(--plate-accent);
         transform: translateX(3px);
     }
 

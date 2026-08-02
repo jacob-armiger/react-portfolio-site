@@ -34,7 +34,11 @@ const HEADING_CLASS =
     "font-sans text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-primary/50 dark:text-primary-dark/50";
 ---
 
-<footer class="site-footer border-t border-primary/15 font-sans dark:border-primary-dark/15">
+<!-- Full-width band under the shell, sharing its cap and gutters. mt-20/28 is the
+     breathing room that makes it read as a separate band, not a continuation of
+     the page. -->
+<footer
+    class="mx-auto mt-20 w-full max-w-(--site-max-width) flex-none border-t border-primary/15 px-(--site-gutter) font-sans wrap-anywhere lg:mt-28 dark:border-primary-dark/15">
     <!-- Conversion band. On every page, since /art and /writing are often reached
          from a shared link rather than the front door. -->
     <section class="flex flex-col gap-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:py-12">

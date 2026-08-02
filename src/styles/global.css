@@ -27,6 +27,44 @@
     --color-secondary-dark: #26292c;
 }
 
+/*
+ * Site-wide layout and accent dials, consumed by the hand-written CSS in
+ * Layout.astro and by component style blocks. Kept out of @theme because they
+ * back no utility class and two of them change per context below.
+ */
+:root {
+    /* 96rem = 1536px, the same cap the home hero uses, so the hero and the page
+       frame stop growing at the same moment. */
+    --site-max-width: 96rem;
+    /* Every content edge measures from this; also the home page's --page-inset,
+       so the splash and the other pages share one edge. */
+    --site-gutter: 1.25rem;
+    /* Symmetric separation between the nav column and content that fills the
+       track, applied by .site-gap (see Layout.astro). */
+    --site-nav-gap: 2rem;
+    /*
+     * Plate: the treatment for any framed image -- blog card thumbnails, article
+     * covers. A hairline directly on the image plus a hard zero-blur offset, so the
+     * edge stays one crisp pixel at any zoom. Shared here rather than per component
+     * because the card and the cover drifted apart once already.
+     */
+    --plate-rule: rgb(42 35 27 / 0.45);
+    --plate-accent: #284334;
+}
+
+@media (min-width: 640px) {
+    :root {
+        --site-gutter: 1rem;
+    }
+}
+
+/* Lifted for the dark page, where it measures 4.7:1 -- enough for the dateline
+   bullet and the hover arrow to read at 11px. */
+html.dark {
+    --plate-rule: rgb(229 226 218 / 0.25);
+    --plate-accent: #6f9d7f;
+}
+
 /* Ported from the inline plugin in the old tailwind.config.mjs. */
 @utility page-top {
     margin-top: 1.5rem;
