@@ -2,13 +2,11 @@
 import InstagramGlyph from "./InstagramGlyph.astro";
 
 /*
- * Site footer. Rendered on every page from Layout.astro.
- *
- * The "Explore" list must stay complete: the topbar hides BOOKS below md and
- * DIRECTORY below sm, so on a phone this is the only route to those pages.
+ * Site footer, rendered on every page from Layout.astro.
+ * Keep the "Explore" list complete: the topbar hides BOOKS below md and
+ * DIRECTORY below sm, so this is the only route to those pages on a phone.
  */
 
-// Build-time, so the year never goes stale without a code change.
 const year = new Date().getFullYear();
 
 const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
@@ -23,7 +21,7 @@ const EXPLORE = [
     { href: "/contact", label: "Contact" },
 ];
 
-// Mirrors HERO_ACTION_CLASS in index.astro - keep the two in step.
+// Mirrors HERO_ACTION_CLASS in index.astro; keep the two in step.
 const ACTION_CLASS =
     "inline-flex min-h-[3.25rem] items-center justify-center rounded-full px-6 font-sans text-xs font-semibold uppercase tracking-[0.18em] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:rounded-xs sm:px-8 sm:text-sm";
 
@@ -34,13 +32,10 @@ const HEADING_CLASS =
     "font-sans text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-primary/50 dark:text-primary-dark/50";
 ---
 
-<!-- Full-width band under the shell, sharing its cap and gutters. mt-20/28 is the
-     breathing room that makes it read as a separate band, not a continuation of
-     the page. -->
+<!-- Full-width band under the shell, sharing its max-width and gutters. -->
 <footer
     class="mx-auto mt-20 w-full max-w-(--site-max-width) flex-none border-t border-primary/15 px-(--site-gutter) font-sans wrap-anywhere lg:mt-28 dark:border-primary-dark/15">
-    <!-- Conversion band. On every page, since /art and /writing are often reached
-         from a shared link rather than the front door. -->
+    <!-- Conversion band, on every page: /art and /writing are common entry points. -->
     <section class="flex flex-col gap-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:py-12">
         <p class="max-w-md font-serif text-lg leading-relaxed text-primary/85 dark:text-primary-dark/85">
             One-on-one lessons and commission work &mdash; online, or in person in New York
@@ -57,8 +52,7 @@ const HEADING_CLASS =
                 Learn to Draw
             </a>
             {
-                /* On /contact the form is already the page, so a second Contact
-                   button would compete with it. */
+                /* Hidden on /contact, where the form is already the page. */
                 !isContactPage && (
                     <a
                         href="/contact"
@@ -76,8 +70,7 @@ const HEADING_CLASS =
     <div class="grid gap-10 border-t border-primary/10 py-10 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:gap-12 dark:border-primary-dark/10">
         <nav aria-label="Footer">
             <h2 class={HEADING_CLASS}>Explore</h2>
-            <!-- w-fit so the two columns hug their content instead of spreading apart
-                 and reading as two unrelated lists. -->
+            <!-- w-fit keeps the two link columns close together. -->
             <ul class="mt-4 grid w-fit grid-cols-2 gap-x-16 gap-y-3 text-sm">
                 {
                     EXPLORE.map((link) => (
@@ -111,7 +104,6 @@ const HEADING_CLASS =
         </div>
     </div>
 
-    <!-- Artwork rights called out explicitly rather than a bare copyright line. -->
     <div class="border-t border-primary/10 py-6 dark:border-primary-dark/10">
         <p class="text-xs leading-relaxed text-primary/55 dark:text-primary-dark/55">
             &copy; {year} JacobLDraws. All artwork rights reserved.

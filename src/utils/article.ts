@@ -1,6 +1,6 @@
 /**
- * Shared so the card teaser and the article page derive their reading time from the
- * same text -- they used to disagree, and the article page printed no time at all.
+ * Plain text of an article body. Shared by the card teaser and the article page so
+ * their reading times agree.
  */
 export function articleText(body: string | undefined): string {
     return (body ?? "")

@@ -3,19 +3,17 @@
 @plugin "@tailwindcss/typography";
 
 /*
- * Ports `darkMode: 'class'` from the old tailwind.config.mjs. The site keys its
- * hand-written CSS off `html.dark` (see Layout.astro, BlogCard.astro,
- * ImageCarousel.astro), so the variant must match a `.dark` ancestor rather than
- * `prefers-color-scheme`.
+ * darkMode: 'class'. Hand-written CSS keys off html.dark (Layout.astro,
+ * BlogCard.astro, ImageCarousel.astro), so match a .dark ancestor rather than
+ * prefers-color-scheme.
  */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
     /*
      * --font-inter / --font-source-serif / --font-playfair-display come from the
-     * `fonts` config in astro.config.mjs and are emitted by the <Font> components
-     * in Layout.astro. Astro appends its own generated fallback metrics to each,
-     * so the generic families here are only a last resort if the API is removed.
+     * fonts config in astro.config.mjs via <Font> in Layout.astro; the generics are
+     * a last resort.
      */
     --font-sans: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
     --font-serif: var(--font-source-serif, ui-serif, Georgia, Cambria, Times, serif);
@@ -28,26 +26,18 @@
 }
 
 /*
- * Site-wide layout and accent dials, consumed by the hand-written CSS in
- * Layout.astro and by component style blocks. Kept out of @theme because they
- * back no utility class and two of them change per context below.
+ * Site-wide layout and accent tokens, consumed by Layout.astro and component
+ * styles. Not in @theme: they back no utility class.
  */
 :root {
-    /* 96rem = 1536px, the same cap the home hero uses, so the hero and the page
-       frame stop growing at the same moment. */
+    /* Same cap the home hero uses. */
     --site-max-width: 96rem;
-    /* Every content edge measures from this; also the home page's --page-inset,
-       so the splash and the other pages share one edge. */
+    /* Single source for content edges; also the home page's --page-inset. */
     --site-gutter: 1.25rem;
-    /* Symmetric separation between the nav column and content that fills the
-       track, applied by .site-gap (see Layout.astro). */
+    /* Nav-to-content separation, applied by .site-gap (Layout.astro). */
     --site-nav-gap: 2rem;
-    /*
-     * Plate: the treatment for any framed image -- blog card thumbnails, article
-     * covers. A hairline directly on the image plus a hard zero-blur offset, so the
-     * edge stays one crisp pixel at any zoom. Shared here rather than per component
-     * because the card and the cover drifted apart once already.
-     */
+    /* Plate: shared framed-image treatment (blog cards, article covers) — hairline
+       on the image plus a hard zero-blur offset shadow. */
     --plate-rule: rgb(42 35 27 / 0.45);
     --plate-accent: #284334;
 }
@@ -58,8 +48,7 @@
     }
 }
 
-/* Lifted for the dark page, where it measures 4.7:1 -- enough for the dateline
-   bullet and the hover arrow to read at 11px. */
+/* Higher contrast (4.7:1) so the 11px dateline bullet and hover arrow stay legible. */
 html.dark {
     --plate-rule: rgb(229 226 218 / 0.25);
     --plate-accent: #6f9d7f;

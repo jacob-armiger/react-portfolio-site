@@ -7,7 +7,7 @@ import Dateline from "./Dateline.astro";
 
 interface Props {
     art: CollectionEntry<"article">;
-    /** Lead story: display headline beside the plate, excerpt spanning underneath. */
+    /** Larger lead-story layout: headline beside the plate, excerpt underneath. */
     featured?: boolean;
 }
 
@@ -22,8 +22,7 @@ const readingTime = readingMinutes(excerpt);
 
     <article class="blog-card__grid">
 
-        <!-- Hairline rule directly on the image, no mat: the edge stays a single
-             crisp line at any zoom. -->
+        <!-- 1px rule directly on the image, no mat, so the edge stays crisp at any zoom. -->
         <figure class="blog-card__plate">
             <Image
                 src={art.data.image}
@@ -78,25 +77,23 @@ const readingTime = readingMinutes(excerpt);
 
 <style>
     /*
-     * A sheet, not a panel: 1px rule all the way round and a hard offset shadow - zero
-     * blur - so the card reads as a physical thing lifted off the page and every edge
-     * stays a single pixel. No fill, so the body texture stays continuous underneath.
+     * Card: 1px rule + hard zero-blur offset shadow, transparent fill so the page
+     * texture shows through.
      */
     .blog-card {
         display: block;
         padding: 1.25rem;
         border: 1px solid rgb(42 35 27 / 0.55);
         background-color: transparent;
-        /* Shadow, hover border and hover arrow all take the layout's plate accent,
-           shared with the article cover so both themes come from one token. */
+        /* Shadow and hover colors share --plate-accent with the article cover. */
         box-shadow: 6px 6px 0 var(--plate-accent);
         transition:
             box-shadow 120ms ease-out,
             transform 120ms ease-out;
     }
 
-    /* Hover presses the sheet down: it slides toward its shadow and the shadow
-       shortens by the same amount, so the bottom-right corner stays put. */
+    /* Hover: the card slides toward its shadow, which shortens by the same amount,
+       so the bottom-right corner stays fixed. */
     .blog-card:hover {
         border-color: var(--plate-accent);
         box-shadow: 2px 2px 0 var(--plate-accent);
@@ -114,9 +111,8 @@ const readingTime = readingMinutes(excerpt);
     }
 
     /*
-     * Three blocks -- plate, head (dateline + title), body (excerpt + more) -- placed
-     * by name so each card shape is one grid-template-areas line rather than a
-     * different DOM per variant. Stacked on phones for both shapes.
+     * Named areas (plate / head / body) so each card variant is one
+     * grid-template-areas line instead of a different DOM.
      */
     .blog-card__grid {
         display: grid;
@@ -143,8 +139,8 @@ const readingTime = readingMinutes(excerpt);
     }
 
     @media (min-width: 640px) {
-        /* Digest entry: plate beside a full-height text column. The 1fr body row is what
-           lets .blog-card__more pin to the plate's bottom edge. */
+        /* Plate beside a full-height text column; the 1fr body row lets
+           .blog-card__more pin to the plate's bottom edge. */
         .blog-card:not(.blog-card--featured) .blog-card__grid {
             grid-template-areas:
                 "plate head"
@@ -153,10 +149,8 @@ const readingTime = readingMinutes(excerpt);
             grid-template-rows: auto 1fr;
         }
 
-        /* Lead story: title and plate share the top row, excerpt runs underneath both.
-           The split is what sets the card's proportions -- the plate is h-full, so the
-           row height is the title's alone. At 1.6fr the 60px headline holds three lines
-           instead of four, which is ~70px off the card. */
+        /* Featured: title and plate share the top row, excerpt spans below.
+           1.6fr keeps the 60px headline to three lines. */
         .blog-card--featured .blog-card__grid {
             grid-template-areas:
                 "head  plate"
@@ -164,24 +158,21 @@ const readingTime = readingMinutes(excerpt);
             grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
         }
 
-        /* The title block is much shorter than the plate beside it; centring keeps the
-           pair reading as one unit instead of a headline stranded at the top. */
+        /* Center the short title block against the taller plate. */
         .blog-card--featured .blog-card__head {
             align-self: center;
         }
 
         /*
-         * Digest entry: the plate's aspect ratio makes it taller than the text beside it,
-         * so a fixed three-line clamp left dead space above "Continue reading". Growing
-         * into the row and clipping by height fills it exactly, whatever the title's line
-         * count -- the clamp can't, since it is blind to how much room is left.
+         * The excerpt grows to fill the row and clips by height, so it always matches
+         * the plate height regardless of title line count (a fixed line clamp leaves
+         * dead space).
          */
         .blog-card:not(.blog-card--featured) .blog-card__excerpt {
             display: block;
             flex: 1 1 0;
             overflow: hidden;
-            /* Feathered bottom instead of an ellipsis: the cut lands mid-line here, and a
-               hard edge would read as a rendering fault rather than as more text. */
+            /* Fade the bottom instead of an ellipsis: the clip lands mid-line. */
             -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.25em), transparent);
             mask-image: linear-gradient(to bottom, #000 calc(100% - 2.25em), transparent);
         }
@@ -197,15 +188,14 @@ const readingTime = readingMinutes(excerpt);
         border-color: rgb(229 226 218 / 0.4);
     }
 
-    /* Hairline only - a second hard shadow would fight the sheet's own. */
+    /* Hairline only; a second offset shadow would clash with the card's own. */
     .blog-card__plate {
         border: 1px solid var(--plate-rule);
         line-height: 0;
     }
 
     .blog-card__more {
-        /* Pinned to the bottom of the text column so every entry ends on the same
-           line however short its excerpt is. */
+        /* Pinned to the bottom of the text column so every entry ends on the same line. */
         margin-top: auto;
         padding-top: 0.9rem;
         font-size: 11px;

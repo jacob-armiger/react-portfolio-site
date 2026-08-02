@@ -25,12 +25,11 @@ const readingTime = readingMinutes(articleText(entry.body));
 
 <Layout title={entry.data.title ?? "Writing Post"}>
     <main class="site-main page-top mx-auto w-full max-w-2xl">
-        <!-- w-fit, not w-full: the figure hugs the painted image so the caption sits
-             on the artwork's left edge, level with the title and the dateline below. -->
+        <!-- w-fit: the figure hugs the image so the caption aligns with its left edge. -->
         {entry.data.image ? (
             <figure class="article-cover w-fit">
-                {/* No object-contain: the box is the painted image, so the hairline
-                    traces the artwork instead of a letterboxed frame around it. */}
+                {/* No object-contain, so the hairline traces the image rather than a
+                    letterboxed box around it. */}
                 <Image
                     src={entry.data.image}
                     alt={entry.data.imageAlt ?? ""}
@@ -72,13 +71,13 @@ const readingTime = readingMinutes(articleText(entry.body));
 </Layout>
 
 <style>
-    /* Hairline only, matching the blog card's plate. No offset shadow: that is the
-       card's hover affordance, and on a cover it reads as a clickable sheet. */
+    /* Hairline matching the blog card plate; no offset shadow, since that is the
+       card's clickable-hover affordance. */
     .article-cover :global(img) {
         border: 1px solid var(--plate-rule);
     }
 
-    /* Reads as a peer of the dateline rather than as body copy. */
+    /* Styled like the dateline. */
     .article-cover__caption {
         margin-top: 0.9rem;
         font-size: 11px;

@@ -15,30 +15,28 @@ type LessonGalleryEntry = {
 };
 
 /*
- * The pieces render about 330px wide at lg (max-w-5xl, three columns) and about half
- * the viewport below sm. These widths cover 1x through 3x of the largest box; every
- * source is at least 1680px wide, so none upscale.
+ * Covers 1x-3x of the largest rendered box (~330px at lg, ~50vw below sm).
+ * Every source is at least 1680px wide, so none upscale.
  */
 const lessonImageWidths = [320, 480, 660, 990];
 const lessonImageSizes = "(min-width: 640px) 33vw, 50vw";
 
 /*
- * Full-bleed below lg, capped at max-w-5xl from lg up, and zoomed to 260% below sm --
- * so the small-viewport entry asks for more pixels than the viewport is wide.
+ * Hero is full-bleed below lg, capped at max-w-5xl above, and zoomed to 260% below
+ * sm, so the smallest entry asks for more pixels than the viewport is wide.
  */
 const heroWidths = [800, 1200, 1600, 2048];
 const heroSizes = "(min-width: 1024px) 1024px, (min-width: 640px) 100vw, 260vw";
 
 /*
- * 70 rather than the default: the left 55% sits under an opaque-to-transparent black
- * gradient and the source is already a lossy webp, so the detail a higher quality
- * preserves is mostly re-encoded noise. Costs ~40% of the LCP bytes.
+ * quality 70 (below default): the left 55% sits under a dark gradient and the
+ * source is already lossy webp. Saves ~40% of the LCP bytes.
  */
 const hero = await getImage({
     src: heroSource,
     format: "webp",
     quality: 70,
-    // Without this the plain-src fallback stays at the source's full 3377px.
+    // Caps the plain-src fallback; the source is 3377px wide.
     width: 2048,
     widths: heroWidths,
     sizes: heroSizes,
@@ -99,10 +97,9 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 ---
 
 <Layout title="Art Lessons">
-    <!-- The preload scanner would find the hero anyway, but only after parsing the head's
-         inline analytics module. Preloading in the head starts the fetch at the same
-         moment as the stylesheet instead of after it. imagesrcset/imagesizes must stay
-         identical to the img's, or the browser fetches a second copy. -->
+    <!-- Preload starts the hero fetch alongside the stylesheet instead of after the
+         head's inline analytics module. imagesrcset/imagesizes must match the img
+         exactly, or the browser fetches a second copy. -->
     <link
         slot="head"
         rel="preload"
@@ -112,21 +109,18 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         imagesizes={heroSizes}
         fetchpriority="high"
     />
-    <!-- No .site-main, and the cap is lg-only: below lg the page runs full width so the
-         hero bleeds edge-to-edge, and the rest takes the gutter via .site-inset. At lg
-         the page centres in its track. -->
+    <!-- No .site-main: below lg the hero bleeds edge-to-edge and the rest takes the
+         gutter via .site-inset; at lg the page is capped and centered. -->
     <main class="site-gap lg:page-top mx-auto w-full lg:max-w-5xl">
         <!-- <p class="mb-4 text-left text-5xl font-bold">Art Lessons</p>
 
         -->
 
-        <!-- Square corners while full-bleed; rounding only makes sense once the section
-             is inset at lg. -->
-        <!-- An img rather than a background so the preload scanner finds the LCP element
-             without waiting on the stylesheet. The 260% zoom overflows the box by 160%,
-             and the framing it replaces sat 75% into that overflow: hence -120%.
-             No decoding="async" on purpose: it frees the browser to paint a frame with
-             the hero still missing, which is the frame that sets a later LCP. -->
+        <!-- Rounded corners only at lg, where the section is inset. -->
+        <!-- An <img> rather than a background so the preload scanner finds the LCP
+             element without waiting on the stylesheet. left -120% recreates the original
+             framing within the 260% zoom. No decoding="async": it would let the browser
+             paint a frame without the hero, delaying LCP. -->
         <section
             class="relative mb-8 h-auto w-full overflow-hidden p-4 text-secondary lg:rounded-xs">
             <img
@@ -175,8 +169,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             </div>
         </section>
 
-        <!-- Everything after the hero takes the gutter as one block, leaving the hero the
-             only full-bleed element. -->
+        <!-- Everything after the hero takes the gutter; the hero stays full-bleed. -->
         <div class="site-inset">
         <p class="mb-8  max-w-3xl mx-auto  text-xl leading-relaxed opacity-80 text-balance text-center ">
             I offer lessons to artists of all levels. Whether you’re seeking to refine your draftsmanship, trying to get into art school, or simply wanting some good practice and guidance, I'm here to help you achieve your goals.

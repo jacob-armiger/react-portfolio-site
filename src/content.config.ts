@@ -11,8 +11,8 @@ const article = defineCollection({
     schema: ({ image }) => z.object({
         date: z.date(),
         image: image(),
-        // Omit for a decorative cover: the alt then renders empty rather than a
-        // generic string screen readers have to sit through on every article.
+        // Optional so a decorative cover can render an empty alt instead of a
+        // generic string.
         imageAlt: z.string().optional(),
         title: z.string().optional(),
         reference: z.string().optional(),

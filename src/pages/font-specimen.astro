@@ -1,8 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// Evaluation page for the display-face swap. Every string is lifted verbatim from the
-// page the face would actually set, so the comparison is on real copy at real sizes.
+// Display-face comparison page. Strings are copied verbatim from the pages each
+// face would set.
 const HERO = "Contact me to get art lessons or commission work";
 const SECTION = "What I can make.";
 const LESSONS = "Practice Boldly. Get Structure.";
@@ -15,7 +15,7 @@ type Candidate = {
     font: string;
     note: string;
     weight: string;
-    // Graphic axes are the point of Workbench; without them it renders plain.
+    // Workbench's graphic axes; without them it renders plain.
     variation?: string;
 };
 
@@ -100,14 +100,14 @@ const varStyle = (c: Candidate) =>
                         <p class="font-sans text-xs opacity-60">{c.note}</p>
                     </div>
 
-                    {/* Home hero, at the size and tracking index.astro actually uses. */}
+                    {/* Home hero, at the size and tracking index.astro uses. */}
                     <p
                         class={`${c.font} ${c.weight} mb-8 leading-[1] tracking`}
                         style={`font-size: 7.5rem;${c.variation ? ` font-variation-settings: ${c.variation};` : ""}`}>
                         {HERO}
                     </p>
 
-                    {/* Lessons hero: reversed out, since that is how it appears. */}
+                    {/* Lessons hero: reversed out. */}
                     <div class="mb-8 bg-primary px-5 py-6 dark:bg-black/40">
                         <p
                             class={`${c.font} ${c.weight} text-3xl text-secondary sm:text-5xl dark:text-primary-dark`}
@@ -137,8 +137,7 @@ const varStyle = (c: Candidate) =>
                         </div>
                     </div>
 
-                    {/* Wordmark: one string, where a display face either reads as a logo
-                        or reads as a costume. */}
+                    {/* Wordmark. */}
                     <p class={`${c.font} ${c.weight} text-xl`} style={varStyle(c)}>
                         JacobLDraws
                     </p>

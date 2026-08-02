@@ -83,10 +83,9 @@ const images: OptimizedImage[] = await Promise.all(
 <Layout title="Art">
     <!-- No .site-main: the grid runs edge-to-edge. The heading takes the gutter on its
          own so only the artwork is full-bleed. -->
-    <!-- min-h-screen reserves the grid's space while the client:only island is still empty,
-         so the footer starts below the fold instead of being thrown down it on hydration.
-         It sits on main because astro-island is display:contents and cannot hold a height.
-         content-start keeps the heading at the top of the taller box. -->
+    <!-- min-h-screen reserves space for the client:only grid so the footer doesn't
+         jump down on hydration. It sits on main because astro-island is
+         display:contents and cannot hold a height. -->
     <main class="site-gap pt-6 min-h-screen lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:content-start lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
         <div class="site-inset mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 lg:mb-0 lg:items-baseline">
             <h1

@@ -7,8 +7,8 @@ interface Props {
 
 const { book } = Astro.props;
 
-// "JUNE 14, 2025" — same UTC-fixed caps format as BlogCard's dateline. The JSON's
-// "YYYY/MM/DD" would parse as local time and can drift a day, hence the manual split.
+// e.g. "JUNE 14, 2025", matching Dateline's format. The "YYYY/MM/DD" string is
+// split manually: Date parsing would use local time and can drift a day.
 const dateRead = book.data["Date Read"];
 const dateLabel = dateRead
     ? (() => {

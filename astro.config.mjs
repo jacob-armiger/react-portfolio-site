@@ -17,16 +17,10 @@ export default defineConfig({
     adapter: vercel(),
     site: 'https://jacobarmiger.vercel.app',
     /*
-     * Replaces the @fontsource-variable/* imports that used to sit in Layout.astro.
-     * Astro downloads and self-hosts these, generates fallback metrics to limit
-     * layout shift, and emits the preload links. The cssVariable names are what
-     * src/styles/global.css points --font-sans / --font-serif / --font-playfair at.
-     */
-    /*
-     * `weights` is not optional here. It defaults to 400, whereas the
-     * @fontsource-variable/* packages this replaced shipped the whole variable
-     * axis. Without these ranges every font-semibold / font-bold / font-extrabold
-     * on the site gets a browser-synthesised faux bold instead of a real weight.
+     * Astro downloads and self-hosts these fonts, generates fallback metrics, and
+     * emits preload links. global.css points --font-sans / --font-serif /
+     * --font-playfair at the cssVariable names. `weights` must be explicit: the
+     * default is 400 only, which turns font-semibold/bold into synthesized faux bold.
      */
     fonts: [
         {
@@ -36,11 +30,8 @@ export default defineConfig({
             weights: ['100 900'],
         },
         /*
-         * Both of these are serif faces, so they need an explicit serif fallback.
-         * Astro's default fallback chain ends in `sans-serif`, which would render
-         * these as sans-serif whenever the webfont fails rather than degrading to
-         * Georgia. The trailing generic is also what Astro generates the optimized
-         * metric fallback from.
+         * Serif faces need explicit serif fallbacks: Astro's default chain ends in
+         * sans-serif. The trailing generic also seeds the generated metric fallback.
          */
         {
             provider: fontProviders.fontsource(),

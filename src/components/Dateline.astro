@@ -7,8 +7,7 @@ interface Props {
 
 const { date, minutes, class: className } = Astro.props;
 
-// "JUNE 2, 2026". Fixed to UTC so the frontmatter date is the one that prints,
-// whatever the reader's timezone.
+// e.g. "JUNE 2, 2026". UTC so the frontmatter date prints regardless of timezone.
 const dateLabel = date
     .toLocaleDateString("en-US", {
         year: "numeric",
@@ -26,8 +25,6 @@ const dateLabel = date
 </p>
 
 <style>
-    /* The one piece of sans in the article furniture, tracked like a newspaper kicker
-       so it sits under the headline without competing. */
     .dateline {
         display: flex;
         align-items: center;
@@ -42,8 +39,7 @@ const dateLabel = date
     .dateline__bullet {
         color: var(--plate-accent);
         font-size: 9px;
-        /* Full strength against the dateline's 0.65, so it reads as a deliberate
-           mark rather than a stray dot. */
+        /* Full opacity against the dateline's 0.65 so the accent color shows. */
         opacity: 1;
     }
 </style>

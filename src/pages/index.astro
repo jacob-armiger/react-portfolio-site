@@ -13,9 +13,7 @@ const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
 const HERO_BODY =
     "I've followed the training of 19th century masters to rapidly improve my skills and with my lessons you can do the same. I am also accepting commissions for digital and traditional work.";
 
-// Shape, behaviour and the per-breakpoint size/type steps. lg tracking eases to
-// 0.16em so the labels sit with the footer's 0.18em while staying open enough
-// for uppercase Inter.
+// Hero button classes. Footer's ACTION_CLASS mirrors this; keep them in step.
 const HERO_ACTION_CLASS =
     "inline-flex items-center justify-center rounded-full sm:rounded-xs font-sans font-semibold uppercase transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
 
@@ -44,14 +42,10 @@ const selectedWorks = Object.entries(selectedWorkModules)
 ---
 
 <Layout title="JacobLDraws">
-    <!-- No .site-main: the hero is full-bleed and its own --page-inset sets the text's
-         left edge. The 6xl cap is looser than the other pages' so the splash keeps most
-         of its width, and it only engages above 1152px, leaving mobile and tablet
-         untouched. Safe for the hero's wrap bands: --hero-heading-size is viewport-based,
-         so capping the container does not move the line breaks. -->
+    <!-- No .site-main: the hero is full-bleed and --page-inset sets the text's left
+         edge. The max-w-6xl cap only applies above 1152px. -->
     <main class="site-gap mx-auto w-full max-w-6xl overflow-hidden">
-        <!-- lg:pt-8 matches the nav's own lg:pt-8, so the hero's top edge starts level with
-             the wordmark's line box like every other page's first block. -->
+        <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
             <section class="hero-section relative isolate overflow-hidden bg-[#d7cfbe] dark:bg-[#2f2a25]">
                 <p class="hero-eyebrow eyebrow absolute z-30 font-sans uppercase text-primary/70 dark:text-primary-dark/70">
@@ -73,27 +67,23 @@ const selectedWorks = Object.entries(selectedWorkModules)
                 <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-tighter sm:tracking-[-0.04em] text-orange-100 mix-blend-difference">
                     Contact me for <br/> art lessons or to commission work.
                 </h1>
-                <!-- Color-blend tint over the difference layer: keeps its luminosity inversion but
-                     replaces hue/saturation with the ink's, so the headline can't go magenta where
-                     it crosses the saturated green chair. Same .hero-heading geometry + later
-                     sibling at the same z, so it paints exactly over the glyphs. -->
+                <!-- mix-blend-color duplicate over the difference layer: keeps the luminosity
+                     inversion but pins hue/saturation to the ink, preventing magenta fringing
+                     over the green chair. Must keep .hero-heading geometry and the same z. -->
                 <div
                     aria-hidden="true"
                     class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-semibold leading-[1.1] tracking-tighter text-primary mix-blend-color sm:tracking-[-0.04em] dark:text-primary-dark">
                     Contact me for <br/> art lessons or to commission work.
                 </div>
 
-                <!-- bottom-6 deliberately larger than the eyebrow's top inset: the cluster is a
-                     60px button block, and matching the 16px top inset left it kissing the frame
-                     edge. right is only pinned below sm, where the buttons grid to full width. -->
+                <!-- bottom-6 is larger than the eyebrow's top inset to clear the frame edge.
+                     right is only pinned below sm, where the buttons span full width. -->
                 <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
-                    <!-- Hidden below sm so the shorter frame can breathe. Source Serif runs
-                         optically smaller than Inter at the same px; measure stays ~58 characters. -->
+                    <!-- Hidden below sm, where the frame is too short for body copy. -->
                     <p class="max-sm:hidden mb-6 max-w-[23rem] text-[1rem] leading-[1.6] font-serif text-primary/85 lg:mb-7 lg:max-w-[24.5rem] lg:text-[1.0625rem] lg:leading-[1.65] dark:text-primary-dark/85">
                         {HERO_BODY}
                     </p>
-                    <!-- Below sm: two equal grid columns. From sm: a stacked column of equal-width
-                         buttons beside the artwork. At lg: back to a row. -->
+                    <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
                     <div class="flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
                         <a
                             href="/contact"
@@ -133,9 +123,8 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     </a>
                 </div>
 
-                <!-- gap-1 below sm is load-bearing, not a taste call: the tiles' flex-basis is
-                     ratio-driven, and at 375px the widest pair (1.008 + 0.775) clears two-up by
-                     0px. Any larger gap drops them to one-up at full width. -->
+                <!-- gap-1 below sm: at 375px the widest tile pair fits two-up with no room
+                     to spare; any larger gap drops them to one-up. -->
                 <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-3">
                     {
                         selectedWorks.map(({ image, alt, href, aspectRatio }) => (
@@ -166,19 +155,13 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
 <style>
     /*
-     * One horizontal inset for the whole page. The hero eyebrow, hero headline, hero actions and
-     * the Selected Work heading all measure from this, so their left edges line up down the page.
+     * Shared horizontal inset: hero eyebrow, headline, actions and the Selected Work
+     * heading all measure from this so their left edges align.
      */
     .page-sections {
-        /* From the shell, so the hero's text edge and every other page's content edge
-           are the same value by construction. */
         --page-inset: var(--site-gutter);
-        /*
-         * One token for every small caps label on the page -- hero eyebrow, Selected Work
-         * kicker, See all work. They are peers, so they share a size, tracking and weight
-         * rather than each picking one. Tracking opens as the size drops; below ~9px the
-         * caps need it to stay separable.
-         */
+        /* Shared size/tracking for all small-caps labels on the page. Tracking widens
+           as the size drops. */
         --eyebrow-size: 0.5625rem;
         --eyebrow-tracking: 0.26em;
     }
@@ -202,10 +185,9 @@ const selectedWorks = Object.entries(selectedWorkModules)
     }
 
     /*
-     * Justified rows start from each image's ideal width (ratio x the row's base
-     * height, set per breakpoint), then share remaining space in proportion to aspect
-     * ratio. Images stay uncropped, every complete row fills the container, and rows
-     * can resolve to different heights. --tile-ratio comes from each tile's inline style.
+     * Justified rows: flex-basis/grow scale with each tile's aspect ratio
+     * (--tile-ratio, set inline per tile) so complete rows fill the container
+     * without cropping.
      */
     .selected-work-grid::after {
         flex: 999 1 13rem;
@@ -241,34 +223,21 @@ const selectedWorks = Object.entries(selectedWorkModules)
     }
 
     /*
-     * Hero composition dials, mobile-first. Only the values that several rules share
-     * (or that a calc composes from) live here; single-consumer sizes -- image
-     * position, body copy, button metrics -- are Tailwind classes in the markup.
+     * Hero layout dials, mobile-first. Only multi-consumer or calc-composed values
+     * live here; single-use sizes are Tailwind classes in the markup.
      */
     .hero-section {
-        /*
-         * Wrap dial. The heading box width is derived from the font size, so the line breaks stay
-         * identical at every viewport width instead of drifting with a percentage width.
-         * Measured in Playfair Display at tracking -0.05em, the safe bands are:
-         *   4 lines (Contact me to / get art lessons / or commission / work) -> 6.15 to 7.14
-         *   3 lines (Contact me to get / art lessons or / commission work)   -> 7.37 to 8.50
-         * Re-measure these bands if the headline copy or letter-spacing changes.
-         */
+        /* Heading box width = font size x ratio, so line breaks stay stable across
+           viewport widths (a percentage width would shift them). */
         --hero-heading-ratio: 6.4;
         --hero-heading-size: min(14vw, 3.55rem);
-        /*
-         * Vertical rhythm. The headline is stacked under the eyebrow's line box (1.45 is
-         * .eyebrow's line-height, 1rem the gap under it), so changing the inset or the
-         * eyebrow's leading keeps the pair together instead of drifting apart.
-         */
+        /* Headline top = inset + eyebrow line box (1.45 line-height) + 1rem gap. */
         --hero-heading-top: calc(var(--page-inset) + (var(--eyebrow-size) * 1.45) + 1rem);
-        /* Full bleed with a bottom hairline until the sidebar layout: the inner rule
-           of the framed-card treatment reads broken without a top edge, so the double
-           frame is held back for lg. */
+        /* Full bleed with a bottom hairline below lg; the double frame is lg-only. */
         --hero-frame-border: 0px;
         --hero-frame-line: rgba(42, 35, 27, 0.15);
-        /* Absolutely-positioned children measure from the padding box, so the frame's
-           own width has to come back out or the text sits inboard of the heading. */
+        /* Absolutely-positioned children measure from the padding box; subtract the
+           frame border so text stays on --page-inset. */
         --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
         border: var(--hero-frame-border) solid var(--hero-frame-line);
         border-bottom-width: 1px;
@@ -291,42 +260,33 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
     .hero-heading {
         top: var(--hero-heading-top);
-        /*
-         * Playfair's cap carries ~0.039em of left side bearing. Pulling the box left by that much
-         * puts the painted edge of the headline on --page-inset, level with the eyebrow and the
-         * Selected Work heading below.
-         */
+        /* Compensate Playfair's ~0.039em left side bearing so the painted edge lands
+           on --page-inset. */
         left: calc(var(--hero-inline-inset) - (var(--hero-heading-size) * 0.039));
         width: calc(var(--hero-heading-size) * var(--hero-heading-ratio));
         font-size: var(--hero-heading-size);
     }
 
-    /* Horizontal navigation layouts sit flush against the nav divider. */
     @media (min-width: 640px) {
         .hero-section {
             --hero-heading-ratio: 7.9;
             --hero-heading-size: min(11.6vw, 6.25rem);
-            /*
-             * The floor is what keeps the bottom-anchored copy clear of the headline at the top of
-             * this band, where the headline is at its 6.25rem cap but the frame is shortest. Sized
-             * for the serif lead: 43rem left the two overlapping at 860-1023px on short screens.
-             */
+            /* The 46.5rem floor keeps the bottom-anchored copy clear of the headline
+               on short viewports (worst case 860-1023px wide). */
             min-height: clamp(46.5rem, 78vh, 47.5rem);
         }
     }
 
-    /* Desktop sidebar layout restores the framed poster treatment. */
     @media (min-width: 1024px) {
         .hero-section {
-            /* The sidebar nav narrows the section here, so the headline needs a smaller cap. */
+            /* The sidebar nav narrows the section, so the heading cap shrinks. */
             --hero-heading-size: min(9.6vw, 7rem);
             --hero-frame-border: 1px;
             min-height: clamp(46rem, 88vh, 52rem);
         }
 
-        /* Inner rule of the double frame: above the artwork (z-15 > image's z-10),
-           under the text layers. Not a Tailwind border utility because the radius
-           subtracts the outer rule's width to stay concentric through the corner. */
+        /* Inner rule of the double frame: above the artwork (z-15), under the text.
+           The radius subtracts the outer border width to stay concentric. */
         .hero-section::before {
             position: absolute;
             z-index: 15;
@@ -338,12 +298,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
     }
 
-    /*
-     * Preserve the image-derived olive and telephone-blue atmosphere in dark mode.
-     * Keyed to html.dark rather than (prefers-color-scheme: dark) because the site's
-     * dark mode is class-based; the OS preference alone would paint these gradients
-     * over an otherwise light page.
-     */
+    /* Keyed to html.dark, not prefers-color-scheme: dark mode is class-based. */
     :global(html.dark) .hero-section {
         --hero-frame-line: rgba(229, 226, 218, 0.15);
         background-image:

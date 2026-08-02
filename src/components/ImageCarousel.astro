@@ -172,8 +172,7 @@ const resolvedImages = await Promise.all(
     .image-carousel-strip {
         display: flex;
         flex-wrap: nowrap;
-        /* Shared top line, like the home and art galleries. Centring left uneven
-           heights hanging at different offsets down the strip. */
+        /* Top-align items of different heights. */
         align-items: flex-start;
         gap: 1rem;
         overflow-x: auto;
@@ -189,19 +188,15 @@ const resolvedImages = await Promise.all(
         margin: 0;
     }
 
-    /*
-     * The site's plate: a hairline directly on the image, no mat, no fill, square
-     * corners, so the page texture stays continuous and the edge is one pixel at any
-     * zoom. Matches the article cover and the blog card thumbnails.
-     */
+    /* Plate treatment shared with the article cover and blog cards: hairline on the
+       image, no mat, no fill. */
     .image-carousel-thumb {
         display: block;
         padding: 0;
         border: 1px solid var(--plate-rule);
         background: none;
         line-height: 0;
-        /* Same affordance the art grid uses for this exact modal. A drop shadow here
-           read as decoration while the card's hard offset meant "clickable". */
+        /* Matches the art grid, which opens the same modal. */
         cursor: zoom-in;
         transition: border-color 150ms ease;
     }
@@ -217,16 +212,13 @@ const resolvedImages = await Promise.all(
     }
 
     .image-carousel-thumb-image {
-        /* Beats Prose's `[&_img]:w-full`, which `not-prose` does not cancel -- that
-           variant compiles without Typography's not-prose exclusion. */
+        /* !important beats Prose's [&_img]:w-full, which not-prose does not cancel. */
         width: auto !important;
         max-width: 100%;
         max-height: 30rem;
         height: auto;
     }
 
-    /* Sans, like the dateline and the cover caption. Sentence case rather than their
-       small caps: those are credit lines, this carries a sentence. */
     .image-carousel-caption {
         margin-top: 0.75rem;
         font-size: 11px;
@@ -236,8 +228,7 @@ const resolvedImages = await Promise.all(
         opacity: 0.65;
     }
 
-    /* Left-aligned, not centred: a lone figure otherwise sat on its own left edge,
-       drifting off the one the cover, title and prose all share. */
+    /* Single figure: block layout, left-aligned with the prose edge. */
     [data-carousel-single="true"] .image-carousel-strip {
         display: block;
         overflow-x: visible;
@@ -262,6 +253,5 @@ const resolvedImages = await Promise.all(
         background: rgb(120 113 108 / 0.4);
     }
 
-    /* No dark override needed: --plate-rule and --plate-accent flip in the layout, so
-       both themes come from the same place as the cover and the cards. */
+    /* No dark override needed: --plate-rule and --plate-accent flip in global.css. */
 </style>

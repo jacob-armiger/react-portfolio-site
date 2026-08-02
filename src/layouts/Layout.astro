@@ -2,11 +2,8 @@
 import Analytics from "@vercel/analytics/astro";
 import { Font } from "astro:assets";
 import "../styles/global.css";
-// The site's three faces: Inter for labels and UI, Source Serif 4 for body, Playfair
-// Display for headings. They are registered in astro.config.mjs and rendered by the
-// <Font> tags below, which replaced the @fontsource-variable imports that used to sit
-// here. Display candidates were evaluated at /font-specimen and none replaced Playfair,
-// so they are neither installed nor registered -- that page still renders in fallback.
+// Fonts: Inter (sans/UI), Source Serif 4 (body), Playfair Display (headings).
+// Registered in astro.config.mjs and rendered by the <Font> tags below.
 import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Footer from "../components/Footer.astro";
 import InstagramGlyph from "../components/InstagramGlyph.astro";
@@ -17,7 +14,7 @@ interface Props {
 
 const { title } = Astro.props;
 
-// Normalized so /writing/ and /writing compare equal regardless of trailingSlash config.
+// Normalize trailing slashes so /writing/ and /writing compare equal.
 const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const isActive = (href: string) => currentPath === href || currentPath.startsWith(href + "/");
 const navLinks = [
@@ -27,15 +24,14 @@ const navLinks = [
     { href: "/books", label: "BOOKS", visibility: "hidden md:block" },
     { href: "/directory", label: "DIRECTORY", visibility: "hidden sm:block" },
 ];
-// Resting links sit at /70 ink so the current page can claim full ink -- the
-// active state is the ink shift alone, no marker.
+// Active nav state is the full-ink color alone; resting links sit at /70.
 const NAV_LINK_CLASS =
     "font-sans transition-colors hover:underline lg:font-medium lg:tracking-[0.18em]";
 const NAV_INK_REST =
     "text-primary/70 hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark";
 const NAV_INK_CURRENT = "text-primary dark:text-primary-dark";
-// Emitted as raw CSS rather than custom properties: the dials live in
-// backgroundTexture.ts, and only the hashed asset URLs need to be dynamic.
+// Texture dials live in backgroundTexture.ts; emitted as raw CSS because only the
+// hashed asset URLs are dynamic.
 const textureRule = ({ asset, opacity, blendMode, size, repeat }: TextureSettings) =>
     `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode}; opacity: ${opacity};`;
 const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } html.dark body::before { ${textureRule(backgroundTexture.dark)} }`;
@@ -49,8 +45,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         <meta charset="UTF-8" />
         <meta name="description" content="View Jacob's art or contact him for work!" />
         <meta name="viewport" content="width=device-width" />
-        <!-- SVG first for browsers that take it; the 32px PNG is the fallback for those
-             that don't, and apple-touch-icon covers iOS home-screen bookmarks. -->
+        <!-- SVG icon with a 32px PNG fallback; apple-touch-icon covers iOS bookmarks. -->
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -62,18 +57,13 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         />
         <meta name="generator" content={Astro.generator} />
         <title class="font-serif">{title}</title>
-        <!--
-            Inter (font-sans) and Source Serif 4 (font-serif) carry the nav and body
-            copy on every page, so they are worth a preload. Playfair Display is only
-            used by two headings on the home page, so preloading it site-wide would
-            cost 18 pages a request they never use; it still self-hosts and swaps in
-            over Astro's generated fallback metrics.
-        -->
+        <!-- Preload Inter and Source Serif (used on every page). Playfair only sets two
+             home-page headings, so it is not preloaded site-wide. -->
         <Font cssVariable="--font-inter" preload={[{ style: "normal" }]} />
         <Font cssVariable="--font-source-serif" preload={[{ style: "normal" }]} />
         <Font cssVariable="--font-playfair-display" />
-        <!-- Ahead of <Analytics />, whose inline module is ~5KB the parser walks before
-             reaching the body: a page's LCP preload should not queue behind it. -->
+        <!-- Before <Analytics /> so a page's LCP preload isn't queued behind its ~5KB
+             inline module. -->
         <slot name="head" />
         <Analytics />
         <style set:html={textureCss}></style>
@@ -88,16 +78,9 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
             <BreakpointIndicator />
             <nav
                 class="site-nav sticky top-0 z-50 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-primary/50 bg-secondary/80 py-3 font-sans underline-offset-4 backdrop-blur-md sm:gap-x-6 sm:py-2 sm:text-xl lg:flex-col lg:items-start lg:self-start lg:border-none lg:bg-transparent lg:pb-4 lg:pt-8 lg:text-[13px] lg:backdrop-blur-none dark:border-primary-dark/50 dark:bg-primary/10">
-                <!--
-                    The 48px line box is the page headings' own (text-5xl is 3rem /
-                    line-height 1). Both columns start at lg:pt-8, so the wordmark's line box
-                    and the next column's first block share a top edge -- that is the rule the
-                    page follows. Their baselines do not meet: 20px against a 48px heading
-                    gives a different half-leading, leaving this baseline ~10px higher.
-
-                    mb-6 stacks on the column's row-gap so the wordmark reads as identity
-                    above the list, not the first item in it.
-                -->
+                <!-- lg:leading-[48px] matches the page headings' text-5xl line box so both
+                     columns start level at lg:pt-8. mb-6 separates the wordmark from the
+                     link list below it. -->
                 <a
                     href="/"
                     class="font-playfair font-semibold hover:underline lg:mb-6 lg:text-[20px] lg:leading-[48px]"
@@ -129,8 +112,8 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
             <!-- slot goes directly in grid so each page's root element can be a grid item -->
             <slot />
         </div>
-        <!-- Outside .site-shell on purpose: as a grid item it shares a stacking context
-             with the sticky nav, which then paints over it. -->
+        <!-- Outside .site-shell: as a grid item it would share a stacking context with
+             the sticky nav and paint underneath it. -->
         <Footer />
         <script is:inline type="module" src="/scripts/imageZoom.js"></script>
     </body>
@@ -138,16 +121,13 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
 
 <style is:global>
     /*
-     * Shared site container: a content-sized nav track, an explicit gutter to the
-     * content, and both inside one capped, centred frame that every page and the
-     * footer share, so no page decides its own margins. The tokens these rules
-     * consume (--site-max-width, --site-gutter, --site-nav-gap, --plate-*) live in
-     * global.css so every site-wide dial reads from one place.
+     * Shared site container: nav track + gutter + content inside one capped, centred
+     * frame. Tokens (--site-max-width, --site-gutter, --site-nav-gap, --plate-*) live
+     * in global.css.
      */
 
-    /* Classic sticky footer: the shell takes the slack, the footer sits under it.
-       position: relative anchors the texture layer painted by body::before, whose
-       image and blend values are emitted from backgroundTexture.ts in <head>. */
+    /* Sticky footer. position: relative anchors the body::before texture layer,
+       whose values are emitted from backgroundTexture.ts in <head>. */
     body {
         position: relative;
         display: flex;
@@ -167,37 +147,27 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
 
     @media (min-width: 1024px) {
         .site-shell {
-            /* max-content so the nav column hugs its longest link exactly; any slack
-               in the track reads as uneven gutters beside the content. */
+            /* max-content keeps the nav column exactly as wide as its longest link. */
             grid-template-columns: max-content minmax(0, 1fr);
             grid-template-rows: minmax(0, 1fr);
-            /*
-             * Not separation -- .site-gap does that, symmetrically. This one-sided offset
-             * only cancels the shell's right padding: the max-content nav track ends on
-             * the nav's visual edge, so without it every page sits one gutter closer to
-             * the nav than to the screen.
-             */
+            /* Without this gap, content sits one gutter closer to the nav than to the
+               screen edge. */
             column-gap: var(--site-gutter);
             padding-inline: var(--site-gutter);
         }
     }
 
-    /*
-     * Below lg the shell carries no padding, so the sticky topbar's background and
-     * border still span the full viewport while its links sit on the same left
-     * edge as page content. At lg the shell's padding does the work instead.
-     */
+    /* Below lg the shell has no padding, so the topbar carries its own gutter and
+       its background/border span the full viewport. */
     .site-nav {
         padding-inline: var(--site-gutter);
     }
 
     /*
-     * Page content. Two ways to take the gutter:
-     *   .site-main  - on <main>, when the whole page should be inset.
-     *   .site-inset - on individual children, when the page is full-bleed while the
-     *                 topbar is up (art grid, lessons hero) but its text still needs
-     *                 the gutter. Home opts out of both so its hero stays full-bleed.
-     * Both go to zero at lg, where the shell's own padding takes over.
+     * Page insets:
+     *   .site-main  - on <main>, insets the whole page.
+     *   .site-inset - on children of a full-bleed page that still need the gutter.
+     * Both go to zero at lg, where the shell's padding takes over. Home uses neither.
      */
     .site-main,
     .site-inset {
@@ -205,19 +175,14 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
     }
 
     /*
-     * Every <main> pairs mx-auto with w-full. Auto inline margins on an auto-width grid
-     * item mean shrink-to-fit, so without w-full the page width tracks its content and
-     * creeps outward as images load. w-full is load-bearing, not redundant.
+     * Every <main> pairs mx-auto with w-full: auto inline margins on an auto-width
+     * grid item mean shrink-to-fit, so without w-full the page width tracks content.
      */
 
     /*
-     * A grid item's automatic minimum size is its min-content width, so one long word
-     * in a 48px heading can push <main> wider than its track and scroll a 320px phone
-     * sideways. min-width: 0 lets the track win.
-     *
-     * `anywhere` rather than `break-word`: only `anywhere` counts soft wrap
-     * opportunities when computing min-content width, which is what stops the long
-     * word inflating the track. It still breaks only as a last resort.
+     * min-width: 0 stops one long word in a large heading from pushing <main> wider
+     * than its track. overflow-wrap: anywhere (not break-word) because only
+     * `anywhere` counts soft wraps toward min-content width.
      */
     .site-shell > * {
         min-width: 0;
@@ -228,8 +193,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         overflow-wrap: anywhere;
     }
 
-    /* The sidebar layout: the shell's own padding replaces every inset above, and the
-       nav becomes a column with its own rhythm. */
+    /* At lg the shell's padding replaces the insets above. */
     @media (min-width: 1024px) {
         .site-nav,
         .site-main,
@@ -237,26 +201,14 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
             padding-inline: 0;
         }
 
-        /*
-         * Baseline-to-baseline pitch of the sidebar links, as one number. The spacing is
-         * a row-gap rather than an inflated line-height, so hit areas stay the size of
-         * the links and the Instagram glyph falls into rhythm without its own height.
-         */
+        /* 3.5rem baseline-to-baseline pitch via row-gap rather than line-height, so
+           hit areas stay link-sized and the Instagram glyph falls into rhythm. */
         .site-nav {
-            /* 3.5rem is the baseline-to-baseline pitch of the sidebar links. The spacing
-               is a row-gap rather than an inflated line-height, so hit areas stay the
-               size of the links and the Instagram glyph falls into rhythm without its
-               own height. */
             row-gap: calc(3.5rem - 1.5em);
             line-height: 1.5;
         }
 
-        /*
-         * Breathing room beside the nav, symmetric so it can't tilt centred content.
-         * Needed by any page that can fill the track (the art grid, and home and lessons
-         * between 1024 and ~1300px); pages capped well under the track already have
-         * more slack than this from mx-auto.
-         */
+        /* Symmetric breathing room beside the nav, for pages that fill the track. */
         .site-gap {
             padding-inline: var(--site-nav-gap);
         }
