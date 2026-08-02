@@ -61,7 +61,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     sizes={HERO_SIZES}
                     quality={80}
                     priority
-                    class="absolute z-10 aspect-[2693/2773] max-w-none top-28 left-[60%] w-[29rem] -translate-x-[48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
+                    class="absolute z-10 aspect-2693/2773 max-w-none top-28 left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
                 <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-tighter sm:tracking-[-0.04em] text-orange-100 mix-blend-difference">
@@ -80,7 +80,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                      right is only pinned below sm, where the buttons span full width. -->
                 <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
                     <!-- Hidden below sm, where the frame is too short for body copy. -->
-                    <p class="max-sm:hidden mb-6 max-w-[23rem] text-[1rem] leading-[1.6] font-serif text-primary/85 lg:mb-7 lg:max-w-[24.5rem] lg:text-[1.0625rem] lg:leading-[1.65] dark:text-primary-dark/85">
+                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-primary/85 lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65] dark:text-primary-dark/85">
                         {HERO_BODY}
                     </p>
                     <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
@@ -106,21 +106,21 @@ const selectedWorks = Object.entries(selectedWorkModules)
             </section>
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
-                <div class="section-header flex flex-wrap items-end justify-between gap-x-4 gap-y-2 border-t border-primary/10 pt-5 sm:gap-x-6 sm:pt-6 dark:border-primary-dark/10">
-                    <div class="max-w-xl">
-                        <p class="eyebrow font-sans uppercase text-primary/70 dark:text-primary-dark/70">
-                            Selected work
-                        </p>
-                        <h2 id="selected-work-heading" class="mt-2 font-playfair text-[1.75rem] font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
+                <div class="section-header max-w-xl border-t border-primary/10 pt-5 sm:pt-6 dark:border-primary-dark/10">
+                    <p class="eyebrow font-sans uppercase text-primary/70 dark:text-primary-dark/70">
+                        Selected work
+                    </p>
+                    <div class="mt-2 flex flex-wrap items-baseline gap-x-4">
+                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
                             What I can make.
                         </h2>
+                        <!-- Negative margin cancels the padding so the tap target grows without moving the row. -->
+                        <a
+                            href="/art"
+                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline underline-offset-4 transition-colors hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark">
+                            See more
+                        </a>
                     </div>
-                    <!-- py-4/-my-4 grows the tap target past 44px without moving the row. -->
-                    <a
-                        href="/art"
-                        class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline-offset-4 transition-colors hover:text-primary hover:underline dark:text-primary-dark/70 dark:hover:text-primary-dark">
-                        See all work
-                    </a>
                 </div>
 
                 <!-- gap-1 below sm: at 375px the widest tile pair fits two-up with no room

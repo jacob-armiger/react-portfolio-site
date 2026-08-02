@@ -71,13 +71,12 @@ const readingTime = readingMinutes(articleText(entry.body));
 </Layout>
 
 <style>
-    /* Hairline matching the blog card plate; no offset shadow, since that is the
-       card's clickable-hover affordance. */
+    /* No offset shadow: that is the blog card's clickable-hover affordance. */
     .article-cover :global(img) {
         border: 1px solid var(--plate-rule);
     }
 
-    /* Styled like the dateline. */
+    /* Shares the dateline's treatment. */
     .article-cover__caption {
         margin-top: 0.9rem;
         font-size: 11px;

@@ -1,27 +1,24 @@
 ---
+import { ACTION_CLASS, ACTION_OUTLINE, ACTION_SOLID } from "../config/actionClass";
 import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Thank You">
     <main class="site-main page-top mx-auto w-full max-w-2xl">
-        <p class="mb-4 text-left text-5xl font-bold">Thank You</p>
-        <p class="mb-10 max-w-prose text-base leading-relaxed opacity-70">
-            Your message has been sent. I will get back to you as soon as I can.
+        <h1
+            class="mb-4 font-playfair text-4xl font-semibold tracking-[-0.04em] text-primary sm:text-5xl dark:text-primary-dark">
+            Thank You
+        </h1>
+        <p class="mb-10 max-w-prose text-lg leading-relaxed text-primary/85 dark:text-primary-dark/85">
+            Your message is on its way. It lands in my inbox under the subject you chose, and
+            I&rsquo;ll reply to the address you gave as soon as I can. If nothing arrives, my
+            reply may have been filtered &mdash; check your spam folder before assuming it got
+            lost.
         </p>
 
-        <div class="flex flex-wrap gap-4">
-            <a
-                href="/"
-                class="border border-primary px-8 py-3 font-semibold tracking-wide text-primary hover:bg-primary hover:text-secondary dark:border-primary-dark dark:text-primary-dark dark:hover:bg-primary-dark dark:hover:text-secondary-dark"
-            >
-                Return Home
-            </a>
-            <a
-                href="/art-lessons"
-                class="border border-primary/30 px-8 py-3 font-semibold tracking-wide text-primary hover:border-primary hover:bg-primary hover:text-secondary dark:border-primary-dark/30 dark:text-primary-dark dark:hover:border-primary-dark dark:hover:bg-primary-dark dark:hover:text-secondary-dark"
-            >
-                View Lessons
-            </a>
+        <div class="flex flex-wrap gap-3 sm:gap-4">
+            <a href="/art-lessons" class:list={[ACTION_CLASS, ACTION_SOLID]}>View Lessons</a>
+            <a href="/" class:list={[ACTION_CLASS, ACTION_OUTLINE]}>Return Home</a>
         </div>
     </main>
 </Layout>

@@ -153,6 +153,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
 
     return (
         <div className="flex flex-col gap-4 lg:contents">
+            {/* Filter nav */}
             <nav className="site-inset flex flex-row flex-wrap justify-start gap-x-2 gap-y-2 sm:gap-x-3 lg:col-start-2 lg:flex-nowrap">
                 {categories.map((cat) => (
                     <a
@@ -162,7 +163,8 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             e.preventDefault();
                             setActive(cat);
                         }}
-                        className={`text-left font-serif text-xs leading-none tracking-normal transition-opacity hover:opacity-100 sm:text-xs sm:tracking-wide ${
+                        // Not redundant with sm:text-xs; the larger size wraps the row on small phones.
+                        className={`text-left font-serif text-[0.6875rem] leading-none tracking-normal transition-opacity hover:opacity-100 sm:text-xs sm:tracking-wide ${
                             active === cat ? 'font-semibold opacity-100 underline underline-offset-2' : 'opacity-75'
                         }`}
                     >
@@ -171,6 +173,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                 ))}
             </nav>
 
+            {/* Grid */}
             <div className="min-w-0 lg:col-span-2 lg:row-start-2">
                 <MasonryGrid frameWidth={frameWidth} gap={gap}>
                     {visible.map((img, i) => (

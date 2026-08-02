@@ -92,12 +92,40 @@ const readingTime = readingMinutes(excerpt);
             transform 120ms ease-out;
     }
 
-    /* Hover: the card slides toward its shadow, which shortens by the same amount,
+    /* Pressed: the card slides toward its shadow, which shortens by the same amount,
        so the bottom-right corner stays fixed. */
-    .blog-card:hover {
+    .blog-card:active {
         border-color: var(--plate-accent);
         box-shadow: 2px 2px 0 var(--plate-accent);
         transform: translate(4px, 4px);
+    }
+
+    .blog-card:active .blog-card__more {
+        opacity: 1;
+    }
+
+    .blog-card:active .blog-card__more span {
+        color: var(--plate-accent);
+        transform: translateX(3px);
+    }
+
+    /* Touch holds a synthesised :hover through a scroll, so hover is pointer-only;
+       :active covers touch and is cancelled when a drag becomes a scroll. */
+    @media (hover: hover) and (pointer: fine) {
+        .blog-card:hover {
+            border-color: var(--plate-accent);
+            box-shadow: 2px 2px 0 var(--plate-accent);
+            transform: translate(4px, 4px);
+        }
+
+        .blog-card:hover .blog-card__more {
+            opacity: 1;
+        }
+
+        .blog-card:hover .blog-card__more span {
+            color: var(--plate-accent);
+            transform: translateX(3px);
+        }
     }
 
     @media (min-width: 640px) {
@@ -206,20 +234,11 @@ const readingTime = readingMinutes(excerpt);
         transition: opacity 150ms ease;
     }
 
-    .blog-card:hover .blog-card__more {
-        opacity: 1;
-    }
-
     .blog-card__more span {
         display: inline-block;
         transition:
             transform 200ms ease,
             color 150ms ease;
-    }
-
-    .blog-card:hover .blog-card__more span {
-        color: var(--plate-accent);
-        transform: translateX(3px);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -231,7 +250,9 @@ const readingTime = readingMinutes(excerpt);
 
         /* Keep the shadow change - it is the affordance - but drop the movement. */
         .blog-card:hover,
-        .blog-card:hover .blog-card__more span {
+        .blog-card:active,
+        .blog-card:hover .blog-card__more span,
+        .blog-card:active .blog-card__more span {
             transform: none;
         }
     }
