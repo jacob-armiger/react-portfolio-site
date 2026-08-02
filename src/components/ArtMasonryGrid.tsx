@@ -15,8 +15,8 @@ const PIECE_PARAM = 'piece';
 
 const slugify = (str: string) => str.toLowerCase().replace(/\s+/g, '-');
 
-// Builds a stable, shareable id per artwork: "<category-slug>-<date>", falling
-// back to a per-category index for pieces without a parseable date (Selected Work).
+// Slug per artwork: "<category-slug>-<date>", or "<category-slug>-<index>" when
+// there is no parseable date (Selected Work).
 const buildPieceSlugMap = (artEntries: OptimizedImage[]) => {
     const counters = new Map<string, number>();
     const map = new Map<string, string>();
@@ -45,8 +45,7 @@ const setPieceParam = (slug: string | null) => {
     window.history.replaceState(null, '', url);
 };
 
-// The imageZoom script is loaded as a separate module tag; poll briefly in
-// case it hasn't finished executing yet when we try to open a deep-linked image.
+// imageZoom.js loads in a separate module tag; poll until window.openImageZoom exists.
 const waitForZoomReady = (cb: () => void, attempts = 20) => {
     if (typeof window.openImageZoom === 'function') {
         cb();
@@ -59,8 +58,8 @@ const waitForZoomReady = (cb: () => void, attempts = 20) => {
 function useResponsiveGridProps() {
     const getProps = () => {
         const w = window.innerWidth;
-        if (w < 400) return { frameWidth: 150, gap: 2 };   // md
-        return               { frameWidth: 280, gap: 5 };  // lg+
+        if (w < 400) return { frameWidth: 150, gap: 2 };
+        return { frameWidth: 280, gap: 5 };
     };
 
     const [props, setProps] = useState(getProps);
@@ -154,8 +153,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
 
     return (
         <div className="flex flex-col gap-4 lg:contents">
-            {/* Filter nav */}
-            <nav className="site-inset flex flex-row flex-wrap justify-center sm:justify-start gap-x-3 gap-y-2 lg:col-start-2 lg:flex-nowrap lg:justify-start">
+            <nav className="site-inset flex flex-row flex-wrap justify-start gap-x-2 gap-y-2 sm:gap-x-3 lg:col-start-2 lg:flex-nowrap">
                 {categories.map((cat) => (
                     <a
                         key={cat}
@@ -164,7 +162,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             e.preventDefault();
                             setActive(cat);
                         }}
-                        className={`text-left font-serif text-xs leading-none tracking-wide transition-opacity hover:opacity-100 ${
+                        className={`text-left font-serif text-xs leading-none tracking-normal transition-opacity hover:opacity-100 sm:text-xs sm:tracking-wide ${
                             active === cat ? 'font-semibold opacity-100 underline underline-offset-2' : 'opacity-75'
                         }`}
                     >
@@ -173,7 +171,6 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                 ))}
             </nav>
 
-            {/* Grid */}
             <div className="min-w-0 lg:col-span-2 lg:row-start-2">
                 <MasonryGrid frameWidth={frameWidth} gap={gap}>
                     {visible.map((img, i) => (
