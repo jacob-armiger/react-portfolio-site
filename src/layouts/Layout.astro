@@ -1,11 +1,12 @@
 ---
 import Analytics from "@vercel/analytics/astro";
+import { Font } from "astro:assets";
+import "../styles/global.css";
 // The site's three faces: Inter for labels and UI, Source Serif 4 for body, Playfair
-// Display for headings. Display candidates were evaluated at /font-specimen and none
-// replaced Playfair, so their packages are gone -- that page now renders in fallback.
-import "@fontsource-variable/inter";
-import "@fontsource-variable/source-serif-4";
-import "@fontsource-variable/playfair-display";
+// Display for headings. They are registered in astro.config.mjs and rendered by the
+// <Font> tags below, which replaced the @fontsource-variable imports that used to sit
+// here. Display candidates were evaluated at /font-specimen and none replaced Playfair,
+// so they are neither installed nor registered -- that page still renders in fallback.
 import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Footer from "../components/Footer.astro";
 import InstagramGlyph from "../components/InstagramGlyph.astro";
@@ -71,6 +72,16 @@ const textureStyle = Object.entries(textureProperties)
         />
         <meta name="generator" content={Astro.generator} />
         <title class="font-serif">{title}</title>
+        <!--
+            Inter (font-sans) and Source Serif 4 (font-serif) carry the nav and body
+            copy on every page, so they are worth a preload. Playfair Display is only
+            used by two headings on the home page, so preloading it site-wide would
+            cost 18 pages a request they never use; it still self-hosts and swaps in
+            over Astro's generated fallback metrics.
+        -->
+        <Font cssVariable="--font-inter" preload={[{ style: "normal" }]} />
+        <Font cssVariable="--font-source-serif" preload={[{ style: "normal" }]} />
+        <Font cssVariable="--font-playfair-display" />
         <!-- Ahead of <Analytics />, whose inline module is ~5KB the parser walks before
              reaching the body: a page's LCP preload should not queue behind it. -->
         <slot name="head" />

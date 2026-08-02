@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+/*
+ * Ports `darkMode: 'class'` from the old tailwind.config.mjs. The site keys its
+ * hand-written CSS off `html.dark` (see Layout.astro, BlogCard.astro,
+ * ImageCarousel.astro), so the variant must match a `.dark` ancestor rather than
+ * `prefers-color-scheme`.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /*
+     * --font-inter / --font-source-serif / --font-playfair-display come from the
+     * `fonts` config in astro.config.mjs and are emitted by the <Font> components
+     * in Layout.astro. Astro appends its own generated fallback metrics to each,
+     * so the generic families here are only a last resort if the API is removed.
+     */
+    --font-sans: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
+    --font-serif: var(--font-source-serif, ui-serif, Georgia, Cambria, Times, serif);
+    --font-playfair: var(--font-playfair-display, ui-serif, Georgia, Cambria, Times, serif);
+
+    --color-primary: #2a231b;
+    --color-secondary: #e5e2da;
+    --color-primary-dark: #e5e2da;
+    --color-secondary-dark: #26292c;
+}
+
+/* Ported from the inline plugin in the old tailwind.config.mjs. */
+@utility page-top {
+    margin-top: 1.5rem;
+
+    @variant lg {
+        margin-top: 0;
+        padding-top: 2rem;
+    }
+}

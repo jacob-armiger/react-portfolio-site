@@ -25,9 +25,9 @@ const readingTime = readingMinutes(articleText(entry.body));
 
 <Layout title={entry.data.title ?? "Writing Post"}>
     <main class="site-main page-top mx-auto w-full max-w-2xl">
+        <!-- w-fit, not w-full: the figure hugs the painted image so the caption sits
+             on the artwork's left edge, level with the title and the dateline below. -->
         {entry.data.image ? (
-            <!-- w-fit, not w-full: the figure hugs the painted image so the caption sits
-                 on the artwork's left edge, level with the title and the dateline below. -->
             <figure class="article-cover w-fit">
                 {/* No object-contain: the box is the painted image, so the hairline
                     traces the artwork instead of a letterboxed frame around it. */}

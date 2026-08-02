@@ -16,7 +16,7 @@ const article = defineCollection({
         imageAlt: z.string().optional(),
         title: z.string().optional(),
         reference: z.string().optional(),
-        reference_url: z.string().url().optional(),
+        reference_url: z.url().optional(),
   }),
 });
 

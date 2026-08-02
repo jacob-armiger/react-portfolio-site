@@ -128,7 +128,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
              No decoding="async" on purpose: it frees the browser to paint a frame with
              the hero still missing, which is the frame that sets a later LCP. -->
         <section
-            class="relative mb-8 h-auto w-full overflow-hidden p-4 text-secondary lg:rounded-sm">
+            class="relative mb-8 h-auto w-full overflow-hidden p-4 text-secondary lg:rounded-xs">
             <img
                 src={hero.src}
                 srcset={hero.srcSet.attribute || undefined}
