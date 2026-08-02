@@ -12,46 +12,79 @@ export async function getStaticPaths() {
 }
 
 
+import Dateline from "../../components/Dateline.astro";
 import Prose from "../../components/Prose.astro";
 import RssFeedButton from "../../components/RssFeedButton.astro";
 import Layout from "../../layouts/Layout.astro";
+import { articleText, readingMinutes } from "../../utils/article";
 
 const { entry } = Astro.props as { entry: CollectionEntry<"article"> };
 const { Content } = await render(entry);
+const readingTime = readingMinutes(articleText(entry.body));
 ---
 
 <Layout title={entry.data.title ?? "Writing Post"}>
     <main class="site-main page-top mx-auto w-full max-w-2xl">
         {entry.data.image ? (
-            <figure class="mx-auto w-full">
+            <!-- w-fit, not w-full: the figure hugs the painted image so the caption sits
+                 on the artwork's left edge, level with the title and the dateline below. -->
+            <figure class="article-cover w-fit">
+                {/* No object-contain: the box is the painted image, so the hairline
+                    traces the artwork instead of a letterboxed frame around it. */}
                 <Image
                     src={entry.data.image}
-                    alt="Cover image"
+                    alt={entry.data.imageAlt ?? ""}
                     width={1200}
                     format="webp"
                     quality={82}
                     loading="eager"
-                    class="dark:rounded-sm dark:shadow-none shadow-md shadow-stone-500 mx-auto h-auto max-h-[75vh] w-full max-w-full object-contain lg:max-w-[75vw]"
+                    class="block h-auto max-h-[75vh] w-auto max-w-full"
                 />
+                {entry.data.reference ? (
+                    <figcaption class="article-cover__caption font-sans">
+                        After{" "}
+                        {entry.data.reference_url ? (
+                            <a href={entry.data.reference_url} class="underline underline-offset-2">
+                                {entry.data.reference}
+                            </a>
+                        ) : (
+                            entry.data.reference
+                        )}
+                    </figcaption>
+                ) : null}
             </figure>
         ) : null}
         <div class="mt-3 flex justify-start">
             <RssFeedButton />
         </div>
-        <div class="mt-4">
+        <header class="mt-6">
+            <h1 class="font-playfair text-4xl font-semibold leading-[1.1] tracking-[-0.04em] sm:text-5xl">
+                {entry.data.title}
+            </h1>
+            <Dateline date={entry.data.date} minutes={readingTime} class="mt-3" />
+        </header>
+        <div class="mt-8">
             <Prose>
-                {entry.data.reference ? (
-                    <div class="text-sm mb-5">
-                        <p class="my-0">Reference:</p>
-                        <a href={entry.data.reference_url} class="italic">
-                            {entry.data.reference}
-                        </a>
-                    </div>
-                ) : null}
-                <h1 class="mb-0 mt-4">{entry.data.title}</h1>
-                <p class="text-sm italic pr-1 mt-1">{String(entry.data.date.toISOString().slice(0, 10))}</p>
                 <Content />
             </Prose>
         </div>
     </main>
 </Layout>
+
+<style>
+    /* Hairline only, matching the blog card's plate. No offset shadow: that is the
+       card's hover affordance, and on a cover it reads as a clickable sheet. */
+    .article-cover :global(img) {
+        border: 1px solid var(--plate-rule);
+    }
+
+    /* Reads as a peer of the dateline rather than as body copy. */
+    .article-cover__caption {
+        margin-top: 0.9rem;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        opacity: 0.65;
+        text-transform: uppercase;
+    }
+</style>

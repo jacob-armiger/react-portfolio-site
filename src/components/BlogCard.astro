@@ -2,77 +2,50 @@
 // https://jahir.dev/blog/astro-reading-time
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import { articleText, readingMinutes } from "../utils/article";
+import Dateline from "./Dateline.astro";
 
 interface Props {
     art: CollectionEntry<"article">;
-    /** Lead story: image on top, larger headline, longer excerpt. */
+    /** Lead story: display headline beside the plate, excerpt spanning underneath. */
     featured?: boolean;
 }
 
 const { art, featured = false } = Astro.props;
-const excerpt = (art.body ?? "")
-    .replace(/^import\s.+$/gm, "")
-    .replace(/^export\s.+$/gm, "")
-    .replace(/<ImageCarousel[\s\S]*?\/>/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/!\[[^\]]*\]\([^)]+\)/g, " ")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/[\`*_>#-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-// "JUNE 2, 2026". Fixed to UTC so the frontmatter date is the one that prints,
-// whatever the reader's timezone.
-const dateLabel = art.data.date
-    .toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        timeZone: "UTC",
-    })
-    .toUpperCase();
-
-const wordCount = excerpt ? excerpt.split(" ").length : 0;
-const readingTime = Math.max(1, Math.round(wordCount / 220));
+const excerpt = articleText(art.body);
+const readingTime = readingMinutes(excerpt);
 ---
 
 <a
     href={"/writing/" + art.id}
-    class:list={["blog-card group block", featured && "blog-card--featured"]}>
-    <article
-        class:list={[
-            "grid gap-x-7 gap-y-4",
-            featured
-                ? "grid-cols-1"
-                : "sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] md:grid-cols-[minmax(0,13rem)_minmax(0,1fr)]",
-        ]}>
+    class:list={["blog-card group block", featured && "blog-card--featured", "relative"]}>
+
+    <article class="blog-card__grid">
+
         <!-- Hairline rule directly on the image, no mat: the edge stays a single
              crisp line at any zoom. -->
         <figure class="blog-card__plate">
             <Image
                 src={art.data.image}
                 alt=""
-                width={featured ? 1000 : 560}
+                width={featured ? 750 : 560}
                 format="webp"
                 quality={80}
                 class:list={[
-                    "w-full object-cover object-[50%_20%]",
-                    featured ? "aspect-[16/9]" : "aspect-[3/2] sm:aspect-[4/5]",
+                    "h-full object-cover object-[50%_10%]",
+                    featured ? "aspect-[3/2] sm:aspect-[4/3]" : "aspect-[3/2] sm:aspect-[4/5]",
                 ]}
             />
         </figure>
 
-        <div class="flex flex-col">
-            <p class="blog-card__dateline font-sans">
-                <span>{dateLabel}</span>
-                <span aria-hidden="true" class="blog-card__bullet">&bull;</span>
-                <span>{readingTime} min read</span>
-            </p>
+
+        <div class="blog-card__head">
+            <Dateline date={art.data.date} minutes={readingTime} />
 
             <h2
                 class:list={[
                     "mt-2 font-serif font-bold leading-[1.15] tracking-tight decoration-[1.5px] underline-offset-[6px] group-hover:underline",
-                    featured ? "text-3xl sm:text-4xl" : "text-2xl",
+                    featured ? "text-4xl md:text-6xl" : "text-2xl",
                 ]}>
                 {art.data.title}
             </h2>
@@ -84,11 +57,14 @@ const readingTime = Math.max(1, Math.round(wordCount / 220));
                     </p>
                 ) : null
             }
+        </div>
 
+        {featured && <div class="absolute inset-1 border border-[#887928]/80 mix-blend-overlay rounded-tr-[2rem]"></div>}
+        <div class="blog-card__body">
             <p
                 class:list={[
-                    "mt-3 font-serif text-[15px] leading-relaxed opacity-80",
-                    featured ? "line-clamp-3 sm:text-base" : "line-clamp-3",
+                    "blog-card__excerpt line-clamp-3 font-serif text-[15px] leading-relaxed opacity-80",
+                    featured && "sm:text-base",
                 ]}>
                 {excerpt}
             </p>
@@ -107,8 +83,9 @@ const readingTime = Math.max(1, Math.round(wordCount / 220));
      * stays a single pixel. No fill, so the body texture stays continuous underneath.
      */
     .blog-card {
-        /* The card's one accent ink: shadow, dateline bullet, hover arrow. */
-        --card-accent: #284334;
+        /* The card's one accent ink: shadow and hover arrow. Shared with the article
+           cover's plate, so both themes come from the layout's tokens. */
+        --card-accent: var(--plate-accent);
 
         display: block;
         padding: 1.25rem;
@@ -134,47 +111,98 @@ const readingTime = Math.max(1, Math.round(wordCount / 220));
         }
 
         .blog-card--featured {
-            padding: 1.75rem;
+            padding: 1rem;
         }
     }
 
-    /* The accent lifted for the dark page, where it measures 4.7:1 - enough for the
-       bullet and arrow to read at 11px. */
-    :global(html.dark) .blog-card {
-        --card-accent: #6f9d7f;
+    /*
+     * Three blocks -- plate, head (dateline + title), body (excerpt + more) -- placed
+     * by name so each card shape is one grid-template-areas line rather than a
+     * different DOM per variant. Stacked on phones for both shapes.
+     */
+    .blog-card__grid {
+        display: grid;
+        gap: 1rem 1rem;
+        grid-template-areas:
+            "plate"
+            "head"
+            "body";
+        grid-template-columns: minmax(0, 1fr);
+    }
 
+    .blog-card__plate {
+        grid-area: plate;
+    }
+
+    .blog-card__head {
+        grid-area: head;
+    }
+
+    .blog-card__body {
+        display: flex;
+        flex-direction: column;
+        grid-area: body;
+    }
+
+    @media (min-width: 640px) {
+        /* Digest entry: plate beside a full-height text column. The 1fr body row is what
+           lets .blog-card__more pin to the plate's bottom edge. */
+        .blog-card:not(.blog-card--featured) .blog-card__grid {
+            grid-template-areas:
+                "plate head"
+                "plate body";
+            grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+            grid-template-rows: auto 1fr;
+        }
+
+        /* Lead story: title and plate share the top row, excerpt runs underneath both.
+           The split is what sets the card's proportions -- the plate is h-full, so the
+           row height is the title's alone. At 1.6fr the 60px headline holds three lines
+           instead of four, which is ~70px off the card. */
+        .blog-card--featured .blog-card__grid {
+            grid-template-areas:
+                "head  plate"
+                "body  body";
+            grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+        }
+
+        /* The title block is much shorter than the plate beside it; centring keeps the
+           pair reading as one unit instead of a headline stranded at the top. */
+        .blog-card--featured .blog-card__head {
+            align-self: center;
+        }
+
+        /*
+         * Digest entry: the plate's aspect ratio makes it taller than the text beside it,
+         * so a fixed three-line clamp left dead space above "Continue reading". Growing
+         * into the row and clipping by height fills it exactly, whatever the title's line
+         * count -- the clamp can't, since it is blind to how much room is left.
+         */
+        .blog-card:not(.blog-card--featured) .blog-card__excerpt {
+            display: block;
+            flex: 1 1 0;
+            overflow: hidden;
+            /* Feathered bottom instead of an ellipsis: the cut lands mid-line here, and a
+               hard edge would read as a rendering fault rather than as more text. */
+            -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.25em), transparent);
+            mask-image: linear-gradient(to bottom, #000 calc(100% - 2.25em), transparent);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .blog-card:not(.blog-card--featured) .blog-card__grid {
+            grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+        }
+    }
+
+    :global(html.dark) .blog-card {
         border-color: rgb(229 226 218 / 0.4);
     }
 
     /* Hairline only - a second hard shadow would fight the sheet's own. */
     .blog-card__plate {
-        border: 1px solid rgb(42 35 27 / 0.45);
+        border: 1px solid var(--plate-rule);
         line-height: 0;
-    }
-
-    :global(html.dark) .blog-card__plate {
-        border-color: rgb(229 226 218 / 0.25);
-    }
-
-    /* The one piece of sans on the card, tracked like a newspaper kicker so it
-       sits under the headline without competing. */
-    .blog-card__dateline {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        opacity: 0.65;
-        text-transform: uppercase;
-    }
-
-    .blog-card__bullet {
-        color: var(--card-accent);
-        font-size: 9px;
-        /* Full strength against the dateline's 0.65, so it reads as a deliberate
-           mark rather than a stray dot. */
-        opacity: 1;
     }
 
     .blog-card__more {

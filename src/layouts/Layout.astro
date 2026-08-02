@@ -1,5 +1,8 @@
 ---
 import Analytics from "@vercel/analytics/astro";
+// The site's three faces: Inter for labels and UI, Source Serif 4 for body, Playfair
+// Display for headings. Display candidates were evaluated at /font-specimen and none
+// replaced Playfair, so their packages are gone -- that page now renders in fallback.
 import "@fontsource-variable/inter";
 import "@fontsource-variable/source-serif-4";
 import "@fontsource-variable/playfair-display";
@@ -12,6 +15,24 @@ interface Props {
 }
 
 const { title } = Astro.props;
+
+// Normalized so /writing/ and /writing compare equal regardless of trailingSlash config.
+const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) => currentPath === href || currentPath.startsWith(href + "/");
+const navLinks = [
+    { href: "/art-lessons", label: "LESSONS" },
+    { href: "/art", label: "ART" },
+    { href: "/writing", label: "BLOG" },
+    { href: "/books", label: "BOOKS", visibility: "hidden md:block" },
+    { href: "/directory", label: "DIRECTORY", visibility: "hidden sm:block" },
+];
+// Resting links sit at /70 ink so the current page can claim full ink -- the
+// active state is the ink shift alone, no marker.
+const NAV_LINK_CLASS =
+    "font-sans transition-colors hover:underline lg:font-medium lg:tracking-[0.18em]";
+const NAV_INK_REST =
+    "text-primary/70 hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark";
+const NAV_INK_CURRENT = "text-primary dark:text-primary-dark";
 const textureProperties = {
     "--texture-light-image": `url("${backgroundTexture.light.asset.src}")`,
     "--texture-light-opacity": backgroundTexture.light.opacity,
@@ -65,7 +86,7 @@ const textureStyle = Object.entries(textureProperties)
         <div class="site-shell relative z-10">
             <BreakpointIndicator />
             <nav
-                class="site-nav sticky top-0 z-50 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-primary/50 bg-secondary/80 py-3 font-sans underline-offset-4 backdrop-blur-md sm:gap-x-6 sm:py-2 sm:text-xl lg:flex-col lg:items-start lg:self-start lg:border-none lg:bg-transparent lg:pb-4 lg:pt-8 lg:text-[18px] lg:backdrop-blur-none dark:border-primary-dark/50 dark:bg-primary/10">
+                class="site-nav sticky top-0 z-50 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-primary/50 bg-secondary/80 py-3 font-sans underline-offset-4 backdrop-blur-md sm:gap-x-6 sm:py-2 sm:text-xl lg:flex-col lg:items-start lg:self-start lg:border-none lg:bg-transparent lg:pb-4 lg:pt-8 lg:text-[13px] lg:backdrop-blur-none dark:border-primary-dark/50 dark:bg-primary/10">
                 <!--
                     The 48px line box is the page headings' own (text-5xl is 3rem /
                     line-height 1). Both columns start at lg:pt-8, so the wordmark's line box
@@ -78,19 +99,23 @@ const textureStyle = Object.entries(textureProperties)
                 -->
                 <a
                     href="/"
-                    class="font-serif font-bold hover:underline lg:mb-6 lg:text-[20px] lg:leading-[48px]"
+                    class="font-playfair font-semibold hover:underline lg:mb-6 lg:text-[20px] lg:leading-[48px]"
                     >JacobLDraws</a
                 >
-                <a href="/art-lessons" class="font-sans font-normal hover:underline">LESSONS</a>
-                <a href="/art" class="font-sans font-normal hover:underline">ART</a>
-                <a href="/writing" class="font-sans font-normal hover:underline">BLOG</a>
-                <a href="/books" class="hidden font-sans font-normal hover:underline md:block"
-                    >BOOKS</a
-                >
-                <a href="/directory" class="hidden font-sans font-normal hover:underline sm:block"
-                    >DIRECTORY</a
-                >
-                <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
+                {
+                    navLinks.map(({ href, label, visibility }) => (
+                        <a
+                            href={href}
+                            aria-current={isActive(href) ? "page" : undefined}
+                            class:list={[
+                                NAV_LINK_CLASS,
+                                isActive(href) ? NAV_INK_CURRENT : NAV_INK_REST,
+                                visibility,
+                            ]}>
+                            {label}
+                        </a>
+                    ))
+                }
                 <a
                     href="https://www.instagram.com/jacobldraws/"
                     target="_blank"
@@ -136,6 +161,21 @@ const textureStyle = Object.entries(textureProperties)
          * separately so the reason it exists survives the value changing.
          */
         --site-nav-offset: var(--site-gutter);
+        /*
+         * Plate: the treatment for any framed image -- blog card thumbnails, article
+         * covers. A hairline directly on the image plus a hard zero-blur offset, so the
+         * edge stays one crisp pixel at any zoom. Shared here rather than per component
+         * because the card and the cover drifted apart once already.
+         */
+        --plate-rule: rgb(42 35 27 / 0.45);
+        --plate-accent: #284334;
+    }
+
+    /* Lifted for the dark page, where it measures 4.7:1 -- enough for the dateline
+       bullet and the hover arrow to read at 11px. */
+    html.dark {
+        --plate-rule: rgb(229 226 218 / 0.25);
+        --plate-accent: #6f9d7f;
     }
 
     @media (min-width: 640px) {

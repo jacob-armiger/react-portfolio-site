@@ -51,8 +51,8 @@ const selectedWorks = Object.entries(selectedWorkModules)
         <!-- lg:pt-8 matches the nav's own lg:pt-8, so the hero's top edge starts level with
              the wordmark's line box like every other page's first block. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
-            <section class="hero-section relative isolate overflow-hidden border border-primary/15 bg-[#d7cfbe] dark:border-primary-dark/15 dark:bg-[#2f2a25]">
-                <p class="hero-eyebrow absolute z-30 font-sans font-semibold uppercase text-primary/70 dark:text-primary-dark/70">
+            <section class="hero-section relative isolate overflow-hidden bg-[#d7cfbe] dark:bg-[#2f2a25]">
+                <p class="hero-eyebrow eyebrow absolute z-30 font-sans uppercase text-primary/70 dark:text-primary-dark/70">
                     {HERO_EYEBROW}
                 </p>
 
@@ -68,12 +68,21 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     class="hero-image absolute z-10 max-w-none"
                 />
 
-                <h1 class="hero-heading absolute z-20 font-playfair font-extrabold leading-[0.92] tracking-[-0.05em] text-orange-100 mix-blend-difference">
-                    Contact me to get art lessons or commission work
+                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-tighter sm:tracking-[-0.04em] text-orange-100 mix-blend-difference">
+                    Contact me for <br/> art lessons or to commission work.
                 </h1>
+                <!-- Color-blend tint over the difference layer: keeps its luminosity inversion but
+                     replaces hue/saturation with the ink's, so the headline can't go magenta where
+                     it crosses the saturated green chair. Same .hero-heading geometry + later
+                     sibling at the same z, so it paints exactly over the glyphs. -->
+                <div
+                    aria-hidden="true"
+                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-semibold leading-[1.1] tracking-tighter text-primary mix-blend-color sm:tracking-[-0.04em] dark:text-primary-dark">
+                    Contact me for <br/> art lessons or to commission work.
+                </div>
 
                 <div class="hero-actions absolute z-30">
-                    <p class="hero-body font-sans text-sm leading-6 text-primary/80 dark:text-primary-dark/80">
+                    <p class="hero-body font-serif text-primary/85 dark:text-primary-dark/85">
                         {HERO_BODY}
                     </p>
                     <div class="hero-action-row">
@@ -98,27 +107,31 @@ const selectedWorks = Object.entries(selectedWorkModules)
             </section>
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
-                <div class="section-header flex flex-col gap-4 border-t border-primary/10 pt-5 sm:pt-6 lg:flex-row lg:items-end lg:justify-between dark:border-primary-dark/10">
+                <div class="section-header flex flex-wrap items-end justify-between gap-x-4 gap-y-2 border-t border-primary/10 pt-5 sm:gap-x-6 sm:pt-6 dark:border-primary-dark/10">
                     <div class="max-w-xl">
-                        <p class="font-sans text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-primary/60 dark:text-primary-dark/60">
+                        <p class="eyebrow font-sans uppercase text-primary/70 dark:text-primary-dark/70">
                             Selected work
                         </p>
-                        <div class="flex items-baseline">
-                            <h2 id="selected-work-heading" class="mt-2 font-playfair text-3xl font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
-                                What I can make.
-                            </h2>
-                            <a href="/art" class="ml-4 text-sm text-primary/60 underline-offset-2 underline hover:text-primary/40">
-                                See more
-                            </a>
-
-                        </div>
+                        <h2 id="selected-work-heading" class="mt-2 font-playfair text-[1.75rem] font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
+                            What I can make.
+                        </h2>
                     </div>
+                    <!-- py-4/-my-4 grows the tap target past 44px without moving the row. -->
+                    <a
+                        href="/art"
+                        class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline-offset-4 transition-colors hover:text-primary hover:underline dark:text-primary-dark/70 dark:hover:text-primary-dark">
+                        See all work
+                    </a>
                 </div>
 
-                <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-2">
+                <!-- gap-1 below sm is load-bearing, not a taste call: the tiles' flex-basis is
+                     ratio-driven, and at 375px the widest pair (1.008 + 0.775) clears two-up by
+                     0px. Any larger gap drops them to one-up at full width. -->
+                <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-3">
                     {
                         selectedWorks.map(({ image, alt, href, aspectRatio }) => (
-                            <div
+                            <a
+                                href={href}
                                 style={`--tile-ratio: ${aspectRatio}; --tile-width-mobile: ${aspectRatio * 13}rem; --tile-width-tablet: ${aspectRatio * 17}rem; --tile-width-desktop: ${aspectRatio * 20}rem;`}
                                 class="selected-work-tile group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark"
                                 aria-label={`View ${alt} on the art page`}>
@@ -133,7 +146,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                                     decoding="async"
                                     class="block h-full w-full object-contain transition-transform duration-1000 ease-in-out group-hover:scale-[1.01]"
                                 />
-                            </div>
+                            </a>
                         ))
                     }
                 </div>
@@ -155,6 +168,31 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
     .section-header {
         padding-inline: var(--page-inset);
+    }
+
+    /*
+     * One token for every small caps label on the page -- hero eyebrow, Selected Work
+     * kicker, See all work. They are peers, so they share a size, tracking and weight
+     * rather than each picking one. Tracking opens as the size drops; below ~9px the
+     * caps need it to stay separable.
+     */
+    .page-sections {
+        --eyebrow-size: 0.5625rem;
+        --eyebrow-tracking: 0.26em;
+    }
+
+    @media (min-width: 640px) {
+        .page-sections {
+            --eyebrow-size: 0.625rem;
+            --eyebrow-tracking: 0.24em;
+        }
+    }
+
+    .eyebrow {
+        font-size: var(--eyebrow-size);
+        font-weight: 500;
+        line-height: 1.45;
+        letter-spacing: var(--eyebrow-tracking);
     }
 
     /*
@@ -217,7 +255,9 @@ const selectedWorks = Object.entries(selectedWorkModules)
          * Vertical rhythm. The headline is stacked under the eyebrow's line box, so changing the
          * inset or the eyebrow's leading keeps the pair together instead of drifting apart.
          */
-        --hero-eyebrow-line: 1rem;
+        /* Derived from the shared eyebrow scale so the headline restacks itself
+           whenever that size changes. 1.45 is .eyebrow's line-height. */
+        --hero-eyebrow-line: calc(var(--eyebrow-size) * 1.45);
         --hero-eyebrow-gap: 1rem;
         --hero-heading-top: calc(
             var(--page-inset) + var(--hero-eyebrow-line) + var(--hero-eyebrow-gap)
@@ -228,16 +268,42 @@ const selectedWorks = Object.entries(selectedWorkModules)
          * Selected Work heading below.
          */
         --hero-heading-optical-pull: calc(var(--hero-heading-size) * 0.039);
-        --hero-heading-left: var(--page-inset);
+        --hero-heading-left: var(--hero-inline-inset);
         --hero-body-width: 23rem;
+        /* Source Serif runs optically smaller than Inter at the same px, so the lead sits
+           a step above where it did as sans. Measure stays ~58 characters. */
+        --hero-body-size: 1rem;
+        --hero-body-leading: 1.6;
         --hero-body-gap: 1.5rem;
-        --hero-actions-bottom: var(--page-inset);
-        --hero-actions-left: var(--page-inset);
+        /*
+         * Deliberately larger than the eyebrow's top inset: the bottom cluster is a 60px
+         * button block, and matching the 16px top inset left it kissing the frame edge.
+         */
+        --hero-actions-bottom: 1.5rem;
+        --hero-actions-left: var(--hero-inline-inset);
         --hero-action-gap: 0.75rem;
         --hero-action-min-h: 3.5rem;
         --hero-action-px: 1.25rem;
         --hero-action-font-size: 0.75rem;
         --hero-action-tracking: 0.2em;
+        /* Double-rule frame. Both rules live here rather than on a Tailwind border
+           utility so the inner one can subtract the outer's width and stay
+           concentric through the corner. Below lg the panel is full bleed; the
+           card margin comes out of --hero-inline-inset so the text's screen-x
+           stays aligned with the Selected Work heading. */
+        --hero-frame-radius: 0rem;
+        --hero-frame-border: 1px;
+        --hero-frame-gap: 0.25rem;
+        --hero-frame-margin: 0rem;
+        /* Absolutely-positioned children measure from the padding box, so the frame's
+           own width has to come back out or the text sits inboard of the heading. */
+        --hero-inline-inset: calc(
+            var(--page-inset) - var(--hero-frame-margin) - var(--hero-frame-border)
+        );
+        --hero-frame-line: rgba(42, 35, 27, 0.15);
+        margin-inline: var(--hero-frame-margin);
+        border: var(--hero-frame-border) solid var(--hero-frame-line);
+        border-radius: var(--hero-frame-radius);
         min-height: clamp(42rem, 88vh, 50rem);
         background-image:
             linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
@@ -246,10 +312,21 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
     .hero-eyebrow {
         top: var(--page-inset);
-        left: var(--page-inset);
-        font-size: 0.6rem;
-        line-height: 1rem;
-        letter-spacing: 0.26em;
+        left: var(--hero-inline-inset);
+    }
+
+    /* Inner rule of the double frame: above the artwork (z-15 > image's z-10),
+       under the text layers. */
+    .hero-section::before {
+        position: absolute;
+        z-index: 15;
+        inset: var(--hero-frame-gap);
+        border: 1px solid var(--hero-frame-line);
+        border-radius: calc(
+            1rem - var(--hero-frame-border) - var(--hero-frame-gap)
+        );
+        pointer-events: none;
+        content: "";
     }
 
     .hero-image {
@@ -272,6 +349,8 @@ const selectedWorks = Object.entries(selectedWorkModules)
     .hero-body {
         max-width: var(--hero-body-width);
         margin-bottom: var(--hero-body-gap);
+        font-size: var(--hero-body-size);
+        line-height: var(--hero-body-leading);
     }
 
     .hero-actions {
@@ -296,7 +375,6 @@ const selectedWorks = Object.entries(selectedWorkModules)
     /* Mobile: headline first, a controlled artwork crop, then the actions. */
     @media (max-width: 639px) {
         .hero-section {
-            --hero-eyebrow-line: 0.85rem;
             --hero-eyebrow-gap: 1rem;
             --hero-heading-ratio: 6.4;
             --hero-heading-size: min(14vw, 3.55rem);
@@ -309,17 +387,13 @@ const selectedWorks = Object.entries(selectedWorkModules)
             --hero-action-gap: 0.75rem;
             --hero-action-min-h: 3.5rem;
             --hero-action-px: 0.8rem;
-            --hero-action-font-size: 0.68rem;
-            --hero-action-tracking: 0.14em;
-            border-top: 0;
+            --hero-action-font-size: 0.6875rem;
+            --hero-action-tracking: 0.12em;
             min-height: 43rem;
         }
 
         .hero-eyebrow {
-            max-width: calc(100% - (2 * var(--page-inset)));
-            font-size: 0.52rem;
-            line-height: 0.85rem;
-            letter-spacing: 0.22em;
+            max-width: calc(100% - (2 * var(--hero-inline-inset)));
         }
 
         /* The intro copy is dropped so the shorter frame can breathe. */
@@ -328,7 +402,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
 
         .hero-actions {
-            right: var(--page-inset);
+            right: var(--hero-inline-inset);
         }
 
         .hero-action-row {
@@ -352,16 +426,18 @@ const selectedWorks = Object.entries(selectedWorkModules)
             --hero-image-transform: none;
             --hero-body-width: 23rem;
             --hero-body-gap: 1.5rem;
+            --hero-actions-bottom: 2rem;
             --hero-action-gap: 1rem;
-            --hero-action-min-h: 3.6rem;
+            --hero-action-min-h: 3.5rem;
             --hero-action-px: 1.5rem;
-            --hero-action-font-size: 0.72rem;
-            --hero-action-tracking: 0.18em;
+            --hero-action-font-size: 0.75rem;
+            --hero-action-tracking: 0.15em;
             /*
              * The floor is what keeps the bottom-anchored copy clear of the headline at the top of
-             * this band, where the headline is at its 6.25rem cap but the frame is shortest.
+             * this band, where the headline is at its 6.25rem cap but the frame is shortest. Sized
+             * for the serif lead: 43rem left the two overlapping at 860-1023px on short screens.
              */
-            min-height: clamp(43rem, 78vh, 44rem);
+            min-height: clamp(46.5rem, 78vh, 47.5rem);
         }
 
         /* Stacked, equal-width actions read as a single column beside the artwork. */
@@ -375,11 +451,19 @@ const selectedWorks = Object.entries(selectedWorkModules)
         }
     }
 
-    @media (min-width: 640px) and (max-width: 1023px) {
+    /* Full bleed until the sidebar layout: the panel runs to both screen edges, so
+       the framed-card treatment (and its inner rule, which reads broken without a
+       top edge) is held back for lg. A hairline closes the panel at the bottom. */
+    @media (max-width: 1023px) {
         .hero-section {
-            border-top: 0;
-            border-right: 0;
-            border-left: 0;
+            --hero-frame-margin: 0rem;
+            --hero-frame-radius: 0;
+            --hero-frame-border: 0px;
+            border-bottom-width: 1px;
+        }
+
+        .hero-section::before {
+            content: none;
         }
     }
 
@@ -399,13 +483,18 @@ const selectedWorks = Object.entries(selectedWorkModules)
             --hero-image-bottom: 0rem;
             --hero-image-right: -5rem;
             --hero-image-width: min(60%, 44rem);
-            --hero-body-width: 22.5rem;
-            --hero-body-gap: 1.5rem;
+            --hero-body-width: 24.5rem;
+            --hero-body-size: 1.0625rem;
+            --hero-body-leading: 1.65;
+            --hero-body-gap: 1.75rem;
+            --hero-actions-bottom: 2.5rem;
             --hero-action-gap: 1.25rem;
-            --hero-action-min-h: 3.8rem;
-            --hero-action-px: 1.6rem;
+            --hero-action-min-h: 3.6rem;
+            --hero-action-px: 1.75rem;
             --hero-action-font-size: 0.875rem;
-            --hero-action-tracking: 0.2em;
+            /* 0.2em read as a tracked-out label rather than a button; this sits with the
+               footer's 0.18em while staying open enough for uppercase Inter. */
+            --hero-action-tracking: 0.16em;
             min-height: clamp(46rem, 88vh, 52rem);
         }
 
@@ -443,6 +532,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
      * over an otherwise light page.
      */
     :global(html.dark) .hero-section {
+        --hero-frame-line: rgba(229, 226, 218, 0.15);
         background-image:
             linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
             linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);

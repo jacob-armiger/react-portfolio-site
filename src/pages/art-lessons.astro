@@ -141,11 +141,14 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/30 via-55% to-transparent">
             </div>
 
+            <div class=" pointer-events-none absolute inset-1 border border-[#887928]/80 mix-blend-color-dodge rounded-r-[1rem]">
+            </div>
+
             <div class="relative mb-8">
                 <!-- Smaller below sm so "Structure." still fits inside the gutter. -->
-                <p class="text-5xl font-semibold sm:text-7xl">
-                    Practice Boldly. Get Structure.
-                </p>
+                <h1 class="font-playfair text-5xl font-semibold tracking-[-0.04em] sm:text-7xl">
+                    Practice Boldly.<br />Get Structure.
+                </h1>
             </div>
 
             <div class=" relative mb-4 flex w-2/3 sm:w-1/2 flex-col gap-8 text-base leading-relaxed">
@@ -175,16 +178,17 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         <!-- Everything after the hero takes the gutter as one block, leaving the hero the
              only full-bleed element. -->
         <div class="site-inset">
-        <p class="mb-8 italic max-w-prose mx-auto text-base leading-relaxed opacity-80 text-balance text-center ">
-            I offer lessons to artists of all levels. Whether you’re looking for a new hobby or an experienced artist seeking to refine your draftsmanship, I'm here to help you achieve your artistic goals.
+        <p class="mb-8  max-w-3xl mx-auto  text-xl leading-relaxed opacity-80 text-balance text-center ">
+            I offer lessons to artists of all levels. Whether you’re seeking to refine your draftsmanship, trying to get into art school, or simply wanting some good practice and guidance, I'm here to help you achieve your goals.
         </p>
 
-        <section class="mb-12 px-1">
+        <section class="mb-12 px-1 max-w-3xl mx-auto">
             <!-- <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3"> -->
             <div class="mx-0 sm:m-auto mb-8 grid w-full grid-cols-2 sm:grid-cols-3 gap-x-1 sm:gap-x-4 gap-y-4 sm:gap-y-2">
                 {
                     lessonGallery.map((piece, i) => (
-                        <figure class="max-h-80 sm:max-h-none overflow-hidden rounded-sm bg-primary/5 dark:bg-primary-dark/5">
+                        <figure class="relative max-h-80 sm:max-h-none overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
+
                             <img
                                 src={piece.src}
                                 srcset={piece.srcSet}
@@ -194,6 +198,8 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                                 decoding="async"
                                 class="w-full sm:h-full object-cover"
                             />
+                            <div class="pointer-events-none absolute inset-1 border border-[#887928]/60 mix-blend-color-dodge rounded-t-full"/>
+
                         </figure>
                         <div class="sm:hidden text-left mx-2 place-self-center">
                             <h2 class="sm:text-nowrap mb-4 mt-0 sm:mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
@@ -215,26 +221,6 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                         </div>
                     ))
                 }
-
-                <!-- // <div class="flex flex-row h-96">
-                        // <p>{steps.at(i)}</p>
-
-                        // <figure class="h-96 group overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
-                        //     <div class="aspect-[5/6] overflow-hidden">
-                        //         <img
-                        //             src={piece.src}
-                        //             alt={piece.alt}
-                        //             loading="lazy"
-                        //             decoding="async"
-                        //             class="object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
-                        //         />
-                        //     </div>
-                        //     <figcaption class="px-2 py-2 text-[10px] font-medium uppercase tracking-[0.16em] opacity-70 sm:text-[11px]">
-                        //         {piece.label}
-                        //     </figcaption>
-                        // </figure>
-                            
-                        // </div> -->
             </div>
         </section>
         <p class="font-sans mb-8 text-xl italic leading-snug max-w-prose mx-auto text-center text-balance">
@@ -246,8 +232,8 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         <div class="w-full px-2 sm:w-5/6 sm:mx-auto">
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
 
-        <p class="col mb-4 ml-2 text-left font-serif text-3xl font-semibold">Start Learning</p>
-        <p class="mb-8 ml-2 text-base opacity-90">
+        <h2 class="col mb-4 text-left font-playfair text-3xl font-semibold tracking-[-0.04em]">Start Learning</h2>
+        <p class="mb-8 text-base opacity-90">
             Let me know what questions you have, when you want to schedule, and what interests you.
         </p>
 

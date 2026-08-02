@@ -6,23 +6,41 @@ interface Props {
 }
 
 const { book } = Astro.props;
+
+// "JUNE 14, 2025" — same UTC-fixed caps format as BlogCard's dateline. The JSON's
+// "YYYY/MM/DD" would parse as local time and can drift a day, hence the manual split.
+const dateRead = book.data["Date Read"];
+const dateLabel = dateRead
+    ? (() => {
+          const [y, m, d] = dateRead.split("/").map(Number);
+          return new Date(Date.UTC(y, m - 1, d))
+              .toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  timeZone: "UTC",
+              })
+              .toUpperCase();
+      })()
+    : null;
 ---
 <!-- TODO: possibly add "Read more" text to expand reviews. Scrolling causes too many problems -->
 <div class="mb-12 cursor-default text-lg">
     <div class="pb-2">
         <div>
-            <p class="font-serif text-3xl">
+            <h2 class="font-serif text-2xl font-bold leading-[1.15] tracking-tight">
                 {book.data.Title}
-            </p>
+            </h2>
             <p class={!book.data["My Review"] ? "" : "pb-2"}>by {book.data.Author}</p>
             <p class="whitespace-pre-line">{book.data["My Review"]}</p>
         </div>
     </div>
 
-    <div class="bottom-0 flex border-t border-primary dark:border-primary-dark">
+    <div
+        class="bottom-0 flex border-t border-primary/15 pt-2 font-sans text-[11px] font-medium uppercase tracking-[0.16em] opacity-65 dark:border-primary-dark/15">
     {
-        book.data["Date Read"] ? (
-                <p class="grow">Read {book.data["Date Read"]}</p>
+        dateLabel ? (
+                <p class="grow">Read {dateLabel}</p>
                 <p class="pr-2 text-right">{book.data["My Rating"]}/5</p>
         ) : (
                 <p class="h-6 grow pl-2" />
