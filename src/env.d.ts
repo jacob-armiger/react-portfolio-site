@@ -2,6 +2,7 @@
 
 declare module "@fontsource-variable/inter";
 declare module "@fontsource-variable/playfair-display";
+declare module "@fontsource-variable/source-serif-4";
 
 interface Window {
     openImageZoom?: (

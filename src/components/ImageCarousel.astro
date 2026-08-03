@@ -77,31 +77,33 @@ const resolvedImages = await Promise.all(
     <div class="image-carousel-strip">
         {
             resolvedImages.map((image, index) => (
-                <button
-                    type="button"
-                    class="image-carousel-thumb"
-                    data-carousel-thumb
-                    data-carousel-index={index}
-                    data-carousel-src={image.src}
-                    data-carousel-alt={image.alt}
-                    data-carousel-caption-text={image.caption}
-                    aria-label={`Open image ${index + 1} in larger view`}>
-                    <img
-                        src={image.thumbSrc}
-                        alt={image.alt}
-                        width={image.thumbWidth}
-                        height={image.thumbHeight}
-                        loading={index === 0 ? "eager" : "lazy"}
-                        fetchpriority={index === 0 ? "high" : "auto"}
-                        decoding="async"
-                        class="image-carousel-thumb-image !m-0 block rounded-md"
-                    />
+                <figure class="image-carousel-figure">
+                    <button
+                        type="button"
+                        class="image-carousel-thumb"
+                        data-carousel-thumb
+                        data-carousel-index={index}
+                        data-carousel-src={image.src}
+                        data-carousel-alt={image.alt}
+                        data-carousel-caption-text={image.caption}
+                        aria-label={`Open image ${index + 1} in larger view`}>
+                        <img
+                            src={image.thumbSrc}
+                            alt={image.alt}
+                            width={image.thumbWidth}
+                            height={image.thumbHeight}
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchpriority={index === 0 ? "high" : "auto"}
+                            decoding="async"
+                            class="image-carousel-thumb-image m-0! block"
+                        />
+                    </button>
                     {showCaptions && image.caption ? (
-                        <span class="mt-2 block text-center text-sm text-primary dark:text-primary-dark">
+                        <figcaption class="image-carousel-caption font-sans">
                             {image.caption}
-                        </span>
+                        </figcaption>
                     ) : null}
-                </button>
+                </figure>
             ))
         }
     </div>
@@ -170,7 +172,7 @@ const resolvedImages = await Promise.all(
     .image-carousel-strip {
         display: flex;
         flex-wrap: nowrap;
-        align-items: center;
+        align-items: flex-start;
         gap: 1rem;
         overflow-x: auto;
         overflow-y: hidden;
@@ -178,52 +180,64 @@ const resolvedImages = await Promise.all(
         -webkit-overflow-scrolling: touch;
     }
 
-    .image-carousel-thumb {
+    .image-carousel-figure {
         flex: 0 0 auto;
         width: fit-content;
         max-width: 16.5rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow: hidden;
-        border: 1px solid rgb(var(--color-primary) / 0.2);
-        border-radius: 0.75rem;
-        background: rgb(255 255 255 / 0.7);
-        padding: 0.5rem;
-        text-align: left;
-        box-shadow: 0 8px 24px rgb(120 113 108 / 0.2);
-        transition: none;
-        cursor: pointer;
+        margin: 0;
+    }
+
+    /* Plate treatment shared with the article cover and blog cards. */
+    .image-carousel-thumb {
+        display: block;
+        padding: 0;
+        border: 1px solid var(--plate-rule);
+        background: none;
+        line-height: 0;
+        /* Matches the art grid, which opens the same modal. */
+        cursor: zoom-in;
+        transition: border-color 150ms ease;
+    }
+
+    .image-carousel-thumb:hover,
+    .image-carousel-thumb:focus-visible {
+        border-color: var(--plate-accent);
     }
 
     .image-carousel-thumb:focus-visible {
-        outline: 2px solid rgb(var(--color-primary));
+        outline: 2px solid var(--plate-accent);
         outline-offset: 2px;
     }
 
     .image-carousel-thumb-image {
+        /* !important beats Prose's [&_img]:w-full, which not-prose does not cancel. */
         width: auto !important;
         max-width: 100%;
         max-height: 30rem;
         height: auto;
     }
 
+    .image-carousel-caption {
+        margin-top: 0.75rem;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        line-height: 1.5;
+        opacity: 0.65;
+    }
+
+    /* Single figure: no scroll strip, aligned to the prose edge. */
     [data-carousel-single="true"] .image-carousel-strip {
         display: block;
-        text-align: center;
         overflow-x: visible;
     }
 
-    [data-carousel-single="true"] .image-carousel-thumb {
+    [data-carousel-single="true"] .image-carousel-figure {
         width: fit-content;
         max-width: 100%;
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
     }
 
-    [data-carousel-single="true"] .image-carousel-thumb img {
-        width: auto !important;
+    [data-carousel-single="true"] .image-carousel-thumb-image {
         max-width: min(34rem, 100%);
         max-height: 66vh;
     }
@@ -237,8 +251,5 @@ const resolvedImages = await Promise.all(
         background: rgb(120 113 108 / 0.4);
     }
 
-    :global(html.dark) .image-carousel-thumb {
-        border-color: rgb(var(--color-primary-dark) / 0.3);
-        background: rgb(28 25 23 / 0.85);
-    }
+    /* No dark override needed: --plate-rule and --plate-accent flip in global.css. */
 </style>

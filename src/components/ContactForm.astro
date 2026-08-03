@@ -1,104 +1,385 @@
 ---
+import { ACTION_CLASS, ACTION_SOLID } from "../config/actionClass";
+
 interface Props {
     subject?: string;
-    messagePlaceholder?: string;
+    /** Preselects the subject; the contact page leaves it unset so the field starts blank. */
+    defaultSubject?: string;
     submitLabel?: string;
     redirectPath?: string;
 }
 
+const INTENTS = [
+    {
+        label: "Art lessons",
+        placeholder:
+            "What you'd like to work on, your art experience, and when you'd like to start.",
+    },
+    {
+        label: "Commission",
+        placeholder:
+            "What you'd like made and the size or format you have in mind.",
+    },
+    { label: "Something else", placeholder: "What's on your mind?" },
+] as const;
+
 const {
     subject = "Website Contact",
-    messagePlaceholder = "What's on your mind?",
+    defaultSubject = "",
     submitLabel = "Send",
     redirectPath = "/submit",
 } = Astro.props;
 
+const BLANK_PLACEHOLDER = "What's on your mind?";
+const selectedPlaceholder =
+    INTENTS.find((intent) => intent.label === defaultSubject)?.placeholder ?? BLANK_PLACEHOLDER;
+
 const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString();
+
+const LABEL_CLASS =
+    "text-sm font-medium uppercase tracking-[0.1em] text-primary/85 dark:text-primary-dark/85";
+// Text controls show :focus-visible on mouse click too, so a ring would flash on every click;
+// the indicator is the underline itself thickening 2px -> 4px instead.
+const FIELD_CLASS =
+    "border-b-2 border-primary/40 bg-transparent py-3 text-lg leading-tight text-primary outline-none transition-[border-color,box-shadow] placeholder:text-base placeholder:text-primary/45 hover:border-primary/70 focus:border-primary focus:shadow-[0_2px_0_0_var(--color-primary)] aria-[invalid=true]:border-red-700 dark:border-primary-dark/50 dark:text-primary-dark dark:placeholder:text-primary-dark/45 dark:hover:border-primary-dark/80 dark:focus:border-primary-dark dark:focus:shadow-[0_2px_0_0_var(--color-primary-dark)] dark:aria-[invalid=true]:border-red-400";
+const ERROR_CLASS = "hidden text-xs font-medium tracking-[0.02em] text-red-700 dark:text-red-400";
+const REQUIRED_MARK = "text-primary/50 dark:text-primary-dark/50";
+
+const lessonsDefault = defaultSubject === INTENTS[0].label;
 ---
 
 <form
     action="https://formsubmit.co/jacobldraws@icloud.com"
     method="POST"
-    class="flex flex-col gap-6"
+    novalidate
+    class="flex flex-col gap-7 font-sans"
     data-redirect-path={redirectPath}
-    data-contact-form
->
+    data-contact-form>
     <input type="hidden" name="_captcha" value="false" />
-    <input type="hidden" name="_subject" value={subject} />
+    <!-- Fallback only: the script rewrites this to "<subject> — <name>" on submit. -->
+    <input type="hidden" name="_subject" value={subject} data-subject-line />
     <input type="hidden" name="_template" value="table" />
     <input type="hidden" name="_next" value={fallbackNextUrl} data-next-input />
 
-    <div class="flex flex-col gap-1">
-        <label for="name" class="text-sm font-semibold uppercase tracking-wide opacity-80">Name</label>
+    <div class="flex flex-col gap-2">
+        <div class="flex items-baseline justify-between">
+            <label for="subject" class={LABEL_CLASS}>
+                Subject <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
+            </label>
+            <p class="text-xs text-primary/60 dark:text-primary-dark/60">
+                <span aria-hidden="true">*</span> Required
+            </p>
+        </div>
+        <div class="group relative">
+            <!-- The native popup is placed by the OS and can't be aligned to the field, so the
+                 select is kept only as the form value + validity owner and the menu is rebuilt. -->
+            <select
+                name="subject"
+                required
+                tabindex="-1"
+                aria-hidden="true"
+                class="pointer-events-none absolute h-0 w-0 opacity-0"
+                data-subject-select>
+                <option value="" data-placeholder={BLANK_PLACEHOLDER}></option>
+                {
+                    INTENTS.map((intent) => (
+                        <option
+                            value={intent.label}
+                            data-placeholder={intent.placeholder}
+                            selected={intent.label === defaultSubject}>
+                            {intent.label}
+                        </option>
+                    ))
+                }
+            </select>
+            <button
+                type="button"
+                id="subject"
+                role="combobox"
+                aria-controls="subject-listbox"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-describedby="subject-error"
+                class:list={[
+                    FIELD_CLASS,
+                    "group/trigger flex w-full cursor-pointer items-center justify-between gap-3 text-left",
+                ]}
+                data-subject-trigger>
+                <!-- Unselected mirrors the inputs' placeholder:text-base; picking a subject
+                     drops back to the field's own text-lg. -->
+                <span
+                    data-subject-label
+                    class:list={[
+                        "truncate",
+                        !defaultSubject && "text-base text-primary/45 dark:text-primary-dark/45",
+                    ]}>
+                    {defaultSubject || "Choose a subject"}
+                </span>
+                <svg
+                    aria-hidden="true"
+                    viewBox="0 0 12 8"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-2.5 w-2.5 shrink-0 text-primary/50 transition-transform group-aria-expanded/trigger:rotate-180 dark:text-primary-dark/50">
+                    <path d="M1 1.75 6 6.25 11 1.75"></path>
+                </svg>
+            </button>
+            <ul
+                id="subject-listbox"
+                role="listbox"
+                aria-labelledby="subject"
+                hidden
+                class="absolute top-full right-0 left-0 z-20 overflow-hidden border-2 border-t-0 border-primary bg-secondary py-1 shadow-lg dark:border-primary-dark dark:bg-secondary-dark"
+                data-subject-listbox>
+                {
+                    INTENTS.map((intent) => (
+                        <li
+                            role="option"
+                            tabindex="-1"
+                            data-value={intent.label}
+                            aria-selected={intent.label === defaultSubject ? "true" : "false"}
+                            class="cursor-pointer px-3 py-2 text-lg leading-tight text-primary hover:bg-primary/10 aria-selected:font-medium dark:text-primary-dark dark:hover:bg-primary-dark/15">
+                            {intent.label}
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+        <p id="subject-error" class={ERROR_CLASS} data-error-for="subject">
+            Please choose what this is about.
+        </p>
+    </div>
+
+    <div data-lessons-only hidden={!lessonsDefault}>
+        <label
+            for="local-to-new-york"
+            class="flex cursor-pointer items-start gap-3 text-base leading-relaxed text-primary/90 dark:text-primary-dark/90">
+            <input
+                type="checkbox"
+                id="local-to-new-york"
+                name="local_to_new_york_city"
+                value="yes"
+                class="mt-1 h-4 w-4 accent-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:accent-primary-dark dark:focus-visible:outline-primary-dark"
+            />
+            <span>I'm in New York City and open to lessons in person.</span>
+        </label>
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <label for="name" class={LABEL_CLASS}>
+            Name <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
+        </label>
         <input
             type="text"
             id="name"
             name="name"
             required
             autocomplete="name"
-            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            aria-describedby="name-error"
+            class={FIELD_CLASS}
             placeholder="Your name"
         />
+        <p id="name-error" class={ERROR_CLASS} data-error-for="name">Please enter your name.</p>
     </div>
 
-    <div class="flex flex-col gap-1">
-        <label for="email" class="text-sm font-semibold uppercase tracking-wide opacity-80">Email</label>
+    <div class="flex flex-col gap-2">
+        <label for="email" class={LABEL_CLASS}>
+            Email <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
+        </label>
         <input
             type="email"
             id="email"
             name="email"
             required
             autocomplete="email"
-            class="border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
+            aria-describedby="email-error"
+            class={FIELD_CLASS}
             placeholder="your@email.com"
         />
+        <p id="email-error" class={ERROR_CLASS} data-error-for="email">
+            Please enter an email address I can reply to.
+        </p>
     </div>
 
-    <div class="rounded-sm border border-primary/20 px-4 py-3 dark:border-primary-dark/20">
-        <label for="local-to-new-york" class="flex items-start gap-3 text-sm leading-relaxed">
-            <input
-                type="checkbox"
-                id="local-to-new-york"
-                name="local_to_new_york_city"
-                value="yes"
-                class="mt-1 h-4 w-4 accent-primary dark:accent-primary-dark"
-            />
-            <span>
-                <span class="block font-semibold uppercase tracking-wide opacity-80">Optional</span>
-                <span>I am local to New York City for in-person lessons.</span>
-            </span>
+    <div class="flex flex-col gap-2">
+        <label for="message" class={LABEL_CLASS}>
+            Message <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
         </label>
-    </div>
-
-    <div class="flex flex-col gap-1">
-        <label for="message" class="text-sm font-semibold uppercase tracking-wide opacity-80">Message</label>
         <textarea
             id="message"
             name="message"
-            rows="6"
+            rows="7"
             required
-            class="resize-none border-b border-primary bg-transparent py-2 text-base outline-none placeholder:opacity-80 focus:border-primary dark:border-primary-dark"
-            placeholder={messagePlaceholder}
-        ></textarea>
+            aria-describedby="message-error"
+            class:list={[FIELD_CLASS, "resize-none leading-relaxed"]}
+            placeholder={selectedPlaceholder}></textarea>
+        <p id="message-error" class={ERROR_CLASS} data-error-for="message">
+            Please add a short message.
+        </p>
     </div>
 
-    <button
-        type="submit"
-        class="mt-2 self-start border border-primary px-10 py-4 font-semibold tracking-wide text-primary hover:bg-primary hover:text-secondary dark:border-primary-dark dark:text-primary-dark dark:hover:bg-primary-dark dark:hover:text-secondary-dark"
-    >
-        {submitLabel}
-    </button>
+    <!-- <label for="image_upload" class="bg-slate-200 w-[18rem] p-1 text-center border border-black cursor-pointer text-black font-mono rounded-xs"> Upload examples of your work</label>
+    <input type="file" name="attachment" id="image_upload" style="display:none" accept="image/png, image/jpeg"> -->
+
+    <div class="mt-1 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+        <button
+            type="submit"
+            class:list={[ACTION_CLASS, ACTION_SOLID, "self-start disabled:opacity-60 cursor-pointer"]}
+            data-submit-button>
+            {submitLabel}
+        </button>
+        <p class="text-sm leading-relaxed text-primary/60 dark:text-primary-dark/60">
+            I read every message and reply as soon as I can.
+        </p>
+    </div>
 </form>
 
-<script is:inline>
+<script is:inline define:vars={{ LESSONS_SUBJECT: INTENTS[0].label }}>
     document.querySelectorAll("form[data-contact-form]").forEach((form) => {
         const redirectPath = form.getAttribute("data-redirect-path");
-        const nextInput = form.querySelector('input[name="_next"][data-next-input]');
-
-        if (!redirectPath || !(nextInput instanceof HTMLInputElement)) {
-            return;
+        const nextInput = form.querySelector("input[data-next-input]");
+        if (redirectPath && nextInput) {
+            nextInput.value = new URL(redirectPath, window.location.origin).toString();
         }
 
-        nextInput.value = new URL(redirectPath, window.location.origin).toString();
+        const select = form.querySelector("[data-subject-select]");
+        const trigger = form.querySelector("[data-subject-trigger]");
+        const listbox = form.querySelector("[data-subject-listbox]");
+        const triggerLabel = form.querySelector("[data-subject-label]");
+        const message = form.querySelector("#message");
+        const lessonsOnly = form.querySelector("[data-lessons-only]");
+
+        const applySubject = () => {
+            const option = select.selectedOptions[0];
+            if (message) message.placeholder = option.dataset.placeholder;
+            if (!lessonsOnly) return;
+            const isLessons = option.value === LESSONS_SUBJECT;
+            lessonsOnly.hidden = !isLessons;
+            // Uncheck when hidden, so a stale answer can't be submitted.
+            if (!isLessons) {
+                lessonsOnly.querySelectorAll("input[type=checkbox]").forEach((box) => {
+                    box.checked = false;
+                });
+            }
+        };
+
+        if (select) {
+            select.addEventListener("change", applySubject);
+            applySubject();
+        }
+
+        if (select && trigger && listbox && triggerLabel) {
+            const options = Array.from(listbox.querySelectorAll("[role=option]"));
+
+            const setOpen = (open) => {
+                listbox.hidden = !open;
+                trigger.setAttribute("aria-expanded", open ? "true" : "false");
+                if (open) (options.find((o) => o.ariaSelected === "true") ?? options[0]).focus();
+            };
+
+            const choose = (option) => {
+                select.value = option.dataset.value;
+                select.dispatchEvent(new Event("change", { bubbles: true }));
+                triggerLabel.textContent = option.dataset.value;
+                triggerLabel.classList.remove(
+                    "text-base",
+                    "text-primary/45",
+                    "dark:text-primary-dark/45",
+                );
+                options.forEach((o) => o.setAttribute("aria-selected", String(o === option)));
+                setOpen(false);
+                trigger.focus();
+            };
+
+            trigger.addEventListener("click", () => setOpen(listbox.hidden));
+            trigger.addEventListener("keydown", (event) => {
+                if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                    event.preventDefault();
+                    setOpen(true);
+                }
+            });
+
+            options.forEach((option, index) => {
+                option.addEventListener("click", () => choose(option));
+                option.addEventListener("keydown", (event) => {
+                    const step = { ArrowDown: 1, ArrowUp: -1 }[event.key];
+                    if (step) {
+                        event.preventDefault();
+                        const next = (index + step + options.length) % options.length;
+                        options[next].focus();
+                    } else if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        choose(option);
+                    } else if (event.key === "Escape" || event.key === "Tab") {
+                        setOpen(false);
+                        trigger.focus();
+                    }
+                });
+            });
+
+            document.addEventListener("click", (event) => {
+                if (!listbox.hidden && !listbox.parentElement.contains(event.target)) {
+                    setOpen(false);
+                }
+            });
+        }
+
+        // The subject select is visually hidden, so its error state and focus ride on the trigger.
+        const controlFor = (field) => (field === select && trigger ? trigger : field);
+
+        const showError = (field, show) => {
+            const note = form.querySelector(`[data-error-for="${field.name}"]`);
+            controlFor(field).setAttribute("aria-invalid", show ? "true" : "false");
+            if (note) note.classList.toggle("hidden", !show);
+        };
+
+        const fields = Array.from(form.querySelectorAll("[required]"));
+        fields.forEach((field) => {
+            field.addEventListener("input", () => {
+                if (
+                    controlFor(field).getAttribute("aria-invalid") === "true" &&
+                    field.checkValidity()
+                ) {
+                    showError(field, false);
+                }
+            });
+            field.addEventListener("change", () => {
+                if (
+                    controlFor(field).getAttribute("aria-invalid") === "true" &&
+                    field.checkValidity()
+                ) {
+                    showError(field, false);
+                }
+            });
+        });
+
+        form.addEventListener("submit", (event) => {
+            const invalid = fields.filter((field) => !field.checkValidity());
+            fields.forEach((field) => showError(field, invalid.includes(field)));
+
+            if (invalid.length > 0) {
+                event.preventDefault();
+                controlFor(invalid[0]).focus();
+                return;
+            }
+
+            const subjectLine = form.querySelector("[data-subject-line]");
+            const name = form.querySelector("#name");
+            if (subjectLine && select) {
+                subjectLine.value = name && name.value.trim()
+                    ? `${select.value} — ${name.value.trim()}`
+                    : select.value;
+            }
+
+            // The POST is a full navigation, so the pending state holds until it lands.
+            const button = form.querySelector("[data-submit-button]");
+            if (button) {
+                button.disabled = true;
+                button.textContent = "Sending…";
+            }
+        });
     });
 </script>

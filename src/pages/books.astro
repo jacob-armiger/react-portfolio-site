@@ -13,60 +13,13 @@ const readings: CollectionEntry<"books">[] = collection.sort(
 ---
 
 <Layout title="Books">
-    <main class="col-span-10 col-start-2 sm:col-span-8 sm:col-start-3 lg:col-start-4 lg:col-span-6 page-top">
-        <!-- <a
-            href="https://jacobarmiger.vercel.app/rss.xml"
-            target="_blank"
-            class="absolute right-4 top-[3.8rem] sm:top-7 md:right-16 lg:right-1">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#000000"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"
-                ></path><circle cx="5" cy="19" r="1"></circle></svg
-            >
-        </a> -->
-        <!-- {
-            currentBooks.length > 0 && (
-                <p class="mb-8 ml-4 text-left font-serif text-4xl font-semibold">
-                    Currently Reading
-                </p>
-            )
-        }
-        <div class="mx-4 mb-16 flex flex-col gap-8">
-            {
-                // TODO: make component so that I can fetch image to check it exists. Remove index check
-                currentBooks.map((book, index) => (
-                    <div class="flex flex-col">
-                        {index == 0 && <img
-                            src={`https://covers.openlibrary.org/b/isbn/${book?.data.ISBN13.replace(/\D/g, "") ?? book?.data.ISBN.replace(/\D/g, "")}-M.jpg`}
-                            alt="Book cover"
-                            width="174"
-                            class="pb-2 border-b border-primary dark:border-primary-dark"
-                        />}
-                        <div class="content-end text-left sm:content-center">
-                            <p class="font-serif text-3xl">{book?.data.Title}</p>
-                            <p class="text-lg italic">by {book?.data.Author}</p>
-                        </div>
-                    </div>
-                ))
-            }
-        </div> -->
-        <!-- <div class="text-mono mb-12 mx-4 target:bg-accent bottom-0 flex border border-x-0 border-b-0 border-solid border-[#373737] text-black">
-            <p>Currently Reading</p>
-        </div> -->
-
-        <p class="mb-8 text-left text-5xl font-bold xl:text-nowrap">
+    <main class="site-main page-top mx-auto w-full max-w-2xl">
+        <h1
+            class="mb-4 text-left font-playfair text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
             Recent Readings and Impressions
-        </p>
+        </h1>
 
-        <div class="grid max-w-prose grid-cols-1">
+        <div class="grid max-w-[50em] grid-cols-1">
             {
                 readings.map((book) => {
                     return <Book book={book} />;

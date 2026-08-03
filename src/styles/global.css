@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+/*
+ * darkMode: 'class'. Hand-written CSS keys off html.dark (Layout.astro,
+ * BlogCard.astro, ImageCarousel.astro), so match a .dark ancestor rather than
+ * prefers-color-scheme.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /*
+     * --font-inter / --font-source-serif / --font-playfair-display come from the
+     * fonts config in astro.config.mjs via <Font> in Layout.astro; the generics are
+     * a last resort.
+     */
+    --font-sans: var(--font-inter, ui-sans-serif, system-ui, sans-serif);
+    --font-serif: var(--font-source-serif, ui-serif, Georgia, Cambria, Times, serif);
+    --font-playfair: var(--font-playfair-display, ui-serif, Georgia, Cambria, Times, serif);
+
+    --color-primary: #2a231b;
+    --color-secondary: #e5e2da;
+    --color-primary-dark: #e5e2da;
+    --color-secondary-dark: #26292c;
+}
+
+/*
+ * Site-wide layout and accent tokens, consumed by Layout.astro and component
+ * styles. Not in @theme: they back no utility class.
+ */
+:root {
+    /* Same cap the home hero uses. */
+    --site-max-width: 96rem;
+    /* Single source for content edges; also the home page's --page-inset. */
+    --site-gutter: 1.25rem;
+    /* Nav-to-content separation, applied by .site-gap (Layout.astro). */
+    --site-nav-gap: 2rem;
+    /* Plate: shared framed-image treatment (blog cards, article covers) — hairline
+       on the image plus a hard zero-blur offset shadow. */
+    --plate-rule: rgb(42 35 27 / 0.45);
+    --plate-accent: #284334;
+}
+
+@media (min-width: 640px) {
+    :root {
+        --site-gutter: 1rem;
+    }
+}
+
+/* Higher contrast (4.7:1) so the 11px dateline bullet and hover arrow stay legible. */
+html.dark {
+    --plate-rule: rgb(229 226 218 / 0.25);
+    --plate-accent: #6f9d7f;
+}
+
+/* Ported from the inline plugin in the old tailwind.config.mjs. */
+@utility page-top {
+    margin-top: 1.5rem;
+
+    @variant lg {
+        margin-top: 0;
+        padding-top: 2rem;
+    }
+}

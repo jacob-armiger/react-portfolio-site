@@ -1,53 +1,308 @@
 ---
 import type { ImageMetadata } from "astro";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
+import heroImage from "../assets/contactr_final.webp";
 import Layout from "../layouts/Layout.astro";
 
-const art_images: any = Object.values(
-    import.meta.glob<ImageMetadata>("/src/assets/selectedWork/*", {
+const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
+const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 110vw";
+const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
+const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
+
+const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
+const HERO_BODY =
+    "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
+
+// Hero button classes. Footer's ACTION_CLASS mirrors this; keep them in step.
+const HERO_ACTION_CLASS =
+    "inline-flex items-center justify-center rounded-full sm:rounded-xs font-sans font-semibold uppercase transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
+
+const selectedWorkModules = import.meta.glob<ImageMetadata>(
+    "/src/assets/selectedWork/*.{png,jpg,jpeg}",
+    {
         eager: true,
         import: "default",
-    }),
+    },
 );
+
+// Match the art page's filename ordering so its selected-work deep-link indices stay stable.
+const selectedWorks = Object.entries(selectedWorkModules)
+    .sort(([pathA], [pathB]) =>
+        (pathB.split("/").at(-1) ?? "").localeCompare(pathA.split("/").at(-1) ?? "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+        }),
+    )
+    .map(([, image], index) => ({
+        image,
+        alt: `Selected artwork ${index + 1}`,
+        href: `/art?piece=selected-work-${index}#selected-work`,
+        aspectRatio: image.width / image.height,
+    }));
 ---
 
 <Layout title="JacobLDraws">
-    <main class="col-span-12 lg:col-span-10 lg:pr-4">
-        <div class="relative">
-            <div class="grid w-full grid-cols-12 gap-1 sm:gap-4">
+    <!-- No .site-main: the hero is full-bleed and --page-inset sets the text's left
+         edge. The max-w-6xl cap only applies above 1152px. -->
+    <main class="site-gap mx-auto w-full max-w-6xl overflow-hidden">
+        <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
+        <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
+            <section class="hero-section relative isolate overflow-hidden bg-[#d7cfbe] dark:bg-[#2f2a25]">
+                <p class="hero-eyebrow eyebrow absolute z-30 font-sans uppercase text-primary/70 dark:text-primary-dark/70">
+                    {HERO_EYEBROW}
+                </p>
+
+                <Picture
+                    src={heroImage}
+                    alt="Person reclining beside a green office chair while using a telephone"
+                    formats={["avif", "webp"]}
+                    fallbackFormat="png"
+                    widths={HERO_VARIANT_WIDTHS}
+                    sizes={HERO_SIZES}
+                    quality={80}
+                    priority
+                    class="absolute z-10 aspect-2693/2773 max-w-none top-28 left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
+                />
+
+                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-tighter sm:tracking-[-0.04em] text-orange-100 mix-blend-difference">
+                    Contact me for <br/> art lessons or to commission work.
+                </h1>
+                <!-- mix-blend-color duplicate over the difference layer: keeps the luminosity
+                     inversion but pins hue/saturation to the ink, preventing magenta fringing
+                     over the green chair. Must keep .hero-heading geometry and the same z. -->
                 <div
-                    class="relative col-span-12 row-span-3 mb-2 h-[70vh] min-h-[500px] bg-cover bg-top lg:col-span-8 lg:h-auto"
-                    style="background-image: url(/banner_image2.jpeg)">
-                    <div
-                        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
-                    </div>
-                    <div class="relative flex h-full flex-col justify-end px-6 pb-16 text-left text-white sm:px-10 sm:pb-20 lg:justify-center lg:pb-0">
-                        <p
-                            class="max-w-md font-serif font-medium text-4xl leading-tight text-secondary sm:max-w-lg sm:text-5xl md:text-7xl md:tracking-tight lg:max-w-xl 2xl:text-7xl dark:text-primary-dark-bright">
-                            Want art lessons or to commission work?
-                        </p>
-                        <a href="/contact" class="mt-8 w-fit">
-                            <button
-                                class="border-[1px] border-secondary bg-secondary px-10 py-8 lg:mb-20 font-medium tracking-wide text-primary transition-colors duration-200 hover:bg-transparent hover:text-secondary">
-                                Contact Me
-                            </button>
+                    aria-hidden="true"
+                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-semibold leading-[1.1] tracking-tighter text-primary mix-blend-color sm:tracking-[-0.04em] dark:text-primary-dark">
+                    Contact me for <br/> art lessons or to commission work.
+                </div>
+
+                <!-- bottom-6 is larger than the eyebrow's top inset to clear the frame edge.
+                     right is only pinned below sm, where the buttons span full width. -->
+                <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
+                    <!-- Hidden below sm, where the frame is too short for body copy. -->
+                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-primary/85 lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65] dark:text-primary-dark/85">
+                        {HERO_BODY}
+                    </p>
+                    <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
+                    <div class="flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
+                        <a
+                            href="/contact"
+                            class:list={[
+                                HERO_ACTION_CLASS,
+                                "bg-primary text-secondary shadow-[0_16px_40px_rgba(38,41,44,0.22)] focus-visible:outline-primary dark:bg-primary-dark dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
+                            ]}>
+                            Contact
+                        </a>
+                        <a
+                            href="/art-lessons"
+                            class:list={[
+                                HERO_ACTION_CLASS,
+                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md focus-visible:outline-primary dark:border-primary-dark/25 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
+                            ]}>
+                            Learn to Draw
                         </a>
                     </div>
                 </div>
-                {
-                    art_images.map((img: ImageMetadata) => (
-                        <div class="col-span-12 sm:col-span-6 lg:col-span-4">
-                            <Image
-                                src={img.src}
-                                alt="Most recent blog image"
-                                width={268}
-                                height={358}
-                                class="w-full object-cover sm:h-[38rem] lg:h-[28.5rem]"
-                            />
-                        </div>
-                    ))
-                }
-            </div>
+            </section>
+
+            <section aria-labelledby="selected-work-heading" class="pb-2">
+                <div class="section-header max-w-xl border-t border-primary/10 pt-5 sm:pt-6 dark:border-primary-dark/10">
+                    <p class="eyebrow font-sans uppercase text-primary/70 dark:text-primary-dark/70">
+                        Selected work
+                    </p>
+                    <div class="mt-2 flex flex-wrap items-baseline gap-x-4">
+                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
+                            What I can make.
+                        </h2>
+                        <!-- Negative margin cancels the padding so the tap target grows without moving the row. -->
+                        <a
+                            href="/art"
+                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline underline-offset-4 transition-colors hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark">
+                            See more
+                        </a>
+                    </div>
+                </div>
+
+                <!-- gap-1 below sm: at 375px the widest tile pair fits two-up with no room
+                     to spare; any larger gap drops them to one-up. -->
+                <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-3">
+                    {
+                        selectedWorks.map(({ image, alt, href, aspectRatio }) => (
+                            <a
+                                href={href}
+                                style={`--tile-ratio: ${aspectRatio};`}
+                                class="selected-work-tile group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark"
+                                aria-label={`View ${alt} on the art page`}>
+                                <Picture
+                                    src={image}
+                                    alt={alt}
+                                    formats={["avif", "webp"]}
+                                    widths={GALLERY_VARIANT_WIDTHS}
+                                    sizes={GALLERY_SIZES}
+                                    quality={78}
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="block h-full w-full object-contain transition-transform duration-1000 ease-in-out group-hover:scale-[1.01]"
+                                />
+                            </a>
+                        ))
+                    }
+                </div>
+            </section>
         </div>
     </main>
 </Layout>
+
+<style>
+    /*
+     * Shared horizontal inset: hero eyebrow, headline, actions and the Selected Work
+     * heading all measure from this so their left edges align.
+     */
+    .page-sections {
+        --page-inset: var(--site-gutter);
+        /* Shared size/tracking for all small-caps labels on the page. Tracking widens
+           as the size drops. */
+        --eyebrow-size: 0.5625rem;
+        --eyebrow-tracking: 0.26em;
+    }
+
+    @media (min-width: 640px) {
+        .page-sections {
+            --eyebrow-size: 0.625rem;
+            --eyebrow-tracking: 0.24em;
+        }
+    }
+
+    .section-header {
+        padding-inline: var(--page-inset);
+    }
+
+    .eyebrow {
+        font-size: var(--eyebrow-size);
+        font-weight: 500;
+        line-height: 1.45;
+        letter-spacing: var(--eyebrow-tracking);
+    }
+
+    /*
+     * Justified rows: flex-basis/grow scale with each tile's aspect ratio
+     * (--tile-ratio, set inline per tile) so complete rows fill the container
+     * without cropping.
+     */
+    .selected-work-grid::after {
+        flex: 999 1 13rem;
+        content: "";
+    }
+
+    .selected-work-tile {
+        max-width: 100%;
+        aspect-ratio: var(--tile-ratio);
+        flex-grow: var(--tile-ratio);
+        flex-shrink: 1;
+        flex-basis: calc(var(--tile-ratio) * 13rem);
+    }
+
+    @media (min-width: 640px) {
+        .selected-work-grid::after {
+            flex-basis: 17rem;
+        }
+
+        .selected-work-tile {
+            flex-basis: calc(var(--tile-ratio) * 17rem);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .selected-work-grid::after {
+            flex-basis: 20rem;
+        }
+
+        .selected-work-tile {
+            flex-basis: calc(var(--tile-ratio) * 20rem);
+        }
+    }
+
+    /*
+     * Hero layout dials, mobile-first. Only multi-consumer or calc-composed values
+     * live here; single-use sizes are Tailwind classes in the markup.
+     */
+    .hero-section {
+        /* Heading box width = font size x ratio, so line breaks stay stable across
+           viewport widths (a percentage width would shift them). */
+        --hero-heading-ratio: 6.4;
+        --hero-heading-size: min(14vw, 3.55rem);
+        /* Headline top = inset + eyebrow line box (1.45 line-height) + 1rem gap. */
+        --hero-heading-top: calc(var(--page-inset) + (var(--eyebrow-size) * 1.45) + 1rem);
+        /* Full bleed with a bottom hairline below lg; the double frame is lg-only. */
+        --hero-frame-border: 0px;
+        --hero-frame-line: rgba(42, 35, 27, 0.15);
+        /* Absolutely-positioned children measure from the padding box; subtract the
+           frame border so text stays on --page-inset. */
+        --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
+        border: var(--hero-frame-border) solid var(--hero-frame-line);
+        border-bottom-width: 1px;
+        min-height: 43rem;
+        background-image:
+            linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
+            linear-gradient(315deg, rgba(141, 189, 182, 0.12), transparent 42%);
+    }
+
+    .hero-eyebrow {
+        top: var(--page-inset);
+        left: var(--hero-inline-inset);
+    }
+
+    @media (max-width: 639px) {
+        .hero-eyebrow {
+            max-width: calc(100% - (2 * var(--hero-inline-inset)));
+        }
+    }
+
+    .hero-heading {
+        top: var(--hero-heading-top);
+        /* Compensate Playfair's ~0.039em left side bearing so the painted edge lands
+           on --page-inset. */
+        left: calc(var(--hero-inline-inset) - (var(--hero-heading-size) * 0.039));
+        width: calc(var(--hero-heading-size) * var(--hero-heading-ratio));
+        font-size: var(--hero-heading-size);
+    }
+
+    @media (min-width: 640px) {
+        .hero-section {
+            --hero-heading-ratio: 7.9;
+            --hero-heading-size: min(11.6vw, 6.25rem);
+            /* The 46.5rem floor keeps the bottom-anchored copy clear of the headline
+               on short viewports (worst case 860-1023px wide). */
+            min-height: clamp(46.5rem, 78vh, 47.5rem);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .hero-section {
+            /* The sidebar nav narrows the section, so the heading cap shrinks. */
+            --hero-heading-size: min(9.6vw, 7rem);
+            --hero-frame-border: 1px;
+            min-height: clamp(46rem, 88vh, 52rem);
+        }
+
+        /* Inner rule of the double frame: above the artwork (z-15), under the text.
+           The radius subtracts the outer border width to stay concentric. */
+        .hero-section::before {
+            position: absolute;
+            z-index: 15;
+            inset: 0.25rem;
+            border: 1px solid var(--hero-frame-line);
+            border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
+            pointer-events: none;
+            content: "";
+        }
+    }
+
+    /* Keyed to html.dark, not prefers-color-scheme: dark mode is class-based. */
+    :global(html.dark) .hero-section {
+        --hero-frame-line: rgba(229, 226, 218, 0.15);
+        background-image:
+            linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
+            linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);
+    }
+</style>

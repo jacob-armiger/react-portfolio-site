@@ -1,0 +1,109 @@
+---
+import { ACTION_CLASS, ACTION_OUTLINE, ACTION_SOLID } from "../config/actionClass";
+import InstagramGlyph from "./InstagramGlyph.astro";
+
+/*
+ * Site footer, rendered on every page from Layout.astro.
+ * Keep the "Explore" list complete: the topbar hides BOOKS below md and
+ * DIRECTORY below sm, so this is the only route to those pages on a phone.
+ */
+
+const year = new Date().getFullYear();
+
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isContactPage = pathname === "/contact";
+
+const EXPLORE = [
+    { href: "/art-lessons", label: "Lessons" },
+    { href: "/art", label: "Art" },
+    { href: "/writing", label: "Blog" },
+    { href: "/books", label: "Books" },
+    { href: "/directory", label: "Directory" },
+    { href: "/contact", label: "Contact" },
+];
+
+const LINK_CLASS =
+    "underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-hidden";
+
+const HEADING_CLASS =
+    "font-sans text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-primary/50 dark:text-primary-dark/50";
+---
+
+<!-- Full-width band under the shell, sharing its max-width and gutters. -->
+<footer
+    class="mx-auto mt-20 w-full max-w-(--site-max-width) flex-none border-t border-primary/15 px-(--site-gutter) font-sans wrap-anywhere lg:mt-28 dark:border-primary-dark/15">
+    <!-- Conversion band, on every page: /art and /writing are common entry points. -->
+    <section class="flex flex-col gap-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:py-12">
+        <p class="max-w-md font-serif text-lg leading-relaxed text-primary/85 dark:text-primary-dark/85">
+            One-on-one lessons and commission work &mdash; online, or in person in New York
+            City.
+        </p>
+
+        <div class="flex flex-wrap gap-3 sm:gap-4">
+            <a
+                href="/art-lessons"
+                class:list={[
+                    ACTION_CLASS,
+                    ACTION_SOLID,
+                ]}>
+                Learn to Draw
+            </a>
+            {
+                /* Hidden on /contact, where the form is already the page. */
+                !isContactPage && (
+                    <a
+                        href="/contact"
+                        class:list={[
+                            ACTION_CLASS,
+                            ACTION_OUTLINE,
+                        ]}>
+                        Contact
+                    </a>
+                )
+            }
+        </div>
+    </section>
+
+    <div class="grid gap-10 border-t border-primary/10 py-10 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] sm:gap-12 dark:border-primary-dark/10">
+        <nav aria-label="Footer">
+            <h2 class={HEADING_CLASS}>Explore</h2>
+            <!-- w-fit keeps the two link columns close together. -->
+            <ul class="mt-4 grid w-fit grid-cols-2 gap-x-16 gap-y-3 text-sm">
+                {
+                    EXPLORE.map((link) => (
+                        <li>
+                            <a href={link.href} class={LINK_CLASS}>
+                                {link.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </nav>
+
+        <div>
+            <h2 class={HEADING_CLASS}>Elsewhere</h2>
+            <ul class="mt-4 space-y-3 text-sm">
+                <li>
+                    <a
+                        href="https://www.instagram.com/jacobldraws/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class:list={["inline-flex items-center gap-2", LINK_CLASS]}>
+                        <InstagramGlyph class="h-[1.1em] w-[1.1em]" />
+                        Instagram
+                    </a>
+                </li>
+                <li>
+                    <a href="/writing/rss.xml" class={LINK_CLASS}>RSS feed</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="border-t border-primary/10 py-6 dark:border-primary-dark/10">
+        <p class="text-xs leading-relaxed text-primary/55 dark:text-primary-dark/55">
+            &copy; {year} JacobLDraws. All artwork rights reserved.
+        </p>
+    </div>
+</footer>

@@ -1,63 +1,224 @@
 ---
 import Analytics from "@vercel/analytics/astro";
-import "@fontsource-variable/inter";
-import "@fontsource-variable/playfair-display";
+import { Font } from "astro:assets";
+import "../styles/global.css";
+// Fonts: Inter (sans/UI), Source Serif 4 (body), Playfair Display (headings).
+// Registered in astro.config.mjs and rendered by the <Font> tags below.
+import BreakpointIndicator from "../components/BreakpointIndicator.astro";
+import Footer from "../components/Footer.astro";
+import InstagramGlyph from "../components/InstagramGlyph.astro";
+import { backgroundTexture, type TextureSettings } from "../config/backgroundTexture";
 interface Props {
     title: string;
 }
 
 const { title } = Astro.props;
+
+// Normalize trailing slashes so /writing/ and /writing compare equal.
+const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) => currentPath === href || currentPath.startsWith(href + "/");
+const navLinks = [
+    { href: "/art-lessons", label: "LESSONS" },
+    { href: "/art", label: "ART" },
+    { href: "/writing", label: "BLOG" },
+    { href: "/books", label: "BOOKS", visibility: "hidden md:block" },
+    { href: "/directory", label: "DIRECTORY", visibility: "hidden sm:block" },
+];
+// Active nav state is the full-ink color alone; resting links sit at /70.
+const NAV_LINK_CLASS =
+    "font-sans transition-colors hover:underline lg:font-medium lg:tracking-[0.18em]";
+const NAV_INK_REST =
+    "text-primary/70 hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark";
+const NAV_INK_CURRENT = "text-primary dark:text-primary-dark";
+// Texture dials live in backgroundTexture.ts; emitted as raw CSS because only the
+// hashed asset URLs are dynamic.
+const textureRule = ({ asset, opacity, blendMode, size, repeat }: TextureSettings) =>
+    `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode}; opacity: ${opacity};`;
+const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } html.dark body::before { ${textureRule(backgroundTexture.dark)} }`;
 ---
 
 <!doctype html>
 <html lang="en">
     <head>
         <meta property="og:url" content="https://jacobldraws.vercel.app" />
-        <meta property="og:image" content="/banner_image.jpeg" />
+        <meta property="og:image" content="/phone_img.png" />
         <meta charset="UTF-8" />
         <meta name="description" content="View Jacob's art or contact him for work!" />
         <meta name="viewport" content="width=device-width" />
+        <!-- SVG icon with a 32px PNG fallback; apple-touch-icon covers iOS bookmarks. -->
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="alternate" type="application/rss+xml" title="Articles – JacobLDraws" href="/writing/rss.xml" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="Articles – JacobLDraws"
+            href="/writing/rss.xml"
+        />
         <meta name="generator" content={Astro.generator} />
-        <title>{title}</title>
+        <title class="font-serif">{title}</title>
+        <!-- Preload Inter and Source Serif (used on every page). Playfair only sets two
+             home-page headings, so it is not preloaded site-wide. -->
+        <Font cssVariable="--font-inter" preload={[{ style: "normal" }]} />
+        <Font cssVariable="--font-source-serif" preload={[{ style: "normal" }]} />
+        <Font cssVariable="--font-playfair-display" />
+        <!-- Before <Analytics /> so a page's LCP preload isn't queued behind its ~5KB
+             inline module. -->
+        <slot name="head" />
         <Analytics />
+        <style set:html={textureCss}></style>
     </head>
-    <body class="bg-secondary text-primary dark:bg-secondary-dark dark:text-primary-dark">
-        <div class="grid min-h-screen content-start grid-cols-12">
+    <body
+        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark">
+        <!-- <div
+            aria-hidden="true"
+            class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-secondary to-transparent dark:from-secondary-dark lg:hidden">
+        </div> -->
+        <div class="site-shell relative z-10">
+            <BreakpointIndicator />
             <nav
-                class="text-md sticky top-0 z-50 col-span-12 flex h-fit w-full flex-wrap items-center justify-start gap-x-6 gap-y-2 border-b-[1px] border-primary
-                 bg-secondary px-2 py-2 text-left tracking-wide underline-offset-4 backdrop-blur-md 
-                 sm:gap-8 sm:py-2 sm:text-xl 
-                 lg:col-span-2 lg:h-screen lg:flex-nowrap lg:flex-col lg:items-start lg:border-none lg:pb-4 lg:pl-4 lg:pr-0 lg:pt-16
-                dark:border-primary-dark dark:bg-secondary-dark/80">
-                <a href="/" class="font-serif font-bold hover:underline">JacobLDraws</a>
-                <a href="/art-lessons" class="font-serif hover:underline">LESSONS</a>
-                <a href="/art" class="font-serif hover:underline">ART</a>
-                <a href="/writing" class="font-serif hover:underline">BLOG</a>
-                <a href="/books" class="hidden font-serif hover:underline md:block">BOOKS</a>
-                <a href="/directory" class="hidden font-serif hover:underline sm:block">DIRECTORY</a>
-                <!-- <a href="/projects" class="font-serif font-medium hover:underline">projects</a> -->
+                class="site-nav sticky top-0 z-50 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-primary/50 bg-secondary/80 py-3 font-sans underline-offset-4 backdrop-blur-md sm:gap-x-6 sm:py-2 sm:text-xl lg:flex-col lg:items-start lg:self-start lg:border-none lg:bg-transparent lg:pb-4 lg:pt-8 lg:text-[13px] lg:backdrop-blur-none dark:border-primary-dark/50 dark:bg-primary/10">
+                <!-- lg:leading-[48px] matches the page headings' text-5xl line box so both
+                     columns start level at lg:pt-8. mb-6 separates the wordmark from the
+                     link list below it. -->
+                <a
+                    href="/"
+                    class="font-playfair font-semibold hover:underline lg:mb-6 lg:text-[20px] lg:leading-[48px]"
+                    >JacobLDraws</a
+                >
+                {
+                    navLinks.map(({ href, label, visibility }) => (
+                        <a
+                            href={href}
+                            aria-current={isActive(href) ? "page" : undefined}
+                            class:list={[
+                                NAV_LINK_CLASS,
+                                isActive(href) ? NAV_INK_CURRENT : NAV_INK_REST,
+                                visibility,
+                            ]}>
+                            {label}
+                        </a>
+                    ))
+                }
                 <a
                     href="https://www.instagram.com/jacobldraws/"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="JacobLDraws on Instagram"
-                    class="dark:hidden"
-                    ><img src="/Instagram_Glyph_Black.svg" width="20" /></a
-                >
-                <a
-                    href="https://www.instagram.com/jacobldraws/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="JacobLDraws on Instagram"
-                    class="hidden dark:block"><img src="/Instagram_Glyph_White.svg" width="20" /></a
-                >
+                    class="inline-flex items-center hover:opacity-70">
+                    <InstagramGlyph />
+                </a>
             </nav>
             <!-- slot goes directly in grid so each page's root element can be a grid item -->
             <slot />
-            <div aria-hidden="true" class="col-span-12 h-12 lg:col-span-10 lg:col-start-3 sm:h-16"></div>
         </div>
+        <!-- Outside .site-shell: as a grid item it would share a stacking context with
+             the sticky nav and paint underneath it. -->
+        <Footer />
         <script is:inline type="module" src="/scripts/imageZoom.js"></script>
     </body>
 </html>
+
+<style is:global>
+    /*
+     * Shared site container: nav track + gutter + content inside one capped, centred
+     * frame. Tokens (--site-max-width, --site-gutter, --site-nav-gap, --plate-*) live
+     * in global.css.
+     */
+
+    /* Sticky footer. position: relative anchors the body::before texture layer,
+       whose values are emitted from backgroundTexture.ts in <head>. */
+    body {
+        position: relative;
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    .site-shell {
+        display: grid;
+        width: 100%;
+        max-width: var(--site-max-width);
+        flex: 1 0 auto;
+        margin-inline: auto;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+    }
+
+    @media (min-width: 1024px) {
+        .site-shell {
+            /* max-content keeps the nav column exactly as wide as its longest link. */
+            grid-template-columns: max-content minmax(0, 1fr);
+            grid-template-rows: minmax(0, 1fr);
+            /* Without this gap, content sits one gutter closer to the nav than to the
+               screen edge. */
+            column-gap: var(--site-gutter);
+            padding-inline: var(--site-gutter);
+        }
+    }
+
+    /* Below lg the shell has no padding, so the topbar carries its own gutter and
+       its background/border span the full viewport. */
+    .site-nav {
+        padding-inline: var(--site-gutter);
+    }
+
+    /*
+     * Page insets:
+     *   .site-main  - on <main>, insets the whole page.
+     *   .site-inset - on children of a full-bleed page that still need the gutter.
+     * Both go to zero at lg, where the shell's padding takes over. Home uses neither.
+     */
+    .site-main,
+    .site-inset {
+        padding-inline: var(--site-gutter);
+    }
+
+    /*
+     * Every <main> pairs mx-auto with w-full: auto inline margins on an auto-width
+     * grid item mean shrink-to-fit, so without w-full the page width tracks content.
+     */
+
+    /*
+     * min-width: 0 stops one long word in a large heading from pushing <main> wider
+     * than its track. overflow-wrap: anywhere (not break-word) because only
+     * `anywhere` counts soft wraps toward min-content width.
+     */
+    .site-shell > * {
+        min-width: 0;
+    }
+
+    .site-main,
+    .site-inset {
+        overflow-wrap: anywhere;
+    }
+
+    /* At lg the shell's padding replaces the insets above. */
+    @media (min-width: 1024px) {
+        .site-nav,
+        .site-main,
+        .site-inset {
+            padding-inline: 0;
+        }
+
+        /* 3.5rem baseline-to-baseline pitch via row-gap rather than line-height, so
+           hit areas stay link-sized and the Instagram glyph falls into rhythm. */
+        .site-nav {
+            row-gap: calc(3.5rem - 1.5em);
+            line-height: 1.5;
+        }
+
+        /* Symmetric breathing room beside the nav, for pages that fill the track. */
+        .site-gap {
+            padding-inline: var(--site-nav-gap);
+        }
+    }
+
+    body::before {
+        position: absolute;
+        z-index: -20;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+    }
+</style>

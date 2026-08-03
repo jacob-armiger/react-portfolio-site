@@ -16,14 +16,18 @@ const articles = (await getCollection("article")).sort(
 ---
 
 <Layout title="Writing">
-    <main class="col-span-12 px-4 sm:px-6 lg:col-start-4 lg:col-span-6 lg:px-0 page-top">
-        <div class="mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 border-primary pb-6 dark:border-primary-dark">
-            <p class="text-left text-5xl font-bold leading-none xl:text-nowrap">Articles</p>
+    <main class="site-main page-top mx-auto w-full max-w-3xl">
+        <div class="mb-4 flex flex-wrap items-end gap-x-3 gap-y-2">
+            <h1
+                class="text-left font-playfair text-4xl font-semibold leading-none tracking-[-0.04em] sm:text-5xl xl:text-nowrap">
+                Articles
+            </h1>
             <RssFeedButton />
         </div>
 
-        <div class="grid gap-y-12 sm:grid-cols-2 sm:gap-6 sm:gap-y-8 lg:grid-cols-3">
-            {articles.map((art) => <BlogCard art={art} />)}
+        <!-- Gap large enough that each card's 6px offset shadow clears the next card. -->
+        <div class="flex flex-col gap-y-8 sm:gap-y-10">
+            {articles.map((art, index) => <BlogCard art={art} featured={index === 0} />)}
         </div>
     </main>
 </Layout>

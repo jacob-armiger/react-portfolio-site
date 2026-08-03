@@ -11,9 +11,12 @@ const article = defineCollection({
     schema: ({ image }) => z.object({
         date: z.date(),
         image: image(),
+        // Optional so a decorative cover can render an empty alt instead of a
+        // generic string.
+        imageAlt: z.string().optional(),
         title: z.string().optional(),
         reference: z.string().optional(),
-        reference_url: z.string().url().optional(),
+        reference_url: z.url().optional(),
   }),
 });
 
