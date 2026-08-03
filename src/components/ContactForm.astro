@@ -151,9 +151,8 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
         <p id="subject-error" class={ERROR_CLASS} data-error-for="subject">
             Please choose what this is about.
         </p>
-    </div>
 
-    <div data-lessons-only hidden={!lessonsDefault}>
+    <div data-lessons-only hidden={!lessonsDefault} class="">
         <label
             for="local-to-new-york"
             class="flex cursor-pointer items-start gap-3 text-base leading-relaxed text-primary/90 dark:text-primary-dark/90">
@@ -166,6 +165,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
             />
             <span>I'm in New York City and open to lessons in person.</span>
         </label>
+    </div>
     </div>
 
     <div class="flex flex-col gap-2">

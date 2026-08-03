@@ -12,6 +12,9 @@ export function preloadImageZoomSrc(src) {
 }
 
 const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChange, onClose } = {}) => {
+  // Shared by every control surface; the artwork keeps its own softer radius.
+  const CONTROL_RADIUS = '3px';
+
   const modal = document.createElement('div');
   modal.style.cssText = `
     position: fixed;
@@ -70,12 +73,80 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     z-index: 10000;
   `;
 
+  // Top-left is the one corner free in every layout: the toolbar moves between
+  // bottom-right and top-right, and the thumbnail strip is bottom-center.
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.setAttribute('role', 'status');
+  loadingIndicator.setAttribute('aria-label', 'Loading full-resolution image');
+  // opacity alone still exposes it to screen readers, so gate that separately.
+  loadingIndicator.setAttribute('aria-hidden', 'true');
+  loadingIndicator.style.cssText = `
+    position: fixed;
+    top: 16px; left: 16px;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: ${CONTROL_RADIUS};
+    z-index: 10002;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+  `;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const spinner = document.createElement('div');
+  spinner.style.cssText = `
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+    ${prefersReducedMotion ? '' : 'border-top-color: rgba(255,255,255,0.95);'}
+  `;
+  loadingIndicator.appendChild(spinner);
+
+  // WAAPI rather than a keyframes rule: this script styles everything inline
+  // and has no stylesheet to attach @keyframes to.
+  const spinAnimation = prefersReducedMotion
+    ? null
+    : spinner.animate(
+        [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+        { duration: 700, iterations: Infinity, easing: 'linear' }
+      );
+  spinAnimation?.pause();
+
+  // Hover preloading means the full image is often already cached, so hold the
+  // indicator back briefly rather than flashing it on every instant swap.
+  const LOADING_INDICATOR_DELAY_MS = 180;
+  let loadingDelayTimer = null;
+
+  const showLoadingIndicator = () => {
+    if (loadingDelayTimer !== null) return;
+    loadingDelayTimer = window.setTimeout(() => {
+      loadingDelayTimer = null;
+      loadingIndicator.style.opacity = '1';
+      loadingIndicator.setAttribute('aria-hidden', 'false');
+      spinAnimation?.play();
+    }, LOADING_INDICATOR_DELAY_MS);
+  };
+
+  const hideLoadingIndicator = () => {
+    if (loadingDelayTimer !== null) {
+      window.clearTimeout(loadingDelayTimer);
+      loadingDelayTimer = null;
+    }
+    loadingIndicator.style.opacity = '0';
+    loadingIndicator.setAttribute('aria-hidden', 'true');
+    spinAnimation?.pause();
+  };
+
   const btnStyle = `
     width: 36px; height: 36px;
     background: rgba(255,255,255,0.15);
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 6px;
+    border-radius: ${CONTROL_RADIUS};
     color: #fff;
     font-size: 20px; line-height: 1;
     cursor: pointer;
@@ -141,6 +212,11 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
   let ty = 0;
   const BUTTON_STEP = 1.1;
   const CLICK_SCALE = 2.2;
+  // Trackpad pinch deltas are small and continuous; this maps a full gesture to
+  // roughly the same travel a pinch produces elsewhere on the platform.
+  const WHEEL_ZOOM_SENSITIVITY = 0.01;
+  // Caps any single wheel event at ~1.6x so a mouse notch steps instead of leaping.
+  const WHEEL_ZOOM_MAX_STEP = 50;
   const MIN_SCALE = 1;
   const MAX_SCALE = 8;
   const EPSILON = 0.001;
@@ -290,7 +366,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     background: rgba(255,255,255,0.15);
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 6px;
+    border-radius: ${CONTROL_RADIUS};
     color: #fff; font-size: 22px; line-height: 1;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
@@ -345,21 +421,25 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     }
 
     if (!fullSrc || fullSrc === previewSrc) {
+      hideLoadingIndicator();
       warmNeighbors(index);
       return;
     }
 
     const thisLoadToken = ++sourceLoadToken;
+    showLoadingIndicator();
     preloadImageZoomSrc(fullSrc);
 
     const fullImg = new Image();
     fullImg.decoding = 'async';
     fullImg.onload = () => {
       if (thisLoadToken !== sourceLoadToken) return;
+      hideLoadingIndicator();
       img.src = fullSrc;
       warmNeighbors(index);
     };
     fullImg.onerror = () => {
+      if (thisLoadToken === sourceLoadToken) hideLoadingIndicator();
       warmNeighbors(index);
     };
     fullImg.src = fullSrc;
@@ -432,7 +512,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       padding: 6px 8px;
       overflow-x: auto;
       overflow-y: hidden;
-      border-radius: 10px;
+      border-radius: 8px;
       background: rgba(0,0,0,0.35);
       backdrop-filter: blur(4px);
       z-index: 10000;
@@ -445,7 +525,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       thumbBtn.style.cssText = `
         width: 42px; height: 42px;
         border: 1px solid rgba(255,255,255,0.35);
-        border-radius: 6px;
+        border-radius: ${CONTROL_RADIUS};
         overflow: hidden;
         padding: 0;
         background: transparent;
@@ -602,16 +682,41 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     applyTransform();
   };
 
-  const onWheel = (e) => {
-    if (scale <= MIN_SCALE + EPSILON) return;
-    e.preventDefault();
-
+  // The 0.15s ease that makes button zooming feel smooth reads as lag during a
+  // continuous gesture, so drop it for the duration and restore once idle.
+  const suspendTransitionWhileWheeling = () => {
     img.style.transition = 'none';
     if (wheelEndTimer !== null) window.clearTimeout(wheelEndTimer);
     wheelEndTimer = window.setTimeout(() => {
       wheelEndTimer = null;
       if (!dragging) img.style.transition = 'transform 0.15s ease';
     }, 80);
+  };
+
+  const onWheel = (e) => {
+    // Trackpad pinch (and ⌘/ctrl + scroll) surface as wheel events with
+    // ctrlKey set — the platform convention for "zoom, don't scroll".
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      suspendTransitionWhileWheeling();
+      const zoomUnit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? window.innerHeight : 1);
+      // Trackpad pinches arrive as many small deltas, but one mouse-wheel notch
+      // can be 100+ at once; clamp so a notch steps rather than leaps.
+      const zoomDelta = Math.max(
+        -WHEEL_ZOOM_MAX_STEP,
+        Math.min(WHEEL_ZOOM_MAX_STEP, e.deltaY * zoomUnit)
+      );
+      // Exponential so each notch is a constant ratio; zooming out then back in
+      // by the same distance returns to where you started.
+      zoomTo(scale * Math.exp(-zoomDelta * WHEEL_ZOOM_SENSITIVITY), e.clientX, e.clientY);
+      didDrag = true;
+      return;
+    }
+
+    if (scale <= MIN_SCALE + EPSILON) return;
+    e.preventDefault();
+
+    suspendTransitionWhileWheeling();
 
     const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? window.innerHeight : 1);
     wheelDX += e.deltaX * unit;
@@ -664,11 +769,17 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       window.clearTimeout(closeTimer);
       closeTimer = null;
     }
+    if (loadingDelayTimer !== null) {
+      window.clearTimeout(loadingDelayTimer);
+      loadingDelayTimer = null;
+    }
+    spinAnimation?.cancel();
 
     btnPrev?.remove();
     btnNext?.remove();
     thumbStrip?.remove();
     topFade.remove();
+    loadingIndicator.remove();
     document.body.style.overflow = '';
     toolbar.remove();
     modal.remove();
@@ -858,7 +969,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     document.body.appendChild(thumbStrip);
   }
 
-  return { modal, toolbar };
+  return { modal, toolbar, loadingIndicator };
 };
 
 export function openImageZoom(src, {
@@ -874,7 +985,7 @@ export function openImageZoom(src, {
   const allPreviewSrcs = srcs.length > 0
     ? previewSrcs
     : [previewSrc || src];
-  const { modal, toolbar } = createModal({
+  const { modal, toolbar, loadingIndicator } = createModal({
     srcs: allSrcs,
     startIndex: idx,
     previewSrcs: allPreviewSrcs,
@@ -882,6 +993,7 @@ export function openImageZoom(src, {
     onClose,
   });
   document.body.appendChild(toolbar);
+  document.body.appendChild(loadingIndicator);
   document.body.appendChild(modal);
 }
 
