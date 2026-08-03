@@ -136,7 +136,10 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/30 via-55% to-transparent">
             </div>
 
-            <div class=" pointer-events-none absolute inset-1 border border-[#887928]/80 mix-blend-color-dodge rounded-r-[1rem]">
+            <!-- No blend mode: color-dodge collapsed the rule into whatever it crossed,
+                 so it vanished over both highlights and deep shadow. The gold is a
+                 midtone, so composited straight it holds against either. -->
+            <div class=" pointer-events-none absolute inset-1 border border-[#887928]/80 rounded-r-[1rem]">
             </div>
 
             <div class="relative mb-8">
@@ -195,7 +198,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                                 decoding="async"
                                 class="w-full sm:h-full object-cover"
                             />
-                            <div class="pointer-events-none absolute inset-1 border border-[#887928]/60 mix-blend-color-dodge rounded-t-full"/>
+                            <div class="pointer-events-none absolute inset-1 border border-[#887928]/80 rounded-t-full"/>
 
                         </figure>
                         <div class="sm:hidden text-left mx-2 place-self-center">
