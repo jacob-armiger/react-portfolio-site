@@ -105,11 +105,13 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                     "group/trigger flex w-full cursor-pointer items-center justify-between gap-3 text-left",
                 ]}
                 data-subject-trigger>
+                <!-- Unselected mirrors the inputs' placeholder:text-base; picking a subject
+                     drops back to the field's own text-lg. -->
                 <span
                     data-subject-label
                     class:list={[
-                        "truncate text-base",
-                        !defaultSubject && "text-primary/45 dark:text-primary-dark/45",
+                        "truncate",
+                        !defaultSubject && "text-base text-primary/45 dark:text-primary-dark/45",
                     ]}>
                     {defaultSubject || "Choose a subject"}
                 </span>
@@ -282,7 +284,11 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                 select.value = option.dataset.value;
                 select.dispatchEvent(new Event("change", { bubbles: true }));
                 triggerLabel.textContent = option.dataset.value;
-                triggerLabel.classList.remove("text-primary/45", "dark:text-primary-dark/45");
+                triggerLabel.classList.remove(
+                    "text-base",
+                    "text-primary/45",
+                    "dark:text-primary-dark/45",
+                );
                 options.forEach((o) => o.setAttribute("aria-selected", String(o === option)));
                 setOpen(false);
                 trigger.focus();

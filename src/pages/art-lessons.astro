@@ -1,8 +1,9 @@
 ---
 import ContactForm from "../components/ContactForm.astro";
-import { getImage } from "astro:assets";
+import { getImage, Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import heroSource from "../assets/lessons2_final.webp";
+import profileImg from "../assets/profile_img.jpeg";
 
 type ArtModule = { default: ImageMetadata };
 type LessonGalleryEntry = {
@@ -52,9 +53,9 @@ const artModules = import.meta.glob<ArtModule>(
 );
 
 const steps: string[] = [
-    "Your ability to draw is the foundation of all your work. I’ll help you refine your approach, so you can draw any subject and do it skillfully.",
+    "Your ability to draw is the foundation of all your work. Sharpen your approach, so you can draw any subject and do it confidently.",
     "Strengthen your grasp on painting processes and materials, whether it’s oil, digital, or any other medium.",
-    "A solid foundation enables you to build anything. I can help you through exploratory projects and creative drawing.",
+    "Equip yourself to make original work. I'll walk you through ideation, iteration, and execution.",
 ];
 
 const lessonGallery: LessonGalleryEntry[] = await Promise.all(
@@ -148,7 +149,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             <div class=" relative mb-4 flex w-2/3 sm:w-1/2 flex-col gap-8 text-base leading-relaxed">
                 <div class="sm:border-l-2 border-secondary sm:pl-4 dark:border-primary-dark">
                     <p class="text-lg font-semibold">$50 &mdash; One hour, one-on-one</p>
-                    <p class="mt-1 opacity-90">Sessions are scheduled at your convenience.</p>
+                    <p class="mt-1 opacity-90">Sessions are scheduled at your convenience and as often as you like.</p>
                 </div>
 
                 <div class="sm:border-l-2 border-secondary sm:pl-4 dark:border-primary-dark">
@@ -171,13 +172,16 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
         <!-- Everything after the hero takes the gutter; the hero stays full-bleed. -->
         <div class="site-inset">
+
         <p class="mb-8  max-w-3xl mx-auto  text-xl leading-relaxed opacity-80 text-balance text-center ">
-            I offer lessons to artists of all levels. Whether you’re seeking to refine your draftsmanship, trying to get into art school, or simply wanting some good practice and guidance, I'm here to help you achieve your goals.
+            I offer lessons to artists of all levels &mdash; whether you’re refining your
+            draftsmanship, building a portfolio for art school, or just looking for guidance on what
+            to practice. This isn't just an art lesson, it's an ongoing mentorship.
         </p>
 
-        <section class="mb-12 px-1 max-w-3xl mx-auto">
+        <section class="mb-20 px-1 max-w-3xl mx-auto">
             <!-- <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3"> -->
-            <div class="mx-0 sm:m-auto mb-8 grid w-full grid-cols-2 sm:grid-cols-3 gap-x-1 sm:gap-x-4 gap-y-4 sm:gap-y-2">
+            <div class="mx-0 sm:m-auto grid w-full grid-cols-2 sm:grid-cols-3 gap-x-1 sm:gap-x-4 gap-y-4 sm:gap-y-2">
                 {
                     lessonGallery.map((piece, i) => (
                         <figure class="relative max-h-80 sm:max-h-none overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
@@ -216,11 +220,41 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                 }
             </div>
         </section>
-        <p class="font-sans mb-8 text-xl italic leading-snug max-w-prose mx-auto text-center text-balance">
-            This isn’t just an art lesson. It’s an ongoing mentorship that can put you on the
-            right track in your art journey. I’ll help you solve problems in your art and in
-            your practice by diagnosing what you need most and bringing you to it.
+
+        <p class="font-serif mb-20 text-xl italic leading-snug max-w-prose mx-auto text-center text-balance">
+            I’ll help you solve problems in your art and in your practice by diagnosing what you
+            need most, so we can work on it together.
         </p>
+
+
+            <!-- Hidden on phones: the portrait and bio crowd the page before the form. -->
+            <div class="hidden sm:flex flex-row max-w-3xl mb-8 mx-auto place-content-center">
+                <div>
+                <h2 class="mb-2 font-sans opacity-80 text-lg font-semibold tracking-[-0.04em]">
+                    The Teacher
+                </h2>
+                <p class="text-sm leading-relaxed text-pretty opacity-60">
+                    I'm a self-taught artist who went from not knowing how to draw at all to
+                    competing in drawing competitions and selling work in three years. Online art
+                    instruction is a maze of conflicting advice and trivial exercises, but I
+                    separated the wheat from the chaff to find what works. I built my training
+                    around 19th-century French schooling because it replaces guesswork with
+                    cornerstones that carry everything forward: draftsmanship, painting, and story
+                    telling.
+                </p>
+
+                </div>
+                <Image
+                    src={profileImg}
+                    alt="Jacob, smiling in a tweed jacket"
+                    widths={[144, 288, 432]}
+                    sizes="(min-width: 640px) 9rem, 8rem"
+                    format="webp"
+                    quality={80}
+                    loading="lazy"
+                    class="profile-plate w-30 shrink-0 self-center object-cover object-top sm:w-36 sm:self-start"
+                />
+            </div>
 
         <div class="w-full px-2 sm:w-5/6 sm:mx-auto">
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
@@ -236,3 +270,12 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         </div>
     </main>
 </Layout>
+
+<style>
+    /* Same hairline the blog cards and carousel use; --plate-rule flips in global.css. */
+    .profile-plate {
+        aspect-ratio: 4 / 5;
+        border: 1px solid var(--plate-rule);
+    }
+
+</style>
