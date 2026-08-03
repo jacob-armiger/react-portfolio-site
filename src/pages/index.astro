@@ -25,7 +25,7 @@ const selectedWorkModules = import.meta.glob<ImageMetadata>(
     },
 );
 
-// Match the art page's filename ordering so its selected-work deep-link indices stay stable.
+// Match the art page's filename ordering so both pages show the work in the same sequence.
 const selectedWorks = Object.entries(selectedWorkModules)
     .sort(([pathA], [pathB]) =>
         (pathB.split("/").at(-1) ?? "").localeCompare(pathA.split("/").at(-1) ?? "", undefined, {
@@ -36,7 +36,6 @@ const selectedWorks = Object.entries(selectedWorkModules)
     .map(([, image], index) => ({
         image,
         alt: `Selected artwork ${index + 1}`,
-        href: `/art?piece=selected-work-${index}#selected-work`,
         aspectRatio: image.width / image.height,
     }));
 ---
@@ -127,12 +126,10 @@ const selectedWorks = Object.entries(selectedWorkModules)
                      to spare; any larger gap drops them to one-up. -->
                 <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-3">
                     {
-                        selectedWorks.map(({ image, alt, href, aspectRatio }) => (
-                            <a
-                                href={href}
+                        selectedWorks.map(({ image, alt, aspectRatio }) => (
+                            <div
                                 style={`--tile-ratio: ${aspectRatio};`}
-                                class="selected-work-tile group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark"
-                                aria-label={`View ${alt} on the art page`}>
+                                class="selected-work-tile group block">
                                 <Picture
                                     src={image}
                                     alt={alt}
@@ -144,7 +141,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                                     decoding="async"
                                     class="block h-full w-full object-contain transition-transform duration-1000 ease-in-out group-hover:scale-[1.01]"
                                 />
-                            </a>
+                            </div>
                         ))
                     }
                 </div>
