@@ -182,9 +182,13 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         <section class="mb-20 px-1 max-w-3xl mx-auto">
             <!-- <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2 sm:gap-3"> -->
             <div class="mx-0 sm:m-auto grid w-full grid-cols-2 sm:grid-cols-3 gap-x-1 sm:gap-x-4 gap-y-4 sm:gap-y-2">
+                <!-- Figures take self-start below sm: the caption column is the taller grid
+                     item, and a stretched figure would leave the inset-1 rule framing empty
+                     background under the artwork. At sm+ the img takes h-full, so stretching
+                     is what keeps the three frames level. -->
                 {
                     lessonGallery.map((piece, i) => (
-                        <figure class="relative max-h-80 sm:max-h-none overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
+                        <figure class="relative self-start sm:self-auto max-h-80 sm:max-h-none overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
 
                             <img
                                 src={piece.src}
