@@ -57,11 +57,12 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         />
         <meta name="generator" content={Astro.generator} />
         <title class="font-serif">{title}</title>
-        <!-- Preload Inter and Source Serif (used on every page). Playfair only sets two
-             home-page headings, so it is not preloaded site-wide. -->
+        <!-- All three are on every page: Playfair sets the nav wordmark and each page's
+             h1. Unpreloaded it lost the race against first paint and rendered in the
+             Times fallback. -->
         <Font cssVariable="--font-inter" preload={[{ style: "normal" }]} />
         <Font cssVariable="--font-source-serif" preload={[{ style: "normal" }]} />
-        <Font cssVariable="--font-playfair-display" />
+        <Font cssVariable="--font-playfair-display" preload={[{ style: "normal" }]} />
         <!-- Before <Analytics /> so a page's LCP preload isn't queued behind its ~5KB
              inline module. -->
         <slot name="head" />
