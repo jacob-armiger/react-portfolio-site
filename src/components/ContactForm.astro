@@ -43,7 +43,6 @@ const LABEL_CLASS =
 const FIELD_CLASS =
     "border-b-2 border-primary/40 bg-transparent py-3 text-lg leading-tight text-primary outline-none transition-[border-color,box-shadow] placeholder:text-base placeholder:text-primary/45 hover:border-primary/70 focus:border-primary focus:shadow-[0_2px_0_0_var(--color-primary)] aria-[invalid=true]:border-red-700 dark:border-primary-dark/50 dark:text-primary-dark dark:placeholder:text-primary-dark/45 dark:hover:border-primary-dark/80 dark:focus:border-primary-dark dark:focus:shadow-[0_2px_0_0_var(--color-primary-dark)] dark:aria-[invalid=true]:border-red-400";
 const ERROR_CLASS = "hidden text-xs font-medium tracking-[0.02em] text-red-700 dark:text-red-400";
-const REQUIRED_MARK = "text-primary/50 dark:text-primary-dark/50";
 
 const lessonsDefault = defaultSubject === INTENTS[0].label;
 ---
@@ -61,15 +60,10 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
     <input type="hidden" name="_template" value="table" />
     <input type="hidden" name="_next" value={fallbackNextUrl} data-next-input />
 
+    <p class="-mb-3 text-xs text-primary/55 dark:text-primary-dark/55">All fields are required.</p>
+
     <div class="flex flex-col gap-2">
-        <div class="flex items-baseline justify-between">
-            <label for="subject" class={LABEL_CLASS}>
-                Subject <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
-            </label>
-            <p class="text-xs text-primary/60 dark:text-primary-dark/60">
-                <span aria-hidden="true">*</span> Required
-            </p>
-        </div>
+        <label for="subject" class={LABEL_CLASS}>Subject</label>
         <div class="group relative">
             <!-- The native popup is placed by the OS and can't be aligned to the field, so the
                  select is kept only as the form value + validity owner and the menu is rebuilt. -->
@@ -152,10 +146,10 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
             Please choose what this is about.
         </p>
 
-    <div data-lessons-only hidden={!lessonsDefault} class="">
+    <div data-lessons-only hidden={!lessonsDefault} class="pt-1">
         <label
             for="local-to-new-york"
-            class="flex cursor-pointer items-start gap-3 text-base leading-relaxed text-primary/90 dark:text-primary-dark/90">
+            class="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-primary/80 dark:text-primary-dark/80">
             <input
                 type="checkbox"
                 id="local-to-new-york"
@@ -169,9 +163,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
     </div>
 
     <div class="flex flex-col gap-2">
-        <label for="name" class={LABEL_CLASS}>
-            Name <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
-        </label>
+        <label for="name" class={LABEL_CLASS}>Name</label>
         <input
             type="text"
             id="name"
@@ -186,9 +178,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
     </div>
 
     <div class="flex flex-col gap-2">
-        <label for="email" class={LABEL_CLASS}>
-            Email <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
-        </label>
+        <label for="email" class={LABEL_CLASS}>Email</label>
         <input
             type="email"
             id="email"
@@ -205,9 +195,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
     </div>
 
     <div class="flex flex-col gap-2">
-        <label for="message" class={LABEL_CLASS}>
-            Message <span aria-hidden="true" class={REQUIRED_MARK}>*</span>
-        </label>
+        <label for="message" class={LABEL_CLASS}>Message</label>
         <textarea
             id="message"
             name="message"
