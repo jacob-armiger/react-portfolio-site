@@ -21,13 +21,20 @@ import { articleText, readingMinutes } from "../../utils/article";
 const { entry } = Astro.props as { entry: CollectionEntry<"article"> };
 const { Content } = await render(entry);
 const readingTime = readingMinutes(articleText(entry.body));
+
+// The 75vh cap has to reach the layout as a max-*width* on the figure: capping
+// height instead leaves the img's width indefinite until the file decodes, so
+// nothing is reserved and the article body drops in behind it.
+const cover = entry.data.image;
+const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})` : undefined;
 ---
 
 <Layout title={entry.data.title ?? "Writing Post"}>
     <main class="site-main page-top mx-auto w-full max-w-2xl">
-        <!-- w-fit: the figure hugs the image so the caption aligns with its left edge. -->
         {entry.data.image ? (
-            <figure class="article-cover w-fit">
+            /* coverCap makes the figure hug the image on its own, which is what keeps
+               the caption aligned to the image's left edge. */
+            <figure class="article-cover" style={coverCap}>
                 {/* No object-contain, so the hairline traces the image rather than a
                     letterboxed box around it. */}
                 <Image
@@ -37,7 +44,8 @@ const readingTime = readingMinutes(articleText(entry.body));
                     format="webp"
                     quality={82}
                     loading="eager"
-                    class="block h-auto max-h-[75vh] w-auto max-w-full"
+                    class="block h-auto w-full"
+                    style={`aspect-ratio: ${cover.width} / ${cover.height}`}
                 />
                 {entry.data.reference ? (
                     <figcaption class="article-cover__caption font-sans">

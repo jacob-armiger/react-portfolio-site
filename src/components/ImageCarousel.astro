@@ -67,6 +67,17 @@ const resolvedImages = await Promise.all(
         };
     }),
 );
+
+// Height caps have to reach the layout as a width on the figure: capping the image's
+// height instead leaves its width indefinite until the file decodes, so nothing is
+// reserved and the prose below it jumps. String sources carry no dimensions, so they
+// keep the older fit-content path.
+const figureWidth = (w?: number, h?: number) =>
+    w && h
+        ? isSingleImage
+            ? `width: min(34rem, 100%, calc(66vh * ${w / h}))`
+            : `width: min(16.5rem, calc(30rem * ${w / h}))`
+        : undefined;
 ---
 
 <section
@@ -77,7 +88,12 @@ const resolvedImages = await Promise.all(
     <div class="image-carousel-strip">
         {
             resolvedImages.map((image, index) => (
-                <figure class="image-carousel-figure">
+                <figure
+                    class:list={[
+                        "image-carousel-figure",
+                        image.thumbWidth && image.thumbHeight && "image-carousel-figure--sized",
+                    ]}
+                    style={figureWidth(image.thumbWidth, image.thumbHeight)}>
                     <button
                         type="button"
                         class="image-carousel-thumb"
@@ -96,6 +112,11 @@ const resolvedImages = await Promise.all(
                             fetchpriority={index === 0 ? "high" : "auto"}
                             decoding="async"
                             class="image-carousel-thumb-image m-0! block"
+                            style={
+                                image.thumbWidth && image.thumbHeight
+                                    ? `aspect-ratio: ${image.thumbWidth} / ${image.thumbHeight}`
+                                    : undefined
+                            }
                         />
                     </button>
                     {showCaptions && image.caption ? (
@@ -249,6 +270,24 @@ const resolvedImages = await Promise.all(
     .image-carousel-strip::-webkit-scrollbar-thumb {
         border-radius: 9999px;
         background: rgb(120 113 108 / 0.4);
+    }
+
+    /*
+     * Dimensions known: the figure's inline width already encodes both the width cap
+     * and the height cap, so the image just fills it and takes its height from
+     * aspect-ratio. Last in the file because it has to beat the single-image rules
+     * above, which tie on specificity — their max-height would distort the image and
+     * their fit-content would make the image's width percentage cyclic, which is what
+     * defeats the reservation in the first place.
+     */
+    .image-carousel-figure--sized {
+        max-width: none;
+    }
+
+    .image-carousel-figure--sized .image-carousel-thumb-image {
+        width: 100% !important;
+        max-width: none;
+        max-height: none;
     }
 
     /* No dark override needed: --plate-rule and --plate-accent flip in global.css. */
