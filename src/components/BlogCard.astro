@@ -32,7 +32,7 @@ const readingTime = readingMinutes(excerpt);
                 quality={80}
                 class:list={[
                     "h-full object-cover object-[50%_10%]",
-                    featured ? "aspect-[3/2] sm:aspect-[4/3]" : "aspect-[3/2] sm:aspect-[4/5]",
+                    featured ? "aspect-3/2 sm:aspect-4/3" : "aspect-3/2 sm:aspect-4/5",
                 ]}
             />
         </figure>
@@ -44,7 +44,7 @@ const readingTime = readingMinutes(excerpt);
             <h2
                 class:list={[
                     "mt-2 font-serif font-bold leading-[1.15] tracking-tight decoration-[1.5px] underline-offset-[6px] group-hover:underline",
-                    featured ? "text-4xl md:text-6xl" : "text-2xl",
+                    featured ? "text-4xl sm:text-5xl md:text-6xl" : "text-2xl",
                 ]}>
                 {art.data.title}
             </h2>
@@ -77,16 +77,18 @@ const readingTime = readingMinutes(excerpt);
 
 <style>
     /*
-     * Card: 1px rule + hard zero-blur offset shadow, transparent fill so the page
-     * texture shows through.
+     * Card: 1px rule + soft offset shadow, transparent fill so the page texture
+     * shows through. (Hover/active swap to a hard zero-blur shadow.)
      */
     .blog-card {
         display: block;
         padding: 1.25rem;
         border: 1px solid rgb(42 35 27 / 0.55);
         background-color: transparent;
-        /* Shadow and hover colors share --plate-accent with the article cover. */
-        box-shadow: 6px 6px 0 var(--plate-accent);
+        /* Shadow and hover colors share --plate-accent with the article cover.
+           Narrow layouts leave only a 16-20px page gutter, so the blur is pulled in
+           to about a third of it; the fuller version returns at lg. */
+        box-shadow: 5px 7px 14px -6px var(--plate-accent);
         transition:
             box-shadow 120ms ease-out,
             transform 120ms ease-out;
@@ -186,9 +188,10 @@ const readingTime = readingMinutes(excerpt);
             grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
         }
 
-        /* Center the short title block against the taller plate. */
+        /* Below md the headline is too short to fill the row, so centering drifts it
+           down as the plate grows; pin it to the plate's top edge instead. */
         .blog-card--featured .blog-card__head {
-            align-self: center;
+            align-self: start;
         }
 
         /*
@@ -206,9 +209,20 @@ const readingTime = readingMinutes(excerpt);
         }
     }
 
+    @media (min-width: 1024px) {
+        .blog-card {
+            box-shadow: 8px 10px 20px -8px var(--plate-accent);
+        }
+    }
+
     @media (min-width: 768px) {
         .blog-card:not(.blog-card--featured) .blog-card__grid {
             grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+        }
+
+        /* Center the short title block against the taller plate. */
+        .blog-card--featured .blog-card__head {
+            align-self: center;
         }
     }
 

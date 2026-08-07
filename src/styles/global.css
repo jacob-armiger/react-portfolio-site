@@ -39,7 +39,8 @@
     /* Plate: shared framed-image treatment (blog cards, article covers) — hairline
        on the image plus a hard zero-blur offset shadow. */
     --plate-rule: rgb(42 35 27 / 0.45);
-    --plate-accent: #284334;
+    /* --plate-accent: #284334; */
+    --plate-accent: #302d17;
 }
 
 @media (min-width: 640px) {
