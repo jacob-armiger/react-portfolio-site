@@ -2,6 +2,11 @@
 /*
  * Instagram mark. currentColor and em sizing so it follows the surrounding text's
  * color and font-size.
+ *
+ * width/height are load-bearing: an svg with only a viewBox has no intrinsic size,
+ * so during the paint before the stylesheet lands Firefox resolves it to 100% of
+ * the containing block — a viewport-wide glyph in default link blue. The attributes
+ * lose to the class below once CSS applies.
  */
 interface Props {
     class?: string;
@@ -12,6 +17,8 @@ const { class: className = "h-[1.15em] w-[1.15em]" } = Astro.props;
 
 <svg
     viewBox="0 0 1000 1000"
+    width="16"
+    height="16"
     fill="currentColor"
     aria-hidden="true"
     focusable="false"

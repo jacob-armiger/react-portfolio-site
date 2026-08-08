@@ -109,9 +109,14 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                     ]}>
                     {defaultSubject || "Choose a subject"}
                 </span>
+                <!-- width/height bound the paint before the stylesheet lands: a viewBox
+                     alone gives no intrinsic size, so the chevron resolves to the full
+                     container width. The class below wins once CSS applies. -->
                 <svg
                     aria-hidden="true"
                     viewBox="0 0 12 8"
+                    width="12"
+                    height="8"
                     fill="none"
                     stroke="currentColor"
                     stroke-width="1.75"
