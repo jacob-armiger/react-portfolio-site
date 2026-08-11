@@ -61,10 +61,42 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     max-width: 95vw; max-height: 95vh;
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
     border-radius: 6px;
+    object-fit: contain;
     transform-origin: 0 0;
     user-select: none;
     transition: transform 0.15s ease;
   `;
+
+  // The preview is a 560px-wide asset and the full image is the original, so
+  // letting them size themselves made the artwork jump on swap. Both get the
+  // same box instead: the aspect ratio fitted to the max-width/max-height the
+  // stylesheet already resolved (which varies with the thumbnail-strip layout).
+  //
+  // Navigating carries the previous image's box for a frame before this runs,
+  // which is why the element is object-fit: contain — a stale box letterboxes
+  // rather than stretching the artwork. In the steady state it's a no-op.
+  const fitImageToBox = () => {
+    if (!img.naturalWidth || !img.naturalHeight) return;
+
+    const computed = window.getComputedStyle(img);
+    const maxWidth = parseFloat(computed.maxWidth);
+    const maxHeight = parseFloat(computed.maxHeight);
+    if (!Number.isFinite(maxWidth) || !Number.isFinite(maxHeight)) return;
+
+    const ratio = img.naturalWidth / img.naturalHeight;
+    let width = maxWidth;
+    let height = width / ratio;
+    if (height > maxHeight) {
+      height = maxHeight;
+      width = height * ratio;
+    }
+
+    img.style.width = `${width}px`;
+    img.style.height = `${height}px`;
+  };
+
+  img.addEventListener('load', fitImageToBox);
+  window.addEventListener('resize', fitImageToBox);
 
   const toolbar = document.createElement('div');
   toolbar.style.cssText = `
@@ -812,6 +844,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     window.removeEventListener('touchend', onTouchEnd);
     window.removeEventListener('touchcancel', onTouchCancel);
     window.removeEventListener('resize', setModalHeight);
+    window.removeEventListener('resize', fitImageToBox);
     modal.removeEventListener('wheel', onWheel);
     document.removeEventListener('keydown', onKeyDown);
 
