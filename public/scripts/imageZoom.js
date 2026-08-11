@@ -73,8 +73,13 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     z-index: 10000;
   `;
 
-  // Top-left is the one corner free in every layout: the toolbar moves between
-  // bottom-right and top-right, and the thumbnail strip is bottom-center.
+  // Sits in the artwork's bottom-left corner, which stays clear in every
+  // layout: the toolbar moves between bottom-right and top-right, and the
+  // thumbnail strip is bottom-center. Placed via positionLoadingIndicator().
+  //
+  // Dark fill rather than the buttons' light one: those sit on the dark
+  // backdrop, but this sits on the artwork, which can be any value — a
+  // white-on-cream chip vanished on light pieces.
   const loadingIndicator = document.createElement('div');
   loadingIndicator.setAttribute('role', 'status');
   loadingIndicator.setAttribute('aria-label', 'Loading full-resolution image');
@@ -85,9 +90,9 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     top: 16px; left: 16px;
     width: 36px; height: 36px;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.5);
     backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.4);
     border-radius: ${CONTROL_RADIUS};
     z-index: 10002;
     opacity: 0;
@@ -99,10 +104,10 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
 
   const spinner = document.createElement('div');
   spinner.style.cssText = `
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.35);
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.4);
     border-radius: 50%;
-    ${prefersReducedMotion ? '' : 'border-top-color: rgba(255,255,255,0.95);'}
+    ${prefersReducedMotion ? '' : 'border-top-color: #fff;'}
   `;
   loadingIndicator.appendChild(spinner);
 
@@ -116,6 +121,60 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       );
   spinAnimation?.pause();
 
+  const LOADING_INDICATOR_SIZE = 36;
+  const LOADING_INDICATOR_INSET = 12;
+  const LOADING_INDICATOR_VIEWPORT_MARGIN = 16;
+
+  let trackingRaf = null;
+  let lastIndicatorLeft = null;
+  let lastIndicatorTop = null;
+
+  // Follows the artwork's bottom-left corner, but a zoomed image runs past the
+  // screen edges — clamp so the indicator never drifts out of view.
+  const positionLoadingIndicator = () => {
+    const rect = img.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
+    const maxLeft = window.innerWidth - LOADING_INDICATOR_SIZE - LOADING_INDICATOR_VIEWPORT_MARGIN;
+    let maxTop = window.innerHeight - LOADING_INDICATOR_SIZE - LOADING_INDICATOR_VIEWPORT_MARGIN;
+    const left = Math.max(
+      LOADING_INDICATOR_VIEWPORT_MARGIN,
+      Math.min(maxLeft, rect.left + LOADING_INDICATOR_INSET)
+    );
+
+    // A deep zoom clamps the indicator to the bottom of the screen, which is
+    // where the thumbnail strip lives on narrow viewports — stop above it.
+    const stripRect = thumbStrip?.getBoundingClientRect();
+    if (stripRect && stripRect.height > 0 && left + LOADING_INDICATOR_SIZE > stripRect.left) {
+      maxTop = Math.min(maxTop, stripRect.top - LOADING_INDICATOR_INSET - LOADING_INDICATOR_SIZE);
+    }
+
+    const top = Math.max(
+      LOADING_INDICATOR_VIEWPORT_MARGIN,
+      Math.min(maxTop, rect.bottom - LOADING_INDICATOR_INSET - LOADING_INDICATOR_SIZE)
+    );
+
+    if (left === lastIndicatorLeft && top === lastIndicatorTop) return;
+    lastIndicatorLeft = left;
+    lastIndicatorTop = top;
+    loadingIndicator.style.left = `${left}px`;
+    loadingIndicator.style.top = `${top}px`;
+  };
+
+  // Polled per frame rather than hooked into each mutation: the box moves from
+  // zoom transitions, pans, resizes and the preview swap alike, and this only
+  // runs while the spinner is actually up.
+  const trackLoadingIndicator = () => {
+    positionLoadingIndicator();
+    trackingRaf = window.requestAnimationFrame(trackLoadingIndicator);
+  };
+
+  const stopTrackingLoadingIndicator = () => {
+    if (trackingRaf === null) return;
+    window.cancelAnimationFrame(trackingRaf);
+    trackingRaf = null;
+  };
+
   // Hover preloading means the full image is often already cached, so hold the
   // indicator back briefly rather than flashing it on every instant swap.
   const LOADING_INDICATOR_DELAY_MS = 180;
@@ -125,9 +184,11 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     if (loadingDelayTimer !== null) return;
     loadingDelayTimer = window.setTimeout(() => {
       loadingDelayTimer = null;
+      positionLoadingIndicator();
       loadingIndicator.style.opacity = '1';
       loadingIndicator.setAttribute('aria-hidden', 'false');
       spinAnimation?.play();
+      if (trackingRaf === null) trackLoadingIndicator();
     }, LOADING_INDICATOR_DELAY_MS);
   };
 
@@ -136,6 +197,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       window.clearTimeout(loadingDelayTimer);
       loadingDelayTimer = null;
     }
+    stopTrackingLoadingIndicator();
     loadingIndicator.style.opacity = '0';
     loadingIndicator.setAttribute('aria-hidden', 'true');
     spinAnimation?.pause();
@@ -773,6 +835,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       window.clearTimeout(loadingDelayTimer);
       loadingDelayTimer = null;
     }
+    stopTrackingLoadingIndicator();
     spinAnimation?.cancel();
 
     btnPrev?.remove();
