@@ -18,10 +18,10 @@ const CATEGORY_ORDER: Array<[string, string]> = [
 
 // Single glob call — module map is built once and grouped by folder
 const allModules = import.meta.glob<RawModule>([
-    "../../assets/selectedWork/*.{png,jpg,jpeg}",
-    "../../assets/digitalStudies/*.{png,jpg,jpeg}",
-    "../../assets/drawings/*.{png,jpg,jpeg}",
-    "../../assets/oilPaintings/*.{png,jpg,jpeg}",
+    "../../assets/selectedWork/*.{png,jpg,jpeg,webp}",
+    "../../assets/digitalStudies/*.{png,jpg,jpeg,webp}",
+    "../../assets/drawings/*.{png,jpg,jpeg,webp}",
+    "../../assets/oilPaintings/*.{png,jpg,jpeg,webp}",
 ], { eager: true });
 
 const getFileNameFromPath = (path: string) =>

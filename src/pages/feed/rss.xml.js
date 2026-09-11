@@ -82,9 +82,9 @@ export async function GET(context) {
     });
 
     const artImages = import.meta.glob([
-        '../../assets/drawings/*.{png,jpg,jpeg}',
-        '../../assets/oilPaintings/*.{png,jpg,jpeg}',
-        '../../assets/digitalStudies/*.{png,jpg,jpeg}',
+        '../../assets/drawings/*.{png,jpg,jpeg,webp}',
+        '../../assets/oilPaintings/*.{png,jpg,jpeg,webp}',
+        '../../assets/digitalStudies/*.{png,jpg,jpeg,webp}',
     ], { eager: true });
 
     const artItems = Object.entries(artImages).map(([path]) => {
