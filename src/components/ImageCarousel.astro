@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
+import { imageSize, originalUrl } from "../utils/originals";
 
 interface Slide {
     src: string | ImageMetadata;
@@ -47,9 +48,10 @@ const resolvedImages = await Promise.all(
             };
         }
 
+        const { width, height } = imageSize(source);
         const targetWidth = isSingleImage ? 1400 : 700;
-        const thumbWidth = Math.min(source.width, targetWidth);
-        const thumbHeight = Math.round((source.height / source.width) * thumbWidth);
+        const thumbWidth = Math.min(width, targetWidth);
+        const thumbHeight = Math.round((height / width) * thumbWidth);
         const optimizedThumb = await getImage({
             src: source,
             width: thumbWidth,
@@ -58,7 +60,7 @@ const resolvedImages = await Promise.all(
         });
 
         return {
-            src: source.src,
+            src: originalUrl(source),
             thumbSrc: optimizedThumb.src,
             thumbWidth,
             thumbHeight,

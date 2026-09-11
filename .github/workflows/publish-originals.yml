@@ -1,0 +1,41 @@
+# Publishes full-size artwork to GitHub Pages so Vercel deployments only carry
+# thumbnails. URLs are built in src/utils/originals.ts.
+name: Publish originals
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/assets/**"
+      - "scripts/stage-originals.sh"
+      - ".github/workflows/publish-originals.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install cwebp
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends webp
+      - name: Stage files
+        run: bash scripts/stage-originals.sh _site
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

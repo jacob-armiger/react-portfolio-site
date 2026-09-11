@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { getImage } from "astro:assets";
 import ArtMasonryGrid from "../../components/ArtMasonryGrid.tsx";
 import RssFeedButton from "../../components/RssFeedButton.astro";
+import { originalUrl } from "../../utils/originals";
 import type { OptimizedImage } from "../../components/ArtMasonryGrid.tsx";
 
 type RawModule = { default: ImageMetadata };
@@ -71,7 +72,7 @@ const images: OptimizedImage[] = await Promise.all(
                 src: optimized.src,
                 width: (optimized.attributes.width as number) ?? img.width,
                 height: (optimized.attributes.height as number) ?? img.height,
-                originalSrc: img.src,
+                originalSrc: originalUrl(img),
                 category: label,
                 date: getDateFromPath(path),
             };

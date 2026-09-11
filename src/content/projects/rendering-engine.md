@@ -9,6 +9,7 @@ tags:
 
 # rendering-engine
 [Github Repo](https://github.com/jacob-armiger/rendering-engine)  
+[Live demo →](https://jacob-armiger.github.io/rendering-engine/dist/)  
   
 This is a project I did for school, but I went above and beyond the requirements. We were required to implement a certain number objects and shaders, but I architected my program so that I could render as many objects with as many shaders as I want. Hence, why I call this an "engine". I could give this program any list of objects that follows the convention I've created and it would work. I had a lot of fun doing this and, in the future, it would be cool to implement object shadows.
 

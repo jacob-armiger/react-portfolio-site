@@ -17,6 +17,7 @@ import Prose from "../../components/Prose.astro";
 import RssFeedButton from "../../components/RssFeedButton.astro";
 import Layout from "../../layouts/Layout.astro";
 import { articleText, readingMinutes } from "../../utils/article";
+import { imageSize } from "../../utils/originals";
 
 const { entry } = Astro.props as { entry: CollectionEntry<"article"> };
 const { Content } = await render(entry);
@@ -25,7 +26,7 @@ const readingTime = readingMinutes(articleText(entry.body));
 // The 75vh cap has to reach the layout as a max-*width* on the figure: capping
 // height instead leaves the img's width indefinite until the file decodes, so
 // nothing is reserved and the article body drops in behind it.
-const cover = entry.data.image;
+const cover = imageSize(entry.data.image);
 const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})` : undefined;
 ---
 

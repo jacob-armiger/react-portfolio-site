@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { originalUrl } from '../../utils/originals';
 
 const CATEGORY_LABELS = {
     selectedWork: 'Selected Work',
@@ -69,7 +70,7 @@ export async function GET(context) {
     // Keep blog entries identical to the existing /writing/rss.xml behavior.
     const articleItems = articles.map((article) => {
         const articleUrl = new URL(`/writing/${article.id}`, context.site).toString();
-        const coverImageUrl = new URL(article.data.image.src, context.site).toString();
+        const coverImageUrl = new URL(originalUrl(article.data.image), context.site).toString();
         const articleTitle = article.data.title ?? article.id;
         return {
             title: articleTitle,
