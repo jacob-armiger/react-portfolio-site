@@ -55,30 +55,14 @@ const waitForZoomReady = (cb: () => void, attempts = 20) => {
     window.setTimeout(() => waitForZoomReady(cb, attempts - 1), 100);
 };
 
-function useResponsiveGridProps() {
-    const getProps = () => {
-        const w = window.innerWidth;
-        if (w < 400) return { frameWidth: 150, gap: 2 };
-        return { frameWidth: 280, gap: 5 };
-    };
-
-    const [props, setProps] = useState(getProps);
-
-    useEffect(() => {
-        const onResize = () => setProps(getProps());
-        window.addEventListener('resize', onResize);
-        return () => window.removeEventListener('resize', onResize);
-    }, []);
-
-    return props;
-}
+// Sized in CSS rather than from window.innerWidth so the grid can render on the server.
+const GRID_STYLE = {
+    gridTemplateColumns: 'repeat(auto-fill, minmax(var(--art-frame), 1fr))',
+    gap: 'var(--art-gap)',
+};
 
 export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedImage[] }) {
-    const { frameWidth, gap } = useResponsiveGridProps();
     const [active, setActive] = useState(ALL);
-    const [initialPieceSlug] = useState(
-        () => new URLSearchParams(window.location.search).get(PIECE_PARAM)
-    );
 
     const categories = useMemo(
         () => [ALL, ...Array.from(new Set(artEntries.map((img) => img.category)))],
@@ -133,6 +117,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
 
     // Deep link: open the modal for ?piece=<slug> on first load.
     useEffect(() => {
+        const initialPieceSlug = new URLSearchParams(window.location.search).get(PIECE_PARAM);
         if (!initialPieceSlug) return;
 
         const foundImg = artEntries.find((img) => pieceSlugMap.get(img.originalSrc) === initialPieceSlug);
@@ -175,7 +160,10 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
 
             {/* Grid */}
             <div className="min-w-0 lg:col-span-2 lg:row-start-2">
-                <MasonryGrid frameWidth={frameWidth} gap={gap}>
+                <MasonryGrid
+                    style={GRID_STYLE}
+                    className="[--art-frame:150px] [--art-gap:2px] min-[400px]:[--art-frame:280px] min-[400px]:[--art-gap:5px]"
+                >
                     {visible.map((img, i) => (
                         <Frame key={img.originalSrc + i} width={img.width} height={img.height}>
                             <img

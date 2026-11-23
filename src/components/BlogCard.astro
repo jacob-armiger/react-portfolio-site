@@ -30,6 +30,7 @@ const readingTime = readingMinutes(excerpt);
                 width={featured ? 750 : 560}
                 format="webp"
                 quality={80}
+                priority={featured}
                 class:list={[
                     "h-full object-cover object-[50%_10%]",
                     featured ? "aspect-3/2 sm:aspect-4/3" : "aspect-3/2 sm:aspect-4/5",

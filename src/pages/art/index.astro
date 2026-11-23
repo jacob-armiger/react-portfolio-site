@@ -84,10 +84,7 @@ const images: OptimizedImage[] = await Promise.all(
 <Layout title="Art">
     <!-- No .site-main: the grid runs edge-to-edge. The heading takes the gutter on its
          own so only the artwork is full-bleed. -->
-    <!-- min-h-screen reserves space for the client:only grid so the footer doesn't
-         jump down on hydration. It sits on main because astro-island is
-         display:contents and cannot hold a height. -->
-    <main class="site-gap pt-6 min-h-screen lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:content-start lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
+    <main class="site-gap pt-6 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:content-start lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
         <div class="site-inset mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 lg:mb-0 lg:items-baseline">
             <h1
                 class="text-left font-playfair text-4xl font-semibold leading-none tracking-[-0.04em] sm:text-5xl xl:text-nowrap">
@@ -95,6 +92,6 @@ const images: OptimizedImage[] = await Promise.all(
             </h1>
             <RssFeedButton />
         </div>
-        <ArtMasonryGrid artEntries={images} client:only="react"/>
+        <ArtMasonryGrid artEntries={images} client:load />
     </main>
 </Layout>
