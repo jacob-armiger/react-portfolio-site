@@ -9,7 +9,7 @@ const INSET = 40;
 type ImportedImage = ImageMetadata & { fsPath?: string };
 
 // Whole artwork on a matte: a 1.91:1 crop of a portrait loses most of the piece.
-export async function mattedCard(image: ImageMetadata): Promise<Buffer> {
+export async function mattedCard(image: ImageMetadata) {
     const source = (image as ImportedImage).fsPath;
     if (!source) throw new Error(`No source file for share card: ${image.src}`);
 
