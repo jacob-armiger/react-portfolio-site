@@ -59,6 +59,8 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
     <input type="hidden" name="_subject" value={subject} data-subject-line />
     <input type="hidden" name="_template" value="table" />
     <input type="hidden" name="_next" value={fallbackNextUrl} data-next-input />
+    <!-- Honeypot: FormSubmit discards any submission where this is filled in. -->
+    <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none" />
 
     <p class="-mb-3 text-xs text-primary/55 dark:text-primary-dark/55">All fields are required.</p>
 
