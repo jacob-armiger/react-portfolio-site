@@ -16,7 +16,7 @@ import Dateline from "../../components/Dateline.astro";
 import Prose from "../../components/Prose.astro";
 import RssFeedButton from "../../components/RssFeedButton.astro";
 import Layout from "../../layouts/Layout.astro";
-import { articleText, readingMinutes } from "../../utils/article";
+import { articleExcerpt, articleText, readingMinutes } from "../../utils/article";
 import { imageSize } from "../../utils/originals";
 
 const { entry } = Astro.props as { entry: CollectionEntry<"article"> };
@@ -30,7 +30,13 @@ const cover = imageSize(entry.data.image);
 const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})` : undefined;
 ---
 
-<Layout title={entry.data.title ?? "Writing Post"}>
+<Layout
+    title={entry.data.title ?? "Writing Post"}
+    description={articleExcerpt(entry.body)}
+    image={`/og/writing-${entry.id}.jpg`}
+    imageAlt={entry.data.imageAlt}
+    type="article"
+    publishedTime={entry.data.date}>
     <main class="site-main page-top mx-auto w-full max-w-2xl">
         {entry.data.image ? (
             /* coverCap makes the figure hug the image on its own, which is what keeps
