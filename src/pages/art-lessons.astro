@@ -89,7 +89,11 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 );
 ---
 
-<Layout title="Art Lessons">
+<Layout
+    title="Art Lessons"
+    description="$50 one-on-one art lessons, online or in person in New York City. Build your draftsmanship, painting, and original work with structured, personal guidance."
+    image={heroSource}
+    imageAlt="Painting of an instructor in a white shirt, mid-gesture">
     <!-- Starts the hero fetch alongside the stylesheet instead of after the head's inline
          analytics module. imagesrcset/imagesizes must match the img exactly, or the
          browser fetches a second copy. -->

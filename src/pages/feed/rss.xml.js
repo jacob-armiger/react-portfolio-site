@@ -1,5 +1,7 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { articleExcerpt } from '../../utils/article';
+import { FEED_XMLNS, feedCustomData } from '../../utils/feed';
 import { originalUrl } from '../../utils/originals';
 
 const CATEGORY_LABELS = {
@@ -75,7 +77,7 @@ export async function GET(context) {
         return {
             title: articleTitle,
             pubDate: article.data.date,
-            description: 'Read the full article on JacobLDraws.',
+            description: articleExcerpt(article.body, 300),
             content: `<p><a href="${articleUrl}"><img src="${coverImageUrl}" alt="${articleTitle}" /></a></p><p><a href="${articleUrl}">Read article</a></p>`,
             link: `/writing/${article.id}`,
         };
@@ -120,7 +122,8 @@ export async function GET(context) {
         description: 'Writing and art updates from JacobLDraws',
         site: context.site,
         items,
-        customData: `<language>en-us</language>`,
+        xmlns: FEED_XMLNS,
+        customData: feedCustomData(context),
         // Art item links use a `?piece=` query string; a trailing slash would get
         // appended after the query string and corrupt it, so disable it here.
         trailingSlash: false,

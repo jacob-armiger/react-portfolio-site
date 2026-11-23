@@ -1,4 +1,5 @@
 import rss from '@astrojs/rss';
+import { FEED_XMLNS, feedCustomData } from '../../utils/feed';
 
 const CATEGORY_LABELS = {
     selectedWork: 'Selected Work',
@@ -78,8 +79,8 @@ export async function GET(context) {
         site: context.site,
         // Array of `<item>`s in output xml
         items: items,
-        // (optional) inject custom xml
-        customData: `<language>en-us</language>`,
+        xmlns: FEED_XMLNS,
+        customData: feedCustomData(context),
         // Item links use a `?piece=` query string; a trailing slash would get
         // appended after the query string and corrupt it, so disable it here.
         trailingSlash: false,
