@@ -221,7 +221,8 @@ const selectedWorks = Object.entries(selectedWorkModules)
         --hero-heading-ratio: 6.75;
         --hero-heading-size: min(13vw, 3.4rem);
         --hero-heading-top: var(--page-inset);
-        /* Full bleed with a bottom hairline below lg; the double frame is lg-only. */
+        /* Full bleed with a bottom hairline below lg, where only the inner rule
+           frames it; the outer border joins it at lg. */
         --hero-frame-border: 0px;
         --hero-frame-line: rgba(42, 35, 27, 0.15);
         /* Absolutely-positioned children measure from the padding box; subtract the
@@ -230,6 +231,18 @@ const selectedWorks = Object.entries(selectedWorkModules)
         border: var(--hero-frame-border) solid var(--hero-frame-line);
         border-bottom-width: 1px;
         min-height: 41.25rem;
+    }
+
+    /* Inner rule of the frame: above the artwork (z-15), under the text. The
+       radius subtracts the outer border width to stay concentric. */
+    .hero-section::before {
+        position: absolute;
+        z-index: 15;
+        inset: 0.25rem;
+        border: 1px solid var(--hero-frame-line);
+        border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
+        pointer-events: none;
+        content: "";
     }
 
     .hero-heading {
@@ -257,18 +270,6 @@ const selectedWorks = Object.entries(selectedWorkModules)
             --hero-heading-size: min(9vw, 7rem);
             --hero-frame-border: 1px;
             min-height: clamp(44.25rem, calc(88vh - 1.75rem), 50.25rem);
-        }
-
-        /* Inner rule of the double frame: above the artwork (z-15), under the text.
-           The radius subtracts the outer border width to stay concentric. */
-        .hero-section::before {
-            position: absolute;
-            z-index: 15;
-            inset: 0.25rem;
-            border: 1px solid var(--hero-frame-line);
-            border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
-            pointer-events: none;
-            content: "";
         }
     }
 
