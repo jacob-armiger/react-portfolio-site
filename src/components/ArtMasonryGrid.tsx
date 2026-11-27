@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 export interface OptimizedImage {
     src: string;
+    srcSet: string;
     width: number;
     height: number;
     originalSrc: string;
@@ -157,7 +158,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                     full row fills the width at one shared height without cropping. The
                     ::after filler keeps the last row from stretching. Sized in CSS, not
                     from window.innerWidth, so the grid renders on the server. */}
-                <div className="flex flex-wrap gap-[2px] [--art-row:7rem] after:flex-[999_1_var(--art-row)] after:content-[''] min-[400px]:gap-[5px] min-[400px]:[--art-row:10rem] sm:[--art-row:13rem] lg:[--art-row:15rem]">
+                <div className="flex flex-wrap gap-[2px] [--art-row:9rem] after:flex-[999_1_var(--art-row)] after:content-[''] min-[400px]:gap-[5px] min-[400px]:[--art-row:12.5rem] sm:[--art-row:16rem] lg:[--art-row:19rem]">
                     {visible.map((img, i) => {
                         const ratio = img.width / img.height;
                         return (
@@ -168,6 +169,8 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             >
                                 <img
                                     src={img.src}
+                                    srcSet={img.srcSet}
+                                    sizes="(min-width: 640px) 40vw, 60vw"
                                     alt="Artwork"
                                     className="zoomable block h-full w-full cursor-zoom-in"
                                     loading="lazy"

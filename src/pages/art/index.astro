@@ -68,8 +68,11 @@ const images: OptimizedImage[] = await Promise.all(
             .map(async ({ path, mod }) => {
             const img = mod.default;
             const optimized = await getImage({ src: img, format: "webp", width: 560 });
+            // Wide pieces can fill a whole row, past what the 560px preview covers.
+            const large = await getImage({ src: img, format: "webp", width: 1120 });
             return {
                 src: optimized.src,
+                srcSet: `${optimized.src} 560w, ${large.src} 1120w`,
                 width: (optimized.attributes.width as number) ?? img.width,
                 height: (optimized.attributes.height as number) ?? img.height,
                 originalSrc: originalUrl(img),
