@@ -14,9 +14,9 @@ const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
 const HERO_BODY =
     "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
 
-// Hero button classes. Footer's ACTION_CLASS mirrors this; keep them in step.
+// Hero button classes. ACTION_CLASS in actionClass.ts mirrors this; keep them in step.
 const HERO_ACTION_CLASS =
-    "inline-flex items-center justify-center rounded-xs font-sans font-semibold uppercase transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
+    "inline-flex items-center justify-center rounded-xs font-sans font-semibold uppercase transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg,webp}",
@@ -88,7 +88,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                             href="/contact"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "bg-primary text-secondary shadow-[0_16px_40px_rgba(38,41,44,0.22)] focus-visible:outline-primary dark:bg-primary-dark dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
+                                "bg-primary text-secondary hover:bg-primary/85 focus-visible:outline-primary dark:bg-primary-dark dark:hover:bg-primary-dark/85 dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
                             ]}>
                             Contact
                         </a>
@@ -96,7 +96,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                             href="/art-lessons"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md focus-visible:outline-primary dark:border-primary-dark/25 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
+                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md hover:border-primary/60 focus-visible:outline-primary dark:border-primary-dark/25 dark:hover:border-primary-dark/60 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
                             ]}>
                             Learn to Draw
                         </a>
@@ -239,9 +239,6 @@ const selectedWorks = Object.entries(selectedWorkModules)
         border: var(--hero-frame-border) solid var(--hero-frame-line);
         border-bottom-width: 1px;
         min-height: 43rem;
-        background-image:
-            linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
-            linear-gradient(315deg, rgba(141, 189, 182, 0.12), transparent 42%);
     }
 
     .hero-eyebrow {
@@ -298,8 +295,5 @@ const selectedWorks = Object.entries(selectedWorkModules)
     /* Keyed to html.dark, not prefers-color-scheme: dark mode is class-based. */
     :global(html.dark) .hero-section {
         --hero-frame-line: rgba(229, 226, 218, 0.15);
-        background-image:
-            linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
-            linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);
     }
 </style>
