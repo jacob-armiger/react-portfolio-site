@@ -10,7 +10,6 @@ const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 110vw";
 const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
 const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 
-const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
 const HERO_BODY =
     "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
 
@@ -47,10 +46,6 @@ const selectedWorks = Object.entries(selectedWorkModules)
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
             <section class="hero-section relative isolate overflow-hidden bg-[#d7cfbe] dark:bg-[#2f2a25]">
-                <p class="hero-eyebrow eyebrow absolute z-30 font-sans uppercase text-primary/70 dark:text-primary-dark/70">
-                    {HERO_EYEBROW}
-                </p>
-
                 <Picture
                     src={heroImage}
                     alt="Person reclining beside a green office chair while using a telephone"
@@ -60,7 +55,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     sizes={HERO_SIZES}
                     quality={80}
                     priority
-                    class="absolute z-10 aspect-2693/2773 max-w-none top-28 left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
+                    class="absolute z-10 aspect-2693/2773 max-w-none top-[5.25rem] left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
                 <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display text-orange-100 mix-blend-difference">
@@ -75,7 +70,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     Contact me for <br/> art lessons or to commission work.
                 </div>
 
-                <!-- bottom-6 is larger than the eyebrow's top inset to clear the frame edge.
+                <!-- bottom-6 is larger than the headline's top inset to clear the frame edge.
                      right is only pinned below sm, where the buttons span full width. -->
                 <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
                     <!-- Hidden below sm, where the frame is too short for body copy. -->
@@ -106,10 +101,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
                 <div class="section-header max-w-xl border-t border-primary/10 pt-5 sm:pt-6 dark:border-primary-dark/10">
-                    <p class="eyebrow font-sans uppercase text-primary/70 dark:text-primary-dark/70">
-                        Selected work
-                    </p>
-                    <div class="mt-2 flex flex-wrap items-baseline gap-x-4">
+                    <div class="flex flex-wrap items-baseline gap-x-4">
                         <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-primary sm:text-4xl dark:text-primary-dark">
                             What I can make.
                         </h2>
@@ -152,7 +144,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
 <style>
     /*
-     * Shared horizontal inset: hero eyebrow, headline, actions and the Selected Work
+     * Shared horizontal inset: hero headline, actions and the Selected Work
      * heading all measure from this so their left edges align.
      */
     .page-sections {
@@ -228,8 +220,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
            viewport widths (a percentage width would shift them). */
         --hero-heading-ratio: 6.75;
         --hero-heading-size: min(13vw, 3.4rem);
-        /* Headline top = inset + eyebrow line box (1.45 line-height) + 1rem gap. */
-        --hero-heading-top: calc(var(--page-inset) + (var(--eyebrow-size) * 1.45) + 1rem);
+        --hero-heading-top: var(--page-inset);
         /* Full bleed with a bottom hairline below lg; the double frame is lg-only. */
         --hero-frame-border: 0px;
         --hero-frame-line: rgba(42, 35, 27, 0.15);
@@ -238,18 +229,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
         --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
         border: var(--hero-frame-border) solid var(--hero-frame-line);
         border-bottom-width: 1px;
-        min-height: 43rem;
-    }
-
-    .hero-eyebrow {
-        top: var(--page-inset);
-        left: var(--hero-inline-inset);
-    }
-
-    @media (max-width: 639px) {
-        .hero-eyebrow {
-            max-width: calc(100% - (2 * var(--hero-inline-inset)));
-        }
+        min-height: 41.25rem;
     }
 
     .hero-heading {
@@ -265,9 +245,9 @@ const selectedWorks = Object.entries(selectedWorkModules)
         .hero-section {
             --hero-heading-ratio: 8.35;
             --hero-heading-size: min(11.2vw, 6.25rem);
-            /* The 46.5rem floor keeps the bottom-anchored copy clear of the headline
+            /* The 44.75rem floor keeps the bottom-anchored copy clear of the headline
                on short viewports (worst case 860-1023px wide). */
-            min-height: clamp(46.5rem, 78vh, 47.5rem);
+            min-height: clamp(44.75rem, calc(78vh - 1.75rem), 45.75rem);
         }
     }
 
@@ -276,7 +256,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
             /* The sidebar nav narrows the section, so the heading cap shrinks. */
             --hero-heading-size: min(9vw, 7rem);
             --hero-frame-border: 1px;
-            min-height: clamp(46rem, 88vh, 52rem);
+            min-height: clamp(44.25rem, calc(88vh - 1.75rem), 50.25rem);
         }
 
         /* Inner rule of the double frame: above the artwork (z-15), under the text.
