@@ -23,6 +23,9 @@
     --color-secondary: #e5e2da;
     --color-primary-dark: #e5e2da;
     --color-secondary-dark: #26292c;
+
+    /* Big Playfair headings only; smaller headings use the fonts' own spacing. */
+    --tracking-display: -0.01em;
 }
 
 /*
