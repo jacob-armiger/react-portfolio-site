@@ -25,7 +25,7 @@ const readingTime = readingMinutes(excerpt);
         featured && (
             <div
                 aria-hidden="true"
-                class="pointer-events-none absolute inset-1 rounded-tr-[2rem] border border-[#887928]/80 mix-blend-overlay"
+                class="blog-entry__frame pointer-events-none absolute rounded-tr-[2rem] border border-[#887928]/80 mix-blend-overlay"
             />
         )
     }
@@ -59,7 +59,7 @@ const readingTime = readingMinutes(excerpt);
 
             {
                 art.data.reference ? (
-                    <p class="mt-1 font-serif text-sm italic opacity-70">
+                    <p class="mt-1 font-serif text-sm italic text-ink-muted">
                         After {art.data.reference}
                     </p>
                 ) : null
@@ -69,7 +69,7 @@ const readingTime = readingMinutes(excerpt);
         <div class="blog-entry__body">
             <p
                 class:list={[
-                    "blog-entry__excerpt line-clamp-3 font-serif text-[15px] leading-relaxed opacity-80",
+                    "blog-entry__excerpt line-clamp-3 font-serif text-[15px] leading-relaxed text-ink-soft",
                     featured && "sm:text-base",
                 ]}>
                 {excerpt}
@@ -79,17 +79,22 @@ const readingTime = readingMinutes(excerpt);
 </a>
 
 <style>
-    /* A hairline under each post. The featured post gets one above too, inside
-       which the boxed gold rule doubles them. */
+    /* A hairline under each post, --entry-gap from its content. */
     .blog-entry {
-        padding-block: 2rem;
+        --entry-gap: 2rem;
+        padding-block: var(--entry-gap);
         border-bottom: 1px solid rgb(42 35 27 / 0.15);
     }
 
-    /* Padding is the gold rule's 0.25rem inset plus the gap inside it. */
+    /* The featured post's content sits in a gold frame, which stands where other
+       posts' content does: flush at the top and --entry-gap above the hairline. */
     .blog-entry--featured {
-        padding: 1.5rem;
-        border-block: 1px solid rgb(42 35 27 / 0.15);
+        --frame-pad: 1.25rem;
+        padding: var(--frame-pad) var(--frame-pad) calc(var(--frame-pad) + var(--entry-gap));
+    }
+
+    .blog-entry__frame {
+        inset: 0 0 var(--entry-gap);
     }
 
     :global(html.dark) .blog-entry {
@@ -98,11 +103,11 @@ const readingTime = readingMinutes(excerpt);
 
     @media (min-width: 640px) {
         .blog-entry {
-            padding-block: 2.5rem;
+            --entry-gap: 2.5rem;
         }
 
         .blog-entry--featured {
-            padding: 1.75rem;
+            --frame-pad: 1.5rem;
         }
     }
 

@@ -38,9 +38,6 @@ importers:
       '@fontsource-variable/source-serif-4':
         specifier: ^5.2.9
         version: 5.2.9
-      '@masonry-grid/react':
-        specifier: ^1.1.1
-        version: 1.1.1(react@18.3.1)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.8(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.1))
@@ -859,16 +856,6 @@ packages:
     resolution: {integrity: sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg==}
     engines: {node: '>=18'}
     hasBin: true
-
-  '@masonry-grid/react@1.1.1':
-    resolution: {integrity: sha512-IKHd8fLgL7kjPIz4lL6cIgPXv31goVvrQK03nK0zBqBLDelPDPRaYtpqqTzpb4EGNXepoj5Z157/F2Vijeqfsw==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  '@masonry-grid/vanilla@1.1.0':
-    resolution: {integrity: sha512-bHpdnA3xBzBey0PpHvrBYs9IZ8vn5VevP75+Vdg5Dqlsez/hufJZ7oRh5rrDK1aAaggoN+FM5fXPdaXOuEvf4Q==}
-    engines: {node: '>=16'}
 
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
@@ -4080,13 +4067,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
-
-  '@masonry-grid/react@1.1.1(react@18.3.1)':
-    dependencies:
-      '@masonry-grid/vanilla': 1.1.0
-      react: 18.3.1
-
-  '@masonry-grid/vanilla@1.1.0': {}
 
   '@mdx-js/mdx@3.1.1':
     dependencies:

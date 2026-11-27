@@ -19,7 +19,6 @@
     "@fontsource-variable/inter": "^5.1.0",
     "@fontsource-variable/playfair-display": "^5.1.0",
     "@fontsource-variable/source-serif-4": "^5.2.9",
-    "@masonry-grid/react": "^1.1.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",

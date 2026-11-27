@@ -2,13 +2,12 @@
 import type { ImageMetadata } from "astro";
 import { Picture } from "astro:assets";
 import heroImage from "../assets/contactr_final.webp";
+import SelectedWorkTile from "../components/SelectedWorkTile.astro";
 import Layout from "../layouts/Layout.astro";
 import { imageSize } from "../utils/originals";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
 const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 110vw";
-const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
-const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 
 const HERO_BODY =
     "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
@@ -37,6 +36,46 @@ const selectedWorks = Object.entries(selectedWorkModules)
         const { width, height } = imageSize(image);
         return { image, alt: `Selected artwork ${index + 1}`, aspectRatio: width / height };
     });
+
+// Splits the pieces into columns that end as level as possible, keeping the
+// sequence within each column. Every split is tried: 13 pieces is at most 3^13
+// at build time. A piece's height per unit of column width is 1 / ratio; gap is
+// the column gap in the same units.
+const toColumns = (count: number, gap: number) => {
+    const heights = selectedWorks.map((work) => 1 / work.aspectRatio);
+    const totals = new Array(count).fill(0);
+    const counts = new Array(count).fill(0);
+    const pick: number[] = [];
+    let best = { spread: Infinity, pick: [] as number[] };
+    const place = (i: number) => {
+        if (i === heights.length) {
+            const ends = totals.map((total, c) => total + gap * Math.max(counts[c] - 1, 0));
+            const spread = Math.max(...ends) - Math.min(...ends);
+            if (spread < best.spread) best = { spread, pick: [...pick] };
+            return;
+        }
+        for (let c = 0; c < count; c++) {
+            // Columns are interchangeable until they hold something.
+            if (counts[c] === 0 && c > 0 && counts[c - 1] === 0) break;
+            totals[c] += heights[i];
+            counts[c] += 1;
+            pick.push(c);
+            place(i + 1);
+            pick.pop();
+            counts[c] -= 1;
+            totals[c] -= heights[i];
+        }
+    };
+    place(0);
+    return Array.from({ length: count }, (_, c) => selectedWorks.filter((_, i) => best.pick[i] === c));
+};
+
+// Two columns up to xl, three from xl. Both are rendered; the hidden one's lazy
+// images never load.
+const galleryLayouts = [
+    { columns: toColumns(2, 0.025), class: "flex xl:hidden", sizes: "(min-width: 1024px) 40vw, 50vw" },
+    { columns: toColumns(3, 0.035), class: "hidden xl:flex", sizes: "30vw" },
+];
 ---
 
 <Layout title="JacobLDraws">
@@ -74,7 +113,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                      right is only pinned below sm, where the buttons span full width. -->
                 <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
                     <!-- Hidden below sm, where the frame is too short for body copy. -->
-                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-primary/85 lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65] dark:text-primary-dark/85">
+                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-ink-soft lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
                         {HERO_BODY}
                     </p>
                     <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
@@ -100,7 +139,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
             </section>
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
-                <div class="section-header max-w-xl border-t border-primary/10 pt-5 sm:pt-6 dark:border-primary-dark/10">
+                <div class="section-header max-w-xl pt-5 sm:pt-6">
                     <div class="flex flex-wrap items-baseline gap-x-4">
                         <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-primary sm:text-4xl dark:text-primary-dark">
                             What I can make.
@@ -108,35 +147,25 @@ const selectedWorks = Object.entries(selectedWorkModules)
                         <!-- Negative margin cancels the padding so the tap target grows without moving the row. -->
                         <a
                             href="/art"
-                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline underline-offset-4 hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark">
+                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-ink-muted underline underline-offset-4 hover:text-primary dark:hover:text-primary-dark">
                             See more
                         </a>
                     </div>
                 </div>
 
-                <!-- gap-1 below sm: at 375px the widest tile pair fits two-up with no room
-                     to spare; any larger gap drops them to one-up. -->
-                <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-3">
-                    {
-                        selectedWorks.map(({ image, alt, aspectRatio }) => (
-                            <div
-                                style={`--tile-ratio: ${aspectRatio};`}
-                                class="selected-work-tile group block">
-                                <Picture
-                                    src={image}
-                                    alt={alt}
-                                    formats={["avif", "webp"]}
-                                    widths={GALLERY_VARIANT_WIDTHS}
-                                    sizes={GALLERY_SIZES}
-                                    quality={78}
-                                    loading="lazy"
-                                    decoding="async"
-                                    class="block h-full w-full object-contain transition-transform duration-1000 ease-in-out group-hover:scale-[1.01]"
-                                />
-                            </div>
-                        ))
-                    }
-                </div>
+                {
+                    galleryLayouts.map((layout) => (
+                        <div class:list={["selected-work-grid mt-6 items-start", layout.class]}>
+                            {layout.columns.map((works) => (
+                                <div class="selected-work-column">
+                                    {works.map((work) => (
+                                        <SelectedWorkTile {...work} sizes={layout.sizes} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    ))
+                }
             </section>
         </div>
     </main>
@@ -173,41 +202,30 @@ const selectedWorks = Object.entries(selectedWorkModules)
         letter-spacing: var(--eyebrow-tracking);
     }
 
-    /*
-     * Justified rows: flex-basis/grow scale with each tile's aspect ratio
-     * (--tile-ratio, set inline per tile) so complete rows fill the container
-     * without cropping.
-     */
-    .selected-work-grid::after {
-        flex: 999 1 13rem;
-        content: "";
+    /* Columns rather than justified rows: each piece keeps its own height, so no
+       row ends ragged and nothing is cropped. */
+    .selected-work-grid {
+        --gap: 0.25rem;
+        gap: var(--gap);
     }
 
-    .selected-work-tile {
-        max-width: 100%;
-        aspect-ratio: var(--tile-ratio);
-        flex-grow: var(--tile-ratio);
-        flex-shrink: 1;
-        flex-basis: calc(var(--tile-ratio) * 13rem);
+    .selected-work-column {
+        display: flex;
+        min-width: 0;
+        flex: 1 1 0;
+        flex-direction: column;
+        gap: var(--gap);
     }
 
     @media (min-width: 640px) {
-        .selected-work-grid::after {
-            flex-basis: 17rem;
-        }
-
-        .selected-work-tile {
-            flex-basis: calc(var(--tile-ratio) * 17rem);
+        .selected-work-grid {
+            --gap: 0.5rem;
         }
     }
 
     @media (min-width: 1024px) {
-        .selected-work-grid::after {
-            flex-basis: 20rem;
-        }
-
-        .selected-work-tile {
-            flex-basis: calc(var(--tile-ratio) * 20rem);
+        .selected-work-grid {
+            --gap: 0.75rem;
         }
     }
 

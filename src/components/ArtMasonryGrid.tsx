@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { RegularMasonryGrid as MasonryGrid, Frame } from '@masonry-grid/react'
 
 export interface OptimizedImage {
     src: string;
@@ -53,12 +52,6 @@ const waitForZoomReady = (cb: () => void, attempts = 20) => {
     }
     if (attempts <= 0) return;
     window.setTimeout(() => waitForZoomReady(cb, attempts - 1), 100);
-};
-
-// Sized in CSS rather than from window.innerWidth so the grid can render on the server.
-const GRID_STYLE = {
-    gridTemplateColumns: 'repeat(auto-fill, minmax(var(--art-frame), 1fr))',
-    gap: 'var(--art-gap)',
 };
 
 export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedImage[] }) {
@@ -149,8 +142,8 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             setActive(cat);
                         }}
                         // Not redundant with sm:text-xs; the larger size wraps the row on small phones.
-                        className={`text-left font-serif text-[0.6875rem] leading-none tracking-normal hover:opacity-100 sm:text-xs sm:tracking-wide ${
-                            active === cat ? 'font-semibold opacity-100 underline underline-offset-2' : 'opacity-75'
+                        className={`text-left font-serif text-[0.6875rem] leading-none tracking-normal hover:text-inherit sm:text-xs sm:tracking-wide ${
+                            active === cat ? 'font-semibold underline underline-offset-2' : 'text-ink-muted'
                         }`}
                     >
                         {cat}
@@ -160,28 +153,36 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
 
             {/* Grid */}
             <div className="min-w-0 lg:col-span-2 lg:row-start-2">
-                <MasonryGrid
-                    style={GRID_STYLE}
-                    className="[--art-frame:150px] [--art-gap:2px] min-[400px]:[--art-frame:280px] min-[400px]:[--art-gap:5px]"
-                >
-                    {visible.map((img, i) => (
-                        <Frame key={img.originalSrc + i} width={img.width} height={img.height}>
-                            <img
-                                src={img.src}
-                                alt="Artwork"
-                                className="zoomable cursor-zoom-in"
-                                loading="lazy"
-                                width={img.width}
-                                height={img.height}
-                                data-zoom-src={img.originalSrc}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    openPieceAt(visible, i);
-                                }}
-                            />
-                        </Frame>
-                    ))}
-                </MasonryGrid>
+                {/* Justified rows: each tile grows in proportion to its aspect ratio, so a
+                    full row fills the width at one shared height without cropping. The
+                    ::after filler keeps the last row from stretching. Sized in CSS, not
+                    from window.innerWidth, so the grid renders on the server. */}
+                <div className="flex flex-wrap gap-[2px] [--art-row:7rem] after:flex-[999_1_var(--art-row)] after:content-[''] min-[400px]:gap-[5px] min-[400px]:[--art-row:10rem] sm:[--art-row:13rem] lg:[--art-row:15rem]">
+                    {visible.map((img, i) => {
+                        const ratio = img.width / img.height;
+                        return (
+                            <div
+                                key={img.originalSrc + i}
+                                className="max-w-full"
+                                style={{ aspectRatio: `${img.width} / ${img.height}`, flexGrow: ratio, flexBasis: `calc(${ratio} * var(--art-row))` }}
+                            >
+                                <img
+                                    src={img.src}
+                                    alt="Artwork"
+                                    className="zoomable block h-full w-full cursor-zoom-in"
+                                    loading="lazy"
+                                    width={img.width}
+                                    height={img.height}
+                                    data-zoom-src={img.originalSrc}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openPieceAt(visible, i);
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );
