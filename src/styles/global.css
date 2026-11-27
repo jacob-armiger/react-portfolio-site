@@ -33,8 +33,9 @@
  * styles. Not in @theme: they back no utility class.
  */
 :root {
-    /* Same cap the home hero uses. */
-    --site-max-width: 96rem;
+    /* One frame on every page: nav column + the home page's max-w-6xl, so the
+       nav never moves between pages. The footer shares it to line up. */
+    --site-max-width: 82rem;
     /* Single source for content edges; also the home page's --page-inset. */
     --site-gutter: 1.25rem;
     /* Nav-to-content separation, applied by .site-gap (Layout.astro). */
