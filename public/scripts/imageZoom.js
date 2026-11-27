@@ -245,7 +245,6 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     font-size: 20px; line-height: 1;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   `;

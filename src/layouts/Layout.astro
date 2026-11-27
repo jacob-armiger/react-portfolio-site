@@ -60,9 +60,8 @@ const navLinks = [
     { href: "/directory", label: "Directory", visibility: "hidden sm:block" },
 ];
 // Active nav state is the full-ink color alone; resting links sit at /70.
-const NAV_LINK_CLASS = "font-sans transition-colors hover:underline lg:font-medium";
-const NAV_INK_REST =
-    "text-primary/70 hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark";
+const NAV_LINK_CLASS = "font-sans hover:underline lg:font-medium";
+const NAV_INK_REST = "text-primary/70 dark:text-primary-dark/70";
 const NAV_INK_CURRENT = "text-primary dark:text-primary-dark";
 // Texture dials live in backgroundTexture.ts; emitted as raw CSS because only the
 // hashed asset URLs are dynamic.

@@ -15,7 +15,7 @@ const HERO_BODY =
 
 // Hero button classes. ACTION_CLASS in actionClass.ts mirrors this; keep them in step.
 const HERO_ACTION_CLASS =
-    "inline-flex items-center justify-center rounded-xs font-sans font-semibold uppercase transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
+    "inline-flex items-center justify-center rounded-xs font-sans font-semibold uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg,webp}",
@@ -108,7 +108,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                         <!-- Negative margin cancels the padding so the tap target grows without moving the row. -->
                         <a
                             href="/art"
-                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline underline-offset-4 transition-colors hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark">
+                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline underline-offset-4 hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark">
                             See more
                         </a>
                     </div>

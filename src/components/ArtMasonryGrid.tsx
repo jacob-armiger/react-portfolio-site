@@ -149,7 +149,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                             setActive(cat);
                         }}
                         // Not redundant with sm:text-xs; the larger size wraps the row on small phones.
-                        className={`text-left font-serif text-[0.6875rem] leading-none tracking-normal transition-opacity hover:opacity-100 sm:text-xs sm:tracking-wide ${
+                        className={`text-left font-serif text-[0.6875rem] leading-none tracking-normal hover:opacity-100 sm:text-xs sm:tracking-wide ${
                             active === cat ? 'font-semibold opacity-100 underline underline-offset-2' : 'opacity-75'
                         }`}
                     >
