@@ -28,6 +28,9 @@ const readingTime = readingMinutes(articleText(entry.body));
 // nothing is reserved and the article body drops in behind it.
 const cover = imageSize(entry.data.image);
 const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})` : undefined;
+
+const NOTE_LINK_CLASS =
+    "underline decoration-primary/40 underline-offset-4 hover:decoration-primary dark:decoration-primary-dark/40 dark:hover:decoration-primary-dark";
 ---
 
 <Layout
@@ -82,6 +85,15 @@ const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})`
                 <Content />
             </Prose>
         </div>
+        <!-- Search and social visitors land on posts without seeing the home pitch. -->
+        <aside
+            class="mt-14 border-t border-primary/15 pt-6 text-base leading-7 text-primary/85 dark:border-primary-dark/15 dark:text-primary-dark/85">
+            <p>
+                I teach drawing and painting, online or locally in NYC. If you’d like{" "}
+                <a href="/art-lessons" class={NOTE_LINK_CLASS}>a lesson</a> or a commission,{" "}
+                <a href="/contact" class={NOTE_LINK_CLASS}>write to me</a>.
+            </p>
+        </aside>
     </main>
 </Layout>
 
