@@ -16,7 +16,7 @@ import Dateline from "../../components/Dateline.astro";
 import Prose from "../../components/Prose.astro";
 import RssFeedButton from "../../components/RssFeedButton.astro";
 import Layout from "../../layouts/Layout.astro";
-import { articleText, readingMinutes } from "../../utils/article";
+import { articleExcerpt, articleText, readingMinutes } from "../../utils/article";
 import { imageSize } from "../../utils/originals";
 
 const { entry } = Astro.props as { entry: CollectionEntry<"article"> };
@@ -28,9 +28,18 @@ const readingTime = readingMinutes(articleText(entry.body));
 // nothing is reserved and the article body drops in behind it.
 const cover = imageSize(entry.data.image);
 const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})` : undefined;
+
+const NOTE_LINK_CLASS =
+    "underline decoration-primary/40 underline-offset-4 hover:decoration-primary dark:decoration-primary-dark/40 dark:hover:decoration-primary-dark";
 ---
 
-<Layout title={entry.data.title ?? "Writing Post"}>
+<Layout
+    title={entry.data.title ?? "Writing Post"}
+    description={articleExcerpt(entry.body)}
+    image={`/og/writing-${entry.id}.jpg`}
+    imageAlt={entry.data.imageAlt}
+    type="article"
+    publishedTime={entry.data.date}>
     <main class="site-main page-top mx-auto w-full max-w-2xl">
         {entry.data.image ? (
             /* coverCap makes the figure hug the image on its own, which is what keeps
@@ -66,7 +75,7 @@ const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})`
             <RssFeedButton />
         </div>
         <header class="mt-6">
-            <h1 class="font-playfair text-4xl font-semibold leading-[1.1] tracking-[-0.04em] sm:text-5xl">
+            <h1 class="font-playfair text-4xl font-semibold leading-[1.1] tracking-display sm:text-5xl">
                 {entry.data.title}
             </h1>
             <Dateline date={entry.data.date} minutes={readingTime} class="mt-3" />
@@ -76,6 +85,15 @@ const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})`
                 <Content />
             </Prose>
         </div>
+        <!-- Search and social visitors land on posts without seeing the home pitch. -->
+        <aside
+            class="mt-14 border-t border-primary/15 pt-6 text-base leading-7 text-ink-soft dark:border-primary-dark/15">
+            <p>
+                I teach drawing and painting, online or locally in NYC. If you’d like{" "}
+                <a href="/art-lessons" class={NOTE_LINK_CLASS}>a lesson</a> or a commission,{" "}
+                <a href="/contact" class={NOTE_LINK_CLASS}>write to me</a>.
+            </p>
+        </aside>
     </main>
 </Layout>
 
@@ -91,7 +109,7 @@ const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})`
         font-size: 11px;
         font-weight: 500;
         letter-spacing: 0.16em;
-        opacity: 0.65;
+        color: var(--color-ink-muted);
         text-transform: uppercase;
     }
 </style>

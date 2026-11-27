@@ -89,7 +89,11 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 );
 ---
 
-<Layout title="Art Lessons">
+<Layout
+    title="Art Lessons"
+    description="$50 one-on-one art lessons, online or in person in New York City. Build your draftsmanship, painting, and original work with structured, personal guidance."
+    image={heroSource}
+    imageAlt="Painting of an instructor in a white shirt, mid-gesture">
     <!-- Starts the hero fetch alongside the stylesheet instead of after the head's inline
          analytics module. imagesrcset/imagesizes must match the img exactly, or the
          browser fetches a second copy. -->
@@ -128,14 +132,14 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
             <div class="relative mb-8">
                 <!-- Smaller below sm so "Structure." still fits inside the gutter. -->
-                <h1 class="font-playfair text-5xl font-semibold tracking-[-0.04em] sm:text-7xl">
+                <h1 class="font-playfair text-[2.75rem] font-semibold tracking-display sm:text-7xl">
                     Practice Boldly.<br />Get Structure.
                 </h1>
             </div>
 
-            <div class=" relative mb-4 flex w-2/3 sm:w-1/2 flex-col gap-8 text-base leading-relaxed">
+            <div class=" relative mb-4 flex w-2/3 sm:w-1/2 flex-col gap-8 text-base leading-relaxed max-sm:[text-shadow:0_0_12px_rgb(0_0_0/0.9),0_1px_2px_rgb(0_0_0/0.7)]">
                 <div class="sm:border-l-2 border-secondary sm:pl-4 dark:border-primary-dark">
-                    <p class="text-lg font-semibold">$50 &mdash; One hour, one-on-one</p>
+                    <p class="text-lg font-semibold">$50 &mdash; One hour, <span class="whitespace-nowrap">one-on-one</span></p>
                     <p class="mt-1 opacity-90">Sessions are scheduled at your convenience and as often as you like.</p>
                 </div>
 
@@ -157,7 +161,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
         <div class="site-inset">
 
-        <p class="mb-8  max-w-3xl mx-auto  text-xl leading-relaxed opacity-80 text-balance text-center ">
+        <p class="mb-8  max-w-3xl mx-auto  text-xl leading-relaxed text-ink-soft text-balance text-center ">
             I offer lessons to artists of all levels &mdash; whether you’re refining your
             draftsmanship, building a portfolio for art school, or just looking for guidance on what
             to practice. This isn't just an art lesson; it's an ongoing mentorship.
@@ -185,10 +189,10 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
                         </figure>
                         <div class="sm:hidden text-left mx-2 place-self-center">
-                            <h2 class="sm:text-nowrap mb-4 mt-0 sm:mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
+                            <h2 class="sm:text-nowrap mb-4 mt-0 sm:mt-2 font-medium uppercase tracking-[0.16em] text-xs">
                                 {piece.label}
                             </h2>
-                            <p class="font-sans text-balance opacity-70">{steps.at(i)}</p>
+                            <p class="font-sans text-balance text-ink-muted">{steps.at(i)}</p>
                         </div>
 
                     ))
@@ -197,10 +201,10 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                 {
                     steps.map((step, i) => (
                         <div class="h-fit hidden sm:block">
-                            <h2 class="md:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
+                            <h2 class="md:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] text-xs">
                                 {lessonGallery.at(i)?.label}
                             </h2>
-                            <p class="font-sans opacity-70">{step}</p>
+                            <p class="font-sans text-ink-muted">{step}</p>
                         </div>
                     ))
                 }
@@ -233,10 +237,10 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                     class="profile-plate w-30 shrink-0 object-cover object-top max-sm:float-right max-sm:mt-9 max-sm:mb-2 max-sm:ml-4 sm:order-2 sm:w-36 sm:self-start"
                 />
                 <div>
-                <h2 class="mb-2 font-sans opacity-80 text-lg font-semibold tracking-[-0.04em]">
+                <h2 class="mb-2 font-sans text-ink-soft text-lg font-semibold">
                     The Teacher
                 </h2>
-                <p class="text-sm leading-relaxed text-pretty opacity-60">
+                <p class="text-sm leading-relaxed text-pretty text-ink-muted">
                     I'm a self-taught artist who went from not knowing how to draw at all to
                     competing in drawing contests and selling work in three years. Online art
                     instruction is a maze of conflicting advice and trivial exercises, but I
@@ -251,9 +255,9 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             <div class="order-1 sm:order-2 w-full px-2 sm:w-5/6 sm:mx-auto">
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
 
-        <h2 class="col mb-4 text-left font-playfair text-3xl font-semibold tracking-[-0.04em]">Start Learning</h2>
-        <p class="mb-8 text-base opacity-90">
-            Let me know what questions you have, when you want to schedule, and what interests you.
+        <h2 class="col mb-3 text-left font-playfair text-3xl font-semibold tracking-display sm:text-4xl">Start Learning</h2>
+        <p class="mb-8 text-base text-pretty text-ink-soft">
+            Let me know what questions you have and when you want to schedule. I'll get back to you as soon as I can.
         </p>
 
         <ContactForm subject="Art Lessons Inquiry" defaultSubject="Art lessons" />

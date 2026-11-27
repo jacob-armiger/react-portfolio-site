@@ -2,21 +2,19 @@
 import type { ImageMetadata } from "astro";
 import { Picture } from "astro:assets";
 import heroImage from "../assets/contactr_final.webp";
+import SelectedWorkTile from "../components/SelectedWorkTile.astro";
 import Layout from "../layouts/Layout.astro";
 import { imageSize } from "../utils/originals";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
 const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 110vw";
-const GALLERY_VARIANT_WIDTHS = [320, 480, 640, 768, 960];
-const GALLERY_SIZES = "(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw";
 
-const HERO_EYEBROW = "OPEN FOR TEACHING AND COMMISSIONS";
 const HERO_BODY =
     "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
 
-// Hero button classes. Footer's ACTION_CLASS mirrors this; keep them in step.
+// Hero button classes. ACTION_CLASS in actionClass.ts mirrors this; keep them in step.
 const HERO_ACTION_CLASS =
-    "inline-flex items-center justify-center rounded-full sm:rounded-xs font-sans font-semibold uppercase transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
+    "inline-flex items-center justify-center rounded-xs font-sans font-semibold uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg,webp}",
@@ -38,6 +36,46 @@ const selectedWorks = Object.entries(selectedWorkModules)
         const { width, height } = imageSize(image);
         return { image, alt: `Selected artwork ${index + 1}`, aspectRatio: width / height };
     });
+
+// Splits the pieces into columns that end as level as possible, keeping the
+// sequence within each column. Every split is tried: 13 pieces is at most 3^13
+// at build time. A piece's height per unit of column width is 1 / ratio; gap is
+// the column gap in the same units.
+const toColumns = (count: number, gap: number) => {
+    const heights = selectedWorks.map((work) => 1 / work.aspectRatio);
+    const totals = new Array(count).fill(0);
+    const counts = new Array(count).fill(0);
+    const pick: number[] = [];
+    let best = { spread: Infinity, pick: [] as number[] };
+    const place = (i: number) => {
+        if (i === heights.length) {
+            const ends = totals.map((total, c) => total + gap * Math.max(counts[c] - 1, 0));
+            const spread = Math.max(...ends) - Math.min(...ends);
+            if (spread < best.spread) best = { spread, pick: [...pick] };
+            return;
+        }
+        for (let c = 0; c < count; c++) {
+            // Columns are interchangeable until they hold something.
+            if (counts[c] === 0 && c > 0 && counts[c - 1] === 0) break;
+            totals[c] += heights[i];
+            counts[c] += 1;
+            pick.push(c);
+            place(i + 1);
+            pick.pop();
+            counts[c] -= 1;
+            totals[c] -= heights[i];
+        }
+    };
+    place(0);
+    return Array.from({ length: count }, (_, c) => selectedWorks.filter((_, i) => best.pick[i] === c));
+};
+
+// Two columns up to xl, three from xl. Both are rendered; the hidden one's lazy
+// images never load.
+const galleryLayouts = [
+    { columns: toColumns(2, 0.025), class: "flex xl:hidden", sizes: "(min-width: 1024px) 40vw, 50vw" },
+    { columns: toColumns(3, 0.035), class: "hidden xl:flex", sizes: "30vw" },
+];
 ---
 
 <Layout title="JacobLDraws">
@@ -47,10 +85,6 @@ const selectedWorks = Object.entries(selectedWorkModules)
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
             <section class="hero-section relative isolate overflow-hidden bg-[#d7cfbe] dark:bg-[#2f2a25]">
-                <p class="hero-eyebrow eyebrow absolute z-30 font-sans uppercase text-primary/70 dark:text-primary-dark/70">
-                    {HERO_EYEBROW}
-                </p>
-
                 <Picture
                     src={heroImage}
                     alt="Person reclining beside a green office chair while using a telephone"
@@ -60,10 +94,10 @@ const selectedWorks = Object.entries(selectedWorkModules)
                     sizes={HERO_SIZES}
                     quality={80}
                     priority
-                    class="absolute z-10 aspect-2693/2773 max-w-none top-28 left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
+                    class="absolute z-10 aspect-2693/2773 max-w-none top-[5.25rem] left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
-                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-tighter sm:tracking-[-0.04em] text-orange-100 mix-blend-difference">
+                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display text-orange-100 mix-blend-difference">
                     Contact me for <br/> art lessons or to commission work.
                 </h1>
                 <!-- mix-blend-color duplicate over the difference layer: keeps the luminosity
@@ -71,15 +105,15 @@ const selectedWorks = Object.entries(selectedWorkModules)
                      over the green chair. Must keep .hero-heading geometry and the same z. -->
                 <div
                     aria-hidden="true"
-                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-semibold leading-[1.1] tracking-tighter text-primary mix-blend-color sm:tracking-[-0.04em] dark:text-primary-dark">
+                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-bold leading-[1.1] tracking-display text-primary mix-blend-color dark:text-primary-dark">
                     Contact me for <br/> art lessons or to commission work.
                 </div>
 
-                <!-- bottom-6 is larger than the eyebrow's top inset to clear the frame edge.
+                <!-- bottom-6 is larger than the headline's top inset to clear the frame edge.
                      right is only pinned below sm, where the buttons span full width. -->
                 <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
                     <!-- Hidden below sm, where the frame is too short for body copy. -->
-                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-primary/85 lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65] dark:text-primary-dark/85">
+                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-ink-soft lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
                         {HERO_BODY}
                     </p>
                     <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
@@ -88,7 +122,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                             href="/contact"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "bg-primary text-secondary shadow-[0_16px_40px_rgba(38,41,44,0.22)] focus-visible:outline-primary dark:bg-primary-dark dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
+                                "bg-primary text-secondary hover:bg-primary/85 focus-visible:outline-primary dark:bg-primary-dark dark:hover:bg-primary-dark/85 dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
                             ]}>
                             Contact
                         </a>
@@ -96,7 +130,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
                             href="/art-lessons"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md focus-visible:outline-primary dark:border-primary-dark/25 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
+                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md hover:border-primary/60 focus-visible:outline-primary dark:border-primary-dark/25 dark:hover:border-primary-dark/60 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
                             ]}>
                             Learn to Draw
                         </a>
@@ -105,46 +139,33 @@ const selectedWorks = Object.entries(selectedWorkModules)
             </section>
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
-                <div class="section-header max-w-xl border-t border-primary/10 pt-5 sm:pt-6 dark:border-primary-dark/10">
-                    <p class="eyebrow font-sans uppercase text-primary/70 dark:text-primary-dark/70">
-                        Selected work
-                    </p>
-                    <div class="mt-2 flex flex-wrap items-baseline gap-x-4">
-                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-[-0.04em] text-primary sm:text-4xl dark:text-primary-dark">
+                <div class="section-header max-w-xl pt-5 sm:pt-6">
+                    <div class="flex flex-wrap items-baseline gap-x-4">
+                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-primary sm:text-4xl dark:text-primary-dark">
                             What I can make.
                         </h2>
                         <!-- Negative margin cancels the padding so the tap target grows without moving the row. -->
                         <a
                             href="/art"
-                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-primary/70 underline underline-offset-4 transition-colors hover:text-primary dark:text-primary-dark/70 dark:hover:text-primary-dark">
+                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-ink-muted underline underline-offset-4 hover:text-primary dark:hover:text-primary-dark">
                             See more
                         </a>
                     </div>
                 </div>
 
-                <!-- gap-1 below sm: at 375px the widest tile pair fits two-up with no room
-                     to spare; any larger gap drops them to one-up. -->
-                <div class="selected-work-grid mt-6 flex flex-wrap items-start gap-1 sm:gap-3">
-                    {
-                        selectedWorks.map(({ image, alt, aspectRatio }) => (
-                            <div
-                                style={`--tile-ratio: ${aspectRatio};`}
-                                class="selected-work-tile group block">
-                                <Picture
-                                    src={image}
-                                    alt={alt}
-                                    formats={["avif", "webp"]}
-                                    widths={GALLERY_VARIANT_WIDTHS}
-                                    sizes={GALLERY_SIZES}
-                                    quality={78}
-                                    loading="lazy"
-                                    decoding="async"
-                                    class="block h-full w-full object-contain transition-transform duration-1000 ease-in-out group-hover:scale-[1.01]"
-                                />
-                            </div>
-                        ))
-                    }
-                </div>
+                {
+                    galleryLayouts.map((layout) => (
+                        <div class:list={["selected-work-grid mt-6 items-start", layout.class]}>
+                            {layout.columns.map((works) => (
+                                <div class="selected-work-column">
+                                    {works.map((work) => (
+                                        <SelectedWorkTile {...work} sizes={layout.sizes} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    ))
+                }
             </section>
         </div>
     </main>
@@ -152,7 +173,7 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
 <style>
     /*
-     * Shared horizontal inset: hero eyebrow, headline, actions and the Selected Work
+     * Shared horizontal inset: hero headline, actions and the Selected Work
      * heading all measure from this so their left edges align.
      */
     .page-sections {
@@ -181,41 +202,30 @@ const selectedWorks = Object.entries(selectedWorkModules)
         letter-spacing: var(--eyebrow-tracking);
     }
 
-    /*
-     * Justified rows: flex-basis/grow scale with each tile's aspect ratio
-     * (--tile-ratio, set inline per tile) so complete rows fill the container
-     * without cropping.
-     */
-    .selected-work-grid::after {
-        flex: 999 1 13rem;
-        content: "";
+    /* Columns rather than justified rows: each piece keeps its own height, so no
+       row ends ragged and nothing is cropped. */
+    .selected-work-grid {
+        --gap: 0.25rem;
+        gap: var(--gap);
     }
 
-    .selected-work-tile {
-        max-width: 100%;
-        aspect-ratio: var(--tile-ratio);
-        flex-grow: var(--tile-ratio);
-        flex-shrink: 1;
-        flex-basis: calc(var(--tile-ratio) * 13rem);
+    .selected-work-column {
+        display: flex;
+        min-width: 0;
+        flex: 1 1 0;
+        flex-direction: column;
+        gap: var(--gap);
     }
 
     @media (min-width: 640px) {
-        .selected-work-grid::after {
-            flex-basis: 17rem;
-        }
-
-        .selected-work-tile {
-            flex-basis: calc(var(--tile-ratio) * 17rem);
+        .selected-work-grid {
+            --gap: 0.5rem;
         }
     }
 
     @media (min-width: 1024px) {
-        .selected-work-grid::after {
-            flex-basis: 20rem;
-        }
-
-        .selected-work-tile {
-            flex-basis: calc(var(--tile-ratio) * 20rem);
+        .selected-work-grid {
+            --gap: 0.75rem;
         }
     }
 
@@ -226,11 +236,11 @@ const selectedWorks = Object.entries(selectedWorkModules)
     .hero-section {
         /* Heading box width = font size x ratio, so line breaks stay stable across
            viewport widths (a percentage width would shift them). */
-        --hero-heading-ratio: 6.4;
-        --hero-heading-size: min(14vw, 3.55rem);
-        /* Headline top = inset + eyebrow line box (1.45 line-height) + 1rem gap. */
-        --hero-heading-top: calc(var(--page-inset) + (var(--eyebrow-size) * 1.45) + 1rem);
-        /* Full bleed with a bottom hairline below lg; the double frame is lg-only. */
+        --hero-heading-ratio: 6.75;
+        --hero-heading-size: min(13vw, 3.4rem);
+        --hero-heading-top: var(--page-inset);
+        /* Full bleed with a bottom hairline below lg, where only the inner rule
+           frames it; the outer border joins it at lg. */
         --hero-frame-border: 0px;
         --hero-frame-line: rgba(42, 35, 27, 0.15);
         /* Absolutely-positioned children measure from the padding box; subtract the
@@ -238,21 +248,19 @@ const selectedWorks = Object.entries(selectedWorkModules)
         --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
         border: var(--hero-frame-border) solid var(--hero-frame-line);
         border-bottom-width: 1px;
-        min-height: 43rem;
-        background-image:
-            linear-gradient(105deg, rgba(63, 81, 59, 0.13), transparent 38%),
-            linear-gradient(315deg, rgba(141, 189, 182, 0.12), transparent 42%);
+        min-height: 41.25rem;
     }
 
-    .hero-eyebrow {
-        top: var(--page-inset);
-        left: var(--hero-inline-inset);
-    }
-
-    @media (max-width: 639px) {
-        .hero-eyebrow {
-            max-width: calc(100% - (2 * var(--hero-inline-inset)));
-        }
+    /* Inner rule of the frame: above the artwork (z-15), under the text. The
+       radius subtracts the outer border width to stay concentric. */
+    .hero-section::before {
+        position: absolute;
+        z-index: 15;
+        inset: 0.25rem;
+        border: 1px solid var(--hero-frame-line);
+        border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
+        pointer-events: none;
+        content: "";
     }
 
     .hero-heading {
@@ -266,40 +274,25 @@ const selectedWorks = Object.entries(selectedWorkModules)
 
     @media (min-width: 640px) {
         .hero-section {
-            --hero-heading-ratio: 7.9;
-            --hero-heading-size: min(11.6vw, 6.25rem);
-            /* The 46.5rem floor keeps the bottom-anchored copy clear of the headline
+            --hero-heading-ratio: 8.35;
+            --hero-heading-size: min(11.2vw, 6.25rem);
+            /* The 44.75rem floor keeps the bottom-anchored copy clear of the headline
                on short viewports (worst case 860-1023px wide). */
-            min-height: clamp(46.5rem, 78vh, 47.5rem);
+            min-height: clamp(44.75rem, calc(78vh - 1.75rem), 45.75rem);
         }
     }
 
     @media (min-width: 1024px) {
         .hero-section {
             /* The sidebar nav narrows the section, so the heading cap shrinks. */
-            --hero-heading-size: min(9.6vw, 7rem);
+            --hero-heading-size: min(9vw, 7rem);
             --hero-frame-border: 1px;
-            min-height: clamp(46rem, 88vh, 52rem);
-        }
-
-        /* Inner rule of the double frame: above the artwork (z-15), under the text.
-           The radius subtracts the outer border width to stay concentric. */
-        .hero-section::before {
-            position: absolute;
-            z-index: 15;
-            inset: 0.25rem;
-            border: 1px solid var(--hero-frame-line);
-            border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
-            pointer-events: none;
-            content: "";
+            min-height: clamp(44.25rem, calc(88vh - 1.75rem), 50.25rem);
         }
     }
 
     /* Keyed to html.dark, not prefers-color-scheme: dark mode is class-based. */
     :global(html.dark) .hero-section {
         --hero-frame-line: rgba(229, 226, 218, 0.15);
-        background-image:
-            linear-gradient(105deg, rgba(92, 119, 86, 0.18), transparent 38%),
-            linear-gradient(315deg, rgba(141, 189, 182, 0.1), transparent 42%);
     }
 </style>

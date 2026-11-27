@@ -23,6 +23,15 @@
     --color-secondary: #e5e2da;
     --color-primary-dark: #e5e2da;
     --color-secondary-dark: #26292c;
+
+    /* Faded ink for secondary text, both at or above WCAG AA on the paper:
+       soft (85%, 7.9:1) for ledes and excerpts, muted (70%, 5.1:1) for meta and
+       small text. Redefined for dark mode below. */
+    --color-ink-soft: color-mix(in srgb, var(--color-primary) 85%, transparent);
+    --color-ink-muted: color-mix(in srgb, var(--color-primary) 70%, transparent);
+
+    /* Display-size headings only; smaller headings use the fonts' own spacing. */
+    --tracking-display: -0.01em;
 }
 
 /*
@@ -30,8 +39,9 @@
  * styles. Not in @theme: they back no utility class.
  */
 :root {
-    /* Same cap the home hero uses. */
-    --site-max-width: 96rem;
+    /* One frame on every page: nav column + the home page's max-w-6xl, so the
+       nav never moves between pages. The footer shares it to line up. */
+    --site-max-width: 82rem;
     /* Single source for content edges; also the home page's --page-inset. */
     --site-gutter: 1.25rem;
     /* Nav-to-content separation, applied by .site-gap (Layout.astro). */
@@ -51,6 +61,8 @@
 
 /* Higher contrast (4.7:1) so the 11px dateline bullet and hover arrow stay legible. */
 html.dark {
+    --color-ink-soft: color-mix(in srgb, var(--color-primary-dark) 85%, transparent);
+    --color-ink-muted: color-mix(in srgb, var(--color-primary-dark) 70%, transparent);
     --plate-rule: rgb(229 226 218 / 0.25);
     --plate-accent: #6f9d7f;
 }

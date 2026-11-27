@@ -1,5 +1,4 @@
 ---
-// https://jahir.dev/blog/astro-reading-time
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { articleText, readingMinutes } from "../utils/article";
@@ -18,18 +17,28 @@ const readingTime = readingMinutes(excerpt);
 
 <a
     href={"/writing/" + art.id}
-    class:list={["blog-card group block", featured && "blog-card--featured", "relative"]}>
-
-    <article class="blog-card__grid">
-
+    class:list={[
+        "blog-entry group relative block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark",
+        featured && "blog-entry--featured",
+    ]}>
+    {
+        featured && (
+            <div
+                aria-hidden="true"
+                class="blog-entry__frame pointer-events-none absolute rounded-tr-[2rem] border border-[#887928]/80 mix-blend-overlay"
+            />
+        )
+    }
+    <article class="blog-entry__grid">
         <!-- 1px rule directly on the image, no mat, so the edge stays crisp at any zoom. -->
-        <figure class="blog-card__plate">
+        <figure class="blog-entry__plate">
             <Image
                 src={art.data.image}
                 alt=""
                 width={featured ? 750 : 560}
                 format="webp"
                 quality={80}
+                priority={featured}
                 class:list={[
                     "h-full object-cover object-[50%_10%]",
                     featured ? "aspect-3/2 sm:aspect-4/3" : "aspect-3/2 sm:aspect-4/5",
@@ -37,13 +46,12 @@ const readingTime = readingMinutes(excerpt);
             />
         </figure>
 
-
-        <div class="blog-card__head">
+        <div class="blog-entry__head">
             <Dateline date={art.data.date} minutes={readingTime} />
 
             <h2
                 class:list={[
-                    "mt-2 font-serif font-bold leading-[1.15] tracking-tight decoration-[1.5px] underline-offset-[6px] group-hover:underline",
+                    "mt-2 font-serif font-bold leading-[1.15] group-hover:opacity-60 group-focus-visible:opacity-60",
                     featured ? "text-4xl sm:text-5xl md:text-6xl" : "text-2xl",
                 ]}>
                 {art.data.title}
@@ -51,102 +59,65 @@ const readingTime = readingMinutes(excerpt);
 
             {
                 art.data.reference ? (
-                    <p class="mt-1 font-serif text-sm italic opacity-70">
+                    <p class="mt-1 font-serif text-sm italic text-ink-muted">
                         After {art.data.reference}
                     </p>
                 ) : null
             }
         </div>
 
-        {featured && <div class="absolute inset-1 border border-[#887928]/80 mix-blend-overlay rounded-tr-[2rem]"></div>}
-        <div class="blog-card__body">
+        <div class="blog-entry__body">
             <p
                 class:list={[
-                    "blog-card__excerpt line-clamp-3 font-serif text-[15px] leading-relaxed opacity-80",
+                    "blog-entry__excerpt line-clamp-3 font-serif text-[15px] leading-relaxed text-ink-soft",
                     featured && "sm:text-base",
                 ]}>
                 {excerpt}
-            </p>
-
-            <p class="blog-card__more font-sans">
-                Continue reading <span aria-hidden="true">&rarr;</span>
             </p>
         </div>
     </article>
 </a>
 
 <style>
-    /*
-     * Card: 1px rule + soft offset shadow, transparent fill so the page texture
-     * shows through. (Hover/active swap to a hard zero-blur shadow.)
-     */
-    .blog-card {
-        display: block;
-        padding: 1.25rem;
-        border: 1px solid rgb(42 35 27 / 0.55);
-        background-color: transparent;
-        /* Shadow and hover colors share --plate-accent with the article cover.
-           Narrow layouts leave only a 16-20px page gutter, so the blur is pulled in
-           to about a third of it; the fuller version returns at lg. */
-        box-shadow: 5px 7px 14px -6px var(--plate-accent);
-        transition:
-            box-shadow 120ms ease-out,
-            transform 120ms ease-out;
+    /* A hairline under each post, --entry-gap from its content. */
+    .blog-entry {
+        --entry-gap: 2rem;
+        padding-block: var(--entry-gap);
+        border-bottom: 1px solid rgb(42 35 27 / 0.15);
     }
 
-    /* Pressed: the card slides toward its shadow, which shortens by the same amount,
-       so the bottom-right corner stays fixed. */
-    .blog-card:active {
-        border-color: var(--plate-accent);
-        box-shadow: 2px 2px 0 var(--plate-accent);
-        transform: translate(4px, 4px);
+    /* The featured post's content sits in a gold frame, which stands where other
+       posts' content does: flush at the top and --entry-gap above the hairline. */
+    .blog-entry--featured {
+        --frame-pad: 1.25rem;
+        padding: var(--frame-pad) var(--frame-pad) calc(var(--frame-pad) + var(--entry-gap));
     }
 
-    .blog-card:active .blog-card__more {
-        opacity: 1;
+    .blog-entry__frame {
+        inset: 0 0 var(--entry-gap);
     }
 
-    .blog-card:active .blog-card__more span {
-        color: var(--plate-accent);
-        transform: translateX(3px);
-    }
-
-    /* Touch holds a synthesised :hover through a scroll, so hover is pointer-only;
-       :active covers touch and is cancelled when a drag becomes a scroll. */
-    @media (hover: hover) and (pointer: fine) {
-        .blog-card:hover {
-            border-color: var(--plate-accent);
-            box-shadow: 2px 2px 0 var(--plate-accent);
-            transform: translate(4px, 4px);
-        }
-
-        .blog-card:hover .blog-card__more {
-            opacity: 1;
-        }
-
-        .blog-card:hover .blog-card__more span {
-            color: var(--plate-accent);
-            transform: translateX(3px);
-        }
+    :global(html.dark) .blog-entry {
+        border-color: rgb(229 226 218 / 0.15);
     }
 
     @media (min-width: 640px) {
-        .blog-card {
-            padding: 1.5rem;
+        .blog-entry {
+            --entry-gap: 2.5rem;
         }
 
-        .blog-card--featured {
-            padding: 1rem;
+        .blog-entry--featured {
+            --frame-pad: 1.5rem;
         }
     }
 
     /*
-     * Named areas (plate / head / body) so each card variant is one
+     * Named areas (plate / head / body) so each variant is one
      * grid-template-areas line instead of a different DOM.
      */
-    .blog-card__grid {
+    .blog-entry__grid {
         display: grid;
-        gap: 1rem 1rem;
+        gap: 1rem;
         grid-template-areas:
             "plate"
             "head"
@@ -154,24 +125,25 @@ const readingTime = readingMinutes(excerpt);
         grid-template-columns: minmax(0, 1fr);
     }
 
-    .blog-card__plate {
+    .blog-entry__plate {
         grid-area: plate;
+        border: 1px solid var(--plate-rule);
+        line-height: 0;
     }
 
-    .blog-card__head {
+    .blog-entry__head {
         grid-area: head;
     }
 
-    .blog-card__body {
+    .blog-entry__body {
         display: flex;
         flex-direction: column;
         grid-area: body;
     }
 
     @media (min-width: 640px) {
-        /* Plate beside a full-height text column; the 1fr body row lets
-           .blog-card__more pin to the plate's bottom edge. */
-        .blog-card:not(.blog-card--featured) .blog-card__grid {
+        /* Plate beside a full-height text column. */
+        .blog-entry:not(.blog-entry--featured) .blog-entry__grid {
             grid-template-areas:
                 "plate head"
                 "plate body";
@@ -181,7 +153,7 @@ const readingTime = readingMinutes(excerpt);
 
         /* Featured: title and plate share the top row, excerpt spans below.
            1.6fr keeps the 60px headline to three lines. */
-        .blog-card--featured .blog-card__grid {
+        .blog-entry--featured .blog-entry__grid {
             grid-template-areas:
                 "head  plate"
                 "body  body";
@@ -190,16 +162,16 @@ const readingTime = readingMinutes(excerpt);
 
         /* Below md the headline is too short to fill the row, so centering drifts it
            down as the plate grows; pin it to the plate's top edge instead. */
-        .blog-card--featured .blog-card__head {
+        .blog-entry--featured .blog-entry__head {
             align-self: start;
         }
 
         /*
-         * The excerpt grows to fill the row and clips by height, so it always matches
-         * the plate height regardless of title line count (a fixed line clamp leaves
+         * The excerpt fills the row and clips by height, so it always matches the
+         * plate height regardless of title line count (a fixed line clamp leaves
          * dead space).
          */
-        .blog-card:not(.blog-card--featured) .blog-card__excerpt {
+        .blog-entry:not(.blog-entry--featured) .blog-entry__excerpt {
             display: block;
             flex: 1 1 0;
             overflow: hidden;
@@ -209,65 +181,14 @@ const readingTime = readingMinutes(excerpt);
         }
     }
 
-    @media (min-width: 1024px) {
-        .blog-card {
-            box-shadow: 8px 10px 20px -8px var(--plate-accent);
-        }
-    }
-
     @media (min-width: 768px) {
-        .blog-card:not(.blog-card--featured) .blog-card__grid {
+        .blog-entry:not(.blog-entry--featured) .blog-entry__grid {
             grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
         }
 
         /* Center the short title block against the taller plate. */
-        .blog-card--featured .blog-card__head {
+        .blog-entry--featured .blog-entry__head {
             align-self: center;
-        }
-    }
-
-    :global(html.dark) .blog-card {
-        border-color: rgb(229 226 218 / 0.4);
-    }
-
-    /* Hairline only; a second offset shadow would clash with the card's own. */
-    .blog-card__plate {
-        border: 1px solid var(--plate-rule);
-        line-height: 0;
-    }
-
-    .blog-card__more {
-        /* Pinned to the bottom of the text column so every entry ends on the same line. */
-        margin-top: auto;
-        padding-top: 0.9rem;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.14em;
-        opacity: 0.6;
-        text-transform: uppercase;
-        transition: opacity 150ms ease;
-    }
-
-    .blog-card__more span {
-        display: inline-block;
-        transition:
-            transform 200ms ease,
-            color 150ms ease;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .blog-card,
-        .blog-card__more,
-        .blog-card__more span {
-            transition: none;
-        }
-
-        /* Keep the shadow change - it is the affordance - but drop the movement. */
-        .blog-card:hover,
-        .blog-card:active,
-        .blog-card:hover .blog-card__more span,
-        .blog-card:active .blog-card__more span {
-            transform: none;
         }
     }
 </style>

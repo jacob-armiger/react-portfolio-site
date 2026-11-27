@@ -15,7 +15,7 @@ export default defineConfig({
     },
     output: 'static',
     adapter: vercel(),
-    site: 'https://jacobarmiger.vercel.app',
+    site: 'https://jacobldraws.com',
     /*
      * Astro downloads and self-hosts these fonts, generates fallback metrics, and
      * emits preload links. global.css points --font-sans / --font-serif /
