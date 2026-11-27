@@ -161,7 +161,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
         <div class="site-inset">
 
-        <p class="mb-8  max-w-3xl mx-auto  text-xl leading-relaxed opacity-80 text-balance text-center ">
+        <p class="mb-8  max-w-3xl mx-auto  text-xl leading-relaxed text-ink-soft text-balance text-center ">
             I offer lessons to artists of all levels &mdash; whether you’re refining your
             draftsmanship, building a portfolio for art school, or just looking for guidance on what
             to practice. This isn't just an art lesson; it's an ongoing mentorship.
@@ -189,10 +189,10 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
                         </figure>
                         <div class="sm:hidden text-left mx-2 place-self-center">
-                            <h2 class="sm:text-nowrap mb-4 mt-0 sm:mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
+                            <h2 class="sm:text-nowrap mb-4 mt-0 sm:mt-2 font-medium uppercase tracking-[0.16em] text-xs">
                                 {piece.label}
                             </h2>
-                            <p class="font-sans text-balance opacity-70">{steps.at(i)}</p>
+                            <p class="font-sans text-balance text-ink-muted">{steps.at(i)}</p>
                         </div>
 
                     ))
@@ -201,10 +201,10 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                 {
                     steps.map((step, i) => (
                         <div class="h-fit hidden sm:block">
-                            <h2 class="md:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] opacity-100 text-xs">
+                            <h2 class="md:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] text-xs">
                                 {lessonGallery.at(i)?.label}
                             </h2>
-                            <p class="font-sans opacity-70">{step}</p>
+                            <p class="font-sans text-ink-muted">{step}</p>
                         </div>
                     ))
                 }
@@ -237,10 +237,10 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                     class="profile-plate w-30 shrink-0 object-cover object-top max-sm:float-right max-sm:mt-9 max-sm:mb-2 max-sm:ml-4 sm:order-2 sm:w-36 sm:self-start"
                 />
                 <div>
-                <h2 class="mb-2 font-sans opacity-80 text-lg font-semibold">
+                <h2 class="mb-2 font-sans text-ink-soft text-lg font-semibold">
                     The Teacher
                 </h2>
-                <p class="text-sm leading-relaxed text-pretty opacity-60">
+                <p class="text-sm leading-relaxed text-pretty text-ink-muted">
                     I'm a self-taught artist who went from not knowing how to draw at all to
                     competing in drawing contests and selling work in three years. Online art
                     instruction is a maze of conflicting advice and trivial exercises, but I
@@ -256,7 +256,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
 
         <h2 class="col mb-3 text-left font-playfair text-3xl font-semibold tracking-display sm:text-4xl">Start Learning</h2>
-        <p class="mb-8 text-base text-pretty opacity-90">
+        <p class="mb-8 text-base text-pretty text-ink-soft">
             Let me know what questions you have and when you want to schedule. I'll get back to you as soon as I can.
         </p>
 

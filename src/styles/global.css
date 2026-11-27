@@ -24,6 +24,12 @@
     --color-primary-dark: #e5e2da;
     --color-secondary-dark: #26292c;
 
+    /* Faded ink for secondary text, both at or above WCAG AA on the paper:
+       soft (85%, 7.9:1) for ledes and excerpts, muted (70%, 5.1:1) for meta and
+       small text. Redefined for dark mode below. */
+    --color-ink-soft: color-mix(in srgb, var(--color-primary) 85%, transparent);
+    --color-ink-muted: color-mix(in srgb, var(--color-primary) 70%, transparent);
+
     /* Display-size headings only; smaller headings use the fonts' own spacing. */
     --tracking-display: -0.01em;
 }
@@ -55,6 +61,8 @@
 
 /* Higher contrast (4.7:1) so the 11px dateline bullet and hover arrow stay legible. */
 html.dark {
+    --color-ink-soft: color-mix(in srgb, var(--color-primary-dark) 85%, transparent);
+    --color-ink-muted: color-mix(in srgb, var(--color-primary-dark) 70%, transparent);
     --plate-rule: rgb(229 226 218 / 0.25);
     --plate-accent: #6f9d7f;
 }
