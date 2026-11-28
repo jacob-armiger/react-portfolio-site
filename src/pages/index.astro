@@ -89,7 +89,7 @@ const galleryLayouts = [
          edge. The max-w-6xl cap only applies above 1152px. -->
     <main id="main" class="site-gap mx-auto w-full max-w-6xl overflow-clip">
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
-        <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
+        <div class="page-sections flex w-full flex-col gap-8 sm:gap-16 lg:gap-18 lg:pt-8">
             <section data-hero class="hero-section relative isolate overflow-clip bg-(--hero-paper)">
                 <Picture
                     src={heroImage}
@@ -142,7 +142,7 @@ const galleryLayouts = [
             </section>
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
-                <div class="section-header max-w-xl sm:pt-6">
+                <div class="section-header max-w-xl">
                     <div class="flex flex-wrap items-baseline gap-x-4">
                         <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-ink sm:text-4xl">
                             What I can make.
@@ -158,7 +158,7 @@ const galleryLayouts = [
 
                 {
                     galleryLayouts.map((layout) => (
-                        <div class:list={["selected-work-grid mt-6 items-start", layout.class]}>
+                        <div class:list={["selected-work-grid mt-4 items-start sm:mt-6", layout.class]}>
                             {layout.columns.map((works) => (
                                 <div class="selected-work-column">
                                     {works.map((work) => (
