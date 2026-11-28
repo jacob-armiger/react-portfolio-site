@@ -206,6 +206,20 @@
     color: var(--color-ink-muted);
 }
 
+/* Each page's h1. At sm the line box matches the nav wordmark's, so both columns start level. */
+@utility page-title {
+    font-family: var(--font-playfair);
+    font-size: var(--text-4xl);
+    line-height: var(--text-4xl--line-height);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-display);
+
+    @variant sm {
+        font-size: var(--text-5xl);
+        line-height: var(--text-5xl--line-height);
+    }
+}
+
 /* Ported from the inline plugin in the old tailwind.config.mjs. */
 @utility page-top {
     margin-top: 1.5rem;
