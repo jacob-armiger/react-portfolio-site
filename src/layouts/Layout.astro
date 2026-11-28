@@ -7,6 +7,7 @@ import "../styles/global.css";
 import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Footer from "../components/Footer.astro";
 import InstagramGlyph from "../components/InstagramGlyph.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import { backgroundTexture, type TextureSettings } from "../config/backgroundTexture";
 import defaultShareImage from "../assets/share/default.jpeg";
 import { DEFAULT_DESCRIPTION, SITE_NAME, shareImage, type SharePosition } from "../utils/share";
@@ -75,6 +76,21 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
+        <!-- Browser UI colour. ThemeToggle.astro sets it from the page background once
+             styles load; this is only the first-paint value. -->
+        <meta name="theme-color" content="#e5e2da" />
+        <!-- Early in <head> so the theme is set before anything paints. The stored
+             choice wins; otherwise follow the system. ThemeToggle.astro writes it. -->
+        <script is:inline>
+            (() => {
+                let stored = null;
+                try {
+                    stored = localStorage.getItem("theme");
+                } catch {}
+                const dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+                document.documentElement.classList.toggle("dark", dark);
+            })();
+        </script>
         <title>{documentTitle}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonicalUrl} />
@@ -123,7 +139,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
                  via self-center — it has no baseline of its own, and below sm it would
                  otherwise become the tallest item and drag the text down with it. -->
             <nav
-                class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-primary/15 bg-secondary py-3 font-sans underline-offset-4 sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:border-none lg:bg-transparent lg:pb-4 lg:pt-8 dark:border-primary-dark/15 dark:bg-secondary-dark">
+                class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-b border-primary/15 py-3 font-sans underline-offset-4 max-lg:bg-secondary sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:border-none lg:pb-4 lg:pt-8 dark:border-primary-dark/11 max-lg:dark:bg-secondary-dark">
                 <!-- lg:leading-[48px] matches the page headings' text-5xl line box so both
                      columns start level at lg:pt-8. mb-6 separates the wordmark from the
                      link list below it. Sized independently of the links at every step so
@@ -155,6 +171,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
                     class="inline-flex items-center self-center hover:opacity-70 lg:self-auto">
                     <InstagramGlyph />
                 </a>
+                <ThemeToggle />
             </nav>
             <!-- slot goes directly in grid so each page's root element can be a grid item -->
             <slot />

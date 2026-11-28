@@ -10,4 +10,4 @@ export const ACTION_SOLID =
     "bg-primary text-secondary hover:bg-primary/85 focus-visible:outline-primary dark:bg-primary-dark dark:hover:bg-primary-dark/85 dark:text-secondary-dark dark:focus-visible:outline-primary-dark";
 
 export const ACTION_OUTLINE =
-    "border border-primary/25 text-primary hover:border-primary/60 hover:bg-primary/5 focus-visible:outline-primary dark:border-primary-dark/25 dark:text-primary-dark dark:hover:border-primary-dark/60 dark:hover:bg-primary-dark/5 dark:focus-visible:outline-primary-dark";
+    "border border-primary/25 text-primary hover:border-primary/60 hover:bg-primary/5 focus-visible:outline-primary dark:border-primary-dark/20 dark:text-primary-dark dark:hover:border-primary-dark/52 dark:hover:bg-primary-dark/4 dark:focus-visible:outline-primary-dark";

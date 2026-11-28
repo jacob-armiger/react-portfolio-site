@@ -22,7 +22,10 @@
     --color-primary: #2a231b;
     --color-secondary: #e5e2da;
     --color-primary-dark: #e5e2da;
-    --color-secondary-dark: #26292c;
+    /* Alternate: #242521, lighter and greyer. It pairs with soft ink at 92%, dark
+       rules one step up (/11 -> /12, /15 -> /16, /47 -> /48, /52 -> /53), the
+       blog-entry rule at 12% and the Lessons <hr> at opacity-16. */
+    --color-secondary-dark: #21211b;
 
     /* Faded ink for secondary text, both at or above WCAG AA on the paper:
        soft (85%, 7.9:1) for ledes and excerpts, muted (70%, 5.1:1) for meta and
@@ -39,6 +42,7 @@
  * styles. Not in @theme: they back no utility class.
  */
 :root {
+    color-scheme: light;
     /* One frame on every page: nav column + the home page's max-w-6xl, so the
        nav never moves between pages. The footer shares it to line up. */
     --site-max-width: 82rem;
@@ -51,6 +55,16 @@
     --plate-rule: rgb(42 35 27 / 0.45);
     /* --plate-accent: #284334; */
     --plate-accent: #302d17;
+    /* Gold frame line, blended over paper or images. --accent-gold-dark is the flat
+       version for frames that sit on the dark page. */
+    --accent-gold: #887928;
+    --accent-gold-dark: #d6c896;
+    /* Home hero panel: paper, ink for the headline and buttons, deep ink for body
+       copy and rules, and light for button labels and the secondary button. */
+    --hero-paper: #d7cfbe;
+    --hero-ink: var(--color-primary);
+    --hero-ink-deep: var(--color-primary);
+    --hero-light: var(--color-secondary);
 }
 
 @media (min-width: 640px) {
@@ -59,12 +73,26 @@
     }
 }
 
-/* Higher contrast (4.7:1) so the 11px dateline bullet and hover arrow stay legible. */
+/*
+ * Dark values match light-mode contrast. Text is matched by APCA, since light text
+ * on dark reads weaker than its WCAG 2 ratio says, so text alphas run higher
+ * (85% -> 91%, 70% -> 82%, 60% -> 74%). Rules are matched by OKLab lightness
+ * step and run lower: /15 -> /11, /20 -> /15, /25 -> /20, /55 -> /47, /60 -> /52.
+ * --plate-rule does not flip: it reads against the image's edge rather than the
+ * page, and a light rule outlines dark images that light mode leaves unframed.
+ */
 html.dark {
-    --color-ink-soft: color-mix(in srgb, var(--color-primary-dark) 85%, transparent);
-    --color-ink-muted: color-mix(in srgb, var(--color-primary-dark) 70%, transparent);
-    --plate-rule: rgb(229 226 218 / 0.25);
-    --plate-accent: #6f9d7f;
+    color-scheme: dark;
+    --color-ink-soft: color-mix(in srgb, var(--color-primary-dark) 91%, transparent);
+    --color-ink-muted: color-mix(in srgb, var(--color-primary-dark) 82%, transparent);
+    --plate-accent: #ddd8b7;
+    /* One warm-olive family (OKLCH hue 90-100) stepping by value: deep ink 0.27,
+       ink 0.42, paper 0.77, light 0.93; the page sits at 0.245, hue 110. Ink is as
+       light as contrast allows on the paper: headline APCA 45, button labels 4.5:1. */
+    --hero-paper: #bcb49f;
+    --hero-ink: #534e2d;
+    --hero-ink-deep: #2b2616;
+    --hero-light: #ebe8dd;
 }
 
 /* Ported from the inline plugin in the old tailwind.config.mjs. */

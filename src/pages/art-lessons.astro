@@ -127,7 +127,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             <div class="pointer-events-none absolute inset-0 bg-linear-to-r from-black via-black/30 via-75% to-transparent sm:via-55%">
             </div>
 
-            <div class=" pointer-events-none absolute inset-1 border border-[#887928]/80 mix-blend-color-dodge rounded-r-2xl">
+            <div class=" pointer-events-none absolute inset-1 border border-(--accent-gold)/80 mix-blend-color-dodge rounded-r-2xl">
             </div>
 
             <div class="relative mb-8">
@@ -174,7 +174,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                      img takes h-full, so stretching is what keeps the three frames level. -->
                 {
                     lessonGallery.map((piece, i) => (
-                        <figure class="relative self-start sm:self-auto max-h-80 sm:max-h-none overflow-hidden bg-primary/5 dark:bg-primary-dark/5">
+                        <figure class="relative self-start sm:self-auto max-h-80 sm:max-h-none overflow-hidden bg-primary/5 dark:bg-primary-dark/4">
 
                             <img
                                 src={piece.src}
@@ -185,7 +185,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                                 decoding="async"
                                 class="w-full sm:h-full object-cover"
                             />
-                            <div class="pointer-events-none absolute inset-1 border border-[#887928]/60 mix-blend-color-dodge rounded-t-full"/>
+                            <div class="pointer-events-none absolute inset-1 border border-(--accent-gold)/60 mix-blend-color-dodge rounded-t-full"/>
 
                         </figure>
                         <div class="sm:hidden text-left mx-2 place-self-center">
@@ -223,7 +223,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             <!-- Block + float below sm so the bio wraps beside the portrait, which flex can't
                  do; the float must precede the text, so sm:order-2 returns it to the right.
                  mx-2 not px-2, so the top rule lines up with the form's px-2 content edge. -->
-            <div class="order-2 sm:order-1 max-sm:block flex flex-row max-w-3xl max-sm:mx-2 max-sm:mt-12 max-sm:border-t max-sm:border-primary/20 max-sm:pt-10 dark:max-sm:border-primary-dark/20 mb-8 mx-auto place-content-center">
+            <div class="order-2 sm:order-1 max-sm:block flex flex-row max-w-3xl max-sm:mx-2 max-sm:mt-12 max-sm:border-t max-sm:border-primary/20 max-sm:pt-10 dark:max-sm:border-primary-dark/15 mb-8 mx-auto place-content-center">
                 <!-- mt-9 drops the float past the h2 (text-lg = 1.75rem line + mb-2) so it tops
                      out level with the paragraph rather than the heading. -->
                 <Image
@@ -253,7 +253,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             </div>
 
             <div class="order-1 sm:order-2 w-full px-2 sm:w-5/6 sm:mx-auto">
-        <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark" />
+        <hr class="mb-10 border-primary opacity-20 dark:border-primary-dark dark:opacity-15" />
 
         <h2 class="col mb-3 text-left font-playfair text-3xl font-semibold tracking-display sm:text-4xl">Start Learning</h2>
         <p class="mb-8 text-base text-pretty text-ink-soft">
@@ -269,7 +269,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 </Layout>
 
 <style>
-    /* Same hairline the blog cards and carousel use; --plate-rule flips in global.css. */
+    /* Same hairline the blog cards and carousel use (--plate-rule in global.css). */
     .profile-plate {
         aspect-ratio: 4 / 5;
         border: 1px solid var(--plate-rule);

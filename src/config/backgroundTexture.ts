@@ -25,7 +25,7 @@ export const backgroundTexture = {
     },
     dark: {
         asset: darkTexture,
-        opacity: 0.1,
+        opacity: 0.05,
         blendMode: "overlay",
         size: "1024px auto",
         repeat: "repeat",

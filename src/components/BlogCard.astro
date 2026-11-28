@@ -25,7 +25,7 @@ const readingTime = readingMinutes(excerpt);
         featured && (
             <div
                 aria-hidden="true"
-                class="blog-entry__frame pointer-events-none absolute rounded-tr-[2rem] border border-[#887928]/80 mix-blend-overlay"
+                class="blog-entry__frame pointer-events-none absolute rounded-tr-[2rem] border border-(--accent-gold)/80 mix-blend-overlay dark:border-(--accent-gold-dark)/24 dark:mix-blend-normal"
             />
         )
     }
@@ -83,7 +83,7 @@ const readingTime = readingMinutes(excerpt);
     .blog-entry {
         --entry-gap: 2rem;
         padding-block: var(--entry-gap);
-        border-bottom: 1px solid rgb(42 35 27 / 0.15);
+        border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
     }
 
     /* The featured post's content sits in a gold frame, which stands where other
@@ -98,7 +98,7 @@ const readingTime = readingMinutes(excerpt);
     }
 
     :global(html.dark) .blog-entry {
-        border-color: rgb(229 226 218 / 0.15);
+        border-color: color-mix(in srgb, var(--color-primary-dark) 11%, transparent);
     }
 
     @media (min-width: 640px) {

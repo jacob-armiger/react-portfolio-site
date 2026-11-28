@@ -172,7 +172,7 @@ export default function ArtMasonryGrid({ artEntries }: { artEntries: OptimizedIm
                                     srcSet={img.srcSet}
                                     sizes="(min-width: 640px) 40vw, 60vw"
                                     alt="Artwork"
-                                    className="zoomable block h-full w-full cursor-zoom-in"
+                                    className="zoomable block h-full w-full cursor-zoom-in transition-[filter] duration-300 dark:brightness-90 dark:hover:brightness-100"
                                     loading="lazy"
                                     width={img.width}
                                     height={img.height}

@@ -84,7 +84,7 @@ const galleryLayouts = [
     <main class="site-gap mx-auto w-full max-w-6xl overflow-hidden">
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
-            <section class="hero-section relative isolate overflow-hidden bg-[#d7cfbe] dark:bg-[#2f2a25]">
+            <section class="hero-section relative isolate overflow-hidden bg-(--hero-paper)">
                 <Picture
                     src={heroImage}
                     alt="Person reclining beside a green office chair while using a telephone"
@@ -97,7 +97,7 @@ const galleryLayouts = [
                     class="absolute z-10 aspect-2693/2773 max-w-none top-[5.25rem] left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
-                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display text-orange-100 mix-blend-difference">
+                <h1 class="hero-heading hero-heading-source absolute z-20 font-playfair font-bold leading-[1.1] tracking-display mix-blend-difference">
                     Contact me for <br/> art lessons or to commission work.
                 </h1>
                 <!-- mix-blend-color duplicate over the difference layer: keeps the luminosity
@@ -105,7 +105,7 @@ const galleryLayouts = [
                      over the green chair. Must keep .hero-heading geometry and the same z. -->
                 <div
                     aria-hidden="true"
-                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-bold leading-[1.1] tracking-display text-primary mix-blend-color dark:text-primary-dark">
+                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-bold leading-[1.1] tracking-display text-(--hero-ink) mix-blend-color">
                     Contact me for <br/> art lessons or to commission work.
                 </div>
 
@@ -122,7 +122,7 @@ const galleryLayouts = [
                             href="/contact"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "bg-primary text-secondary hover:bg-primary/85 focus-visible:outline-primary dark:bg-primary-dark dark:hover:bg-primary-dark/85 dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
+                                "bg-(--hero-ink) text-(--hero-light) hover:bg-(--hero-ink)/85 focus-visible:outline-(--hero-ink)",
                             ]}>
                             Contact
                         </a>
@@ -130,7 +130,7 @@ const galleryLayouts = [
                             href="/art-lessons"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md hover:border-primary/60 focus-visible:outline-primary dark:border-primary-dark/25 dark:hover:border-primary-dark/60 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
+                                "border border-(--hero-ink)/25 bg-(--hero-light)/70 text-(--hero-ink) backdrop-blur-md hover:border-(--hero-ink)/60 focus-visible:outline-(--hero-ink)",
                             ]}>
                             Learn to Draw
                         </a>
@@ -242,7 +242,7 @@ const galleryLayouts = [
         /* Full bleed with a bottom hairline below lg, where only the inner rule
            frames it; the outer border joins it at lg. */
         --hero-frame-border: 0px;
-        --hero-frame-line: rgba(42, 35, 27, 0.15);
+        --hero-frame-line: color-mix(in srgb, var(--hero-ink-deep) 15%, transparent);
         /* Absolutely-positioned children measure from the padding box; subtract the
            frame border so text stays on --page-inset. */
         --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
@@ -291,8 +291,24 @@ const galleryLayouts = [
         }
     }
 
-    /* Keyed to html.dark, not prefers-color-scheme: dark mode is class-based. */
+    /*
+     * Difference source = --hero-paper + --hero-ink per channel (the 50% mix doubled,
+     * clamped at white), so the headline lands on the ink over the paper and inverts
+     * over the artwork. The colour layer above restores the ink's hue where the clamp
+     * shifts it. The hex is the fallback for browsers without relative colour syntax.
+     */
+    .hero-heading-source {
+        color: #ffffcc;
+        color: rgb(
+            from color-mix(in srgb, var(--hero-paper), var(--hero-ink)) calc(r * 2) calc(g * 2)
+                calc(b * 2)
+        );
+    }
+
+    /* The artwork and the headline are painted for a light ground, so in dark mode the
+       hero stays a dimmed paper panel (--hero-paper in global.css), with body copy in
+       full-strength deep ink to make up for the dimmer paper. */
     :global(html.dark) .hero-section {
-        --hero-frame-line: rgba(229, 226, 218, 0.15);
+        --color-ink-soft: var(--hero-ink-deep);
     }
 </style>

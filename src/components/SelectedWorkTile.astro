@@ -12,7 +12,7 @@ interface Props {
 const { image, alt, aspectRatio, sizes } = Astro.props;
 ---
 
-<div style={`aspect-ratio: ${aspectRatio};`} class="group block">
+<div style={`aspect-ratio: ${aspectRatio};`} class="group block transition-[filter] duration-300 dark:brightness-90 dark:hover:brightness-100">
     <Picture
         src={image}
         alt={alt}

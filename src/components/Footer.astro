@@ -22,9 +22,11 @@ const LINK_CLASS =
     "underline-offset-4 hover:text-primary hover:underline focus-visible:underline focus-visible:outline-hidden dark:hover:text-primary-dark";
 ---
 
-<!-- Full-width band under the shell, sharing its max-width and gutters. -->
+<!-- Full-width band under the shell, sharing its max-width and gutters. The lg
+     right padding grows only when the side margin is too narrow to clear the fixed
+     theme toggle. -->
 <footer
-    class="mx-auto mt-20 w-full max-w-(--site-max-width) flex-none border-t border-primary/15 px-(--site-gutter) py-10 font-sans wrap-anywhere lg:mt-28 dark:border-primary-dark/15">
+    class="mx-auto mt-20 w-full max-w-(--site-max-width) flex-none border-t border-primary/15 px-(--site-gutter) py-10 font-sans wrap-anywhere lg:mt-28 lg:pr-[max(var(--site-gutter),calc(4.5rem_-_(100vw_-_var(--site-max-width))/2))] dark:border-primary-dark/11">
     <div
         class="flex flex-col gap-5 text-sm text-ink-muted sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
         <nav aria-label="Footer">
