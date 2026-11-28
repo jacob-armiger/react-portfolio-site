@@ -36,13 +36,13 @@ const selectedPlaceholder =
 
 const fallbackNextUrl = new URL(redirectPath, Astro.site ?? Astro.url).toString();
 
-const LABEL_CLASS = "text-[15px] font-semibold text-primary dark:text-primary-dark";
+const LABEL_CLASS = "text-[15px] font-semibold text-ink";
 // Open boxes on the paper, square like the site's buttons, ruled with a 1px line. /55 keeps the
 // edge at 3:1 against the paper (WCAG non-text contrast), the darkest of the site's rules.
 // Text controls show :focus-visible on mouse click too, so a soft ring would flash on every
 // click; focus instead doubles the rule to 2px of full ink. Every state change is instant.
 const FIELD_CLASS =
-    "w-full rounded-xs border border-primary/55 bg-secondary px-3 py-2.5 text-lg leading-snug text-primary outline-none placeholder:text-base placeholder:text-ink-muted hover:border-primary focus:border-primary focus:ring-1 focus:ring-primary aria-[invalid=true]:border-red-700 aria-[invalid=true]:focus:ring-red-700 dark:border-primary-dark/47 dark:bg-secondary-dark dark:text-primary-dark dark:hover:border-primary-dark dark:focus:border-primary-dark dark:focus:ring-primary-dark dark:aria-[invalid=true]:border-red-400 dark:aria-[invalid=true]:focus:ring-red-400";
+    "w-full rounded-xs border border-field bg-page px-3 py-2.5 text-lg leading-snug text-ink outline-none placeholder:text-base placeholder:text-ink-muted hover:border-ink focus:border-ink focus:ring-1 focus:ring-ink aria-[invalid=true]:border-red-700 aria-[invalid=true]:focus:ring-red-700 dark:aria-[invalid=true]:border-red-400 dark:aria-[invalid=true]:focus:ring-red-400";
 const ERROR_CLASS = "hidden text-sm font-medium text-red-700 dark:text-red-400";
 
 const lessonsDefault = defaultSubject === INTENTS[0].label;
@@ -99,7 +99,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                 aria-describedby="subject-error"
                 class:list={[
                     FIELD_CLASS,
-                    "group/trigger flex cursor-pointer items-center justify-between gap-3 text-left aria-expanded:border-primary dark:aria-expanded:border-primary-dark",
+                    "group/trigger flex cursor-pointer items-center justify-between gap-3 text-left aria-expanded:border-ink",
                 ]}
                 data-subject-trigger>
                 <!-- Unselected mirrors the message placeholder (text-base at /70); picking a
@@ -134,7 +134,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                 role="listbox"
                 aria-labelledby="subject"
                 hidden
-                class="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-xs border border-primary bg-secondary py-1 dark:border-primary-dark dark:bg-secondary-dark"
+                class="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-xs border border-ink bg-page py-1"
                 data-subject-listbox>
                 {
                     INTENTS.map((intent) => (
@@ -143,7 +143,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                             tabindex="-1"
                             data-value={intent.label}
                             aria-selected={intent.label === defaultSubject ? "true" : "false"}
-                            class="group/option flex cursor-pointer items-center gap-2.5 px-3 py-2.5 text-lg leading-snug text-primary outline-none hover:bg-primary/10 focus:bg-primary/10 dark:text-primary-dark dark:hover:bg-primary-dark/7 dark:focus:bg-primary-dark/7">
+                            class="group/option flex cursor-pointer items-center gap-2.5 px-3 py-2.5 text-lg leading-snug text-ink outline-none hover:bg-tint-strong focus:bg-tint-strong">
                             <svg
                                 aria-hidden="true"
                                 viewBox="0 0 12 10"
@@ -179,7 +179,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                         id="local-to-new-york"
                         name="local_to_new_york_city"
                         value="yes"
-                        class="peer m-0 h-[18px] w-[18px] cursor-pointer appearance-none rounded-xs border border-primary/55 bg-secondary hover:border-primary checked:border-primary checked:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:border-primary-dark/47 dark:bg-secondary-dark dark:hover:border-primary-dark dark:checked:border-primary-dark dark:checked:bg-primary-dark dark:focus-visible:outline-primary-dark"
+                        class="peer m-0 h-[18px] w-[18px] cursor-pointer appearance-none rounded-xs border border-field bg-page hover:border-ink checked:border-ink checked:bg-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                     />
                     <svg
                         aria-hidden="true"
@@ -191,7 +191,7 @@ const lessonsDefault = defaultSubject === INTENTS[0].label;
                         stroke-width="1.75"
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        class="pointer-events-none invisible absolute inset-0 m-auto h-2.5 w-3 text-secondary peer-checked:visible dark:text-secondary-dark">
+                        class="pointer-events-none invisible absolute inset-0 m-auto h-2.5 w-3 text-page peer-checked:visible">
                         <path d="M1 5.25 4.25 8.5 11 1.5"></path>
                     </svg>
                 </span>

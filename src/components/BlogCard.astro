@@ -18,7 +18,7 @@ const readingTime = readingMinutes(excerpt);
 <a
     href={"/writing/" + art.id}
     class:list={[
-        "blog-entry group relative block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark",
+        "blog-entry group relative block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink",
         featured && "blog-entry--featured",
     ]}>
     {
@@ -83,7 +83,7 @@ const readingTime = readingMinutes(excerpt);
     .blog-entry {
         --entry-gap: 2rem;
         padding-block: var(--entry-gap);
-        border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+        border-bottom: 1px solid var(--color-rule);
     }
 
     /* The featured post's content sits in a gold frame, which stands where other
@@ -95,10 +95,6 @@ const readingTime = readingMinutes(excerpt);
 
     .blog-entry__frame {
         inset: 0 0 var(--entry-gap);
-    }
-
-    :global(html.dark) .blog-entry {
-        border-color: color-mix(in srgb, var(--color-primary-dark) 11%, transparent);
     }
 
     @media (min-width: 640px) {

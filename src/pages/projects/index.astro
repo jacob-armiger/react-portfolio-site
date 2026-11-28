@@ -9,7 +9,7 @@ const projects = await getCollection('projects');
     <main class="site-main page-top mx-auto max-w-3xl">
         {
             projects.map((project) => (
-                <div class="hover:bg-primary hover:text-secondary dark:hover:bg-primary-dark dark:hover:text-secondary-dark mb-8 h-fit rounded-md font-mono">
+                <div class="hover:bg-ink hover:text-page mb-8 h-fit rounded-md font-mono">
                     <a href={"/projects/" + project.data.title}>
                         <div class="flex flex-1 flex-col p-3 md:p-4">
                             <p class="mb-4 text-2xl font-medium">{project.data.title}</p>

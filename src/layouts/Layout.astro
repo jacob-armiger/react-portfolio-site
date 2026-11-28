@@ -8,6 +8,7 @@ import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Footer from "../components/Footer.astro";
 import InstagramGlyph from "../components/InstagramGlyph.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import ColorLab from "../dev/color-lab/ColorLab.astro";
 import { backgroundTexture, type TextureSettings } from "../config/backgroundTexture";
 import defaultShareImage from "../assets/share/default.jpeg";
 import { DEFAULT_DESCRIPTION, SITE_NAME, shareImage, type SharePosition } from "../utils/share";
@@ -24,6 +25,8 @@ interface Props {
     type?: "website" | "article";
     publishedTime?: Date;
     noindex?: boolean;
+    /** The page opens with a hero that runs up behind the topbar (below lg). */
+    heroNav?: boolean;
 }
 
 const {
@@ -35,6 +38,7 @@ const {
     type = "website",
     publishedTime,
     noindex = false,
+    heroNav = false,
 } = Astro.props;
 
 // Normalize trailing slashes so /writing/ and /writing compare equal.
@@ -63,12 +67,14 @@ const navLinks = [
 // Active nav state is the full-ink color alone; resting links sit at /70.
 const NAV_LINK_CLASS = "font-sans hover:underline lg:font-medium";
 const NAV_INK_REST = "text-ink-muted";
-const NAV_INK_CURRENT = "text-primary dark:text-primary-dark";
+const NAV_INK_CURRENT = "text-ink";
 // Texture dials live in backgroundTexture.ts; emitted as raw CSS because only the
-// hashed asset URLs are dynamic.
-const textureRule = ({ asset, opacity, blendMode, size, repeat }: TextureSettings) =>
-    `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode}; opacity: ${opacity};`;
-const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } html.dark body::before { ${textureRule(backgroundTexture.dark)} }`;
+// hashed asset URLs are dynamic. Opacity is a root variable so it can be tuned live
+// like the color roles.
+const textureRule = ({ asset, blendMode, size, repeat }: TextureSettings) =>
+    `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode};`;
+const { light: lightTexture, dark: darkTexture } = backgroundTexture;
+const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opacity}; } html.dark { --texture-opacity: ${darkTexture.opacity}; } } body::before { ${textureRule(lightTexture)} } html.dark body::before { ${textureRule(darkTexture)} }`;
 ---
 
 <!doctype html>
@@ -76,7 +82,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
-        <!-- Browser UI colour. ThemeToggle.astro sets it from the page background once
+        <!-- Browser UI color. ThemeToggle.astro sets it from the page background once
              styles load; this is only the first-paint value. -->
         <meta name="theme-color" content="#e5e2da" />
         <!-- Early in <head> so the theme is set before anything paints. The stored
@@ -91,6 +97,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
                 document.documentElement.classList.toggle("dark", dark);
             })();
         </script>
+        {import.meta.env.DEV && <ColorLab />}
         <title>{documentTitle}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonicalUrl} />
@@ -126,12 +133,12 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         <style set:html={textureCss}></style>
     </head>
     <body
-        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark">
+        class="bg-page font-serif text-ink antialiased">
         <!-- <div
             aria-hidden="true"
-            class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-secondary to-transparent dark:from-secondary-dark lg:hidden">
+            class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-page to-transparent lg:hidden">
         </div> -->
-        <div class="site-shell relative z-10">
+        <div class="site-shell relative z-10" data-hero-nav={heroNav ? "" : undefined}>
             <!-- <BreakpointIndicator /> -->
             <!-- items-baseline, not items-center: the 20px Playfair wordmark and the 15px
                  Inter links have different ascent ratios, so centering their line boxes
@@ -139,7 +146,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
                  via self-center — it has no baseline of its own, and below sm it would
                  otherwise become the tallest item and drag the text down with it. -->
             <nav
-                class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-3 gap-y-2 border-b border-primary/15 py-3 font-sans underline-offset-4 max-lg:bg-secondary sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:border-none lg:pb-4 lg:pt-8 dark:border-primary-dark/11 max-lg:dark:bg-secondary-dark">
+                class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-3 gap-y-2 py-3 font-sans max-sm:justify-between underline-offset-4 max-lg:bg-page sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:pb-4 lg:pt-8">
                 <!-- lg:leading-[48px] matches the page headings' text-5xl line box so both
                      columns start level at lg:pt-8. mb-6 separates the wordmark from the
                      link list below it. Sized independently of the links at every step so
@@ -179,6 +186,27 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         <!-- Outside .site-shell: as a grid item it would share a stacking context with
              the sticky nav and paint underneath it. -->
         <Footer />
+        <!-- Topbar over the hero (heroNav): publish its height for the hero's offset,
+             and set data-nav for where it sits (see .site-nav[data-nav] above). -->
+        <script is:inline>
+            (() => {
+                const shell = document.querySelector(".site-shell[data-hero-nav]");
+                const nav = shell && shell.querySelector(".site-nav");
+                const hero = shell && shell.querySelector("[data-hero]");
+                if (!nav || !hero) return;
+                const update = () => {
+                    const pastHero = hero.getBoundingClientRect().bottom <= nav.offsetHeight;
+                    nav.dataset.nav = pastHero ? "page" : scrollY > 0 ? "hero" : "top";
+                };
+                const measure = () => {
+                    document.documentElement.style.setProperty("--topbar-h", nav.offsetHeight + "px");
+                    update();
+                };
+                measure();
+                new ResizeObserver(measure).observe(nav);
+                addEventListener("scroll", update, { passive: true });
+            })();
+        </script>
         <script is:inline type="module" src="/scripts/imageZoom.js"></script>
     </body>
 </html>
@@ -278,11 +306,43 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         }
     }
 
+    /*
+     * Below lg on a page with heroNav, the topbar shares the hero's grid row so the
+     * hero runs up behind it and takes the hero's ink. data-nav (set by the script at
+     * the foot of the body): "top" leaves it transparent inside the hero's frame;
+     * "hero" gives it the hero's paper, so hero content scrolls under it legibly
+     * without a seam; "page" returns it to the page's colours past the hero.
+     */
+    @media (max-width: 1023.98px) {
+        .site-shell[data-hero-nav] > * {
+            grid-area: 1 / 1;
+        }
+
+        .site-shell[data-hero-nav] > .site-nav {
+            align-self: start;
+            transition:
+                background-color 0.2s,
+                color 0.2s;
+        }
+
+        .site-shell[data-hero-nav] > .site-nav:not([data-nav="page"]) {
+            --color-ink: var(--hero-nav-ink);
+            --color-ink-muted: var(--hero-nav-ink-muted);
+            background-color: var(--hero-paper);
+            color: var(--hero-nav-ink);
+        }
+
+        .site-shell[data-hero-nav] > .site-nav[data-nav="top"] {
+            background-color: transparent;
+        }
+    }
+
     body::before {
         position: absolute;
         z-index: -20;
         inset: 0;
         pointer-events: none;
         content: "";
+        opacity: var(--texture-opacity);
     }
 </style>

@@ -3,12 +3,17 @@
 @plugin "@tailwindcss/typography";
 
 /*
- * darkMode: 'class'. Hand-written CSS keys off html.dark (Layout.astro,
- * BlogCard.astro, ImageCarousel.astro), so match a .dark ancestor rather than
- * prefers-color-scheme.
+ * darkMode: 'class'. Theme is html.dark, set before paint in Layout.astro, so match
+ * a .dark ancestor rather than prefers-color-scheme.
  */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Color is layered: palette (fixed values) -> roles (what a color is for; they
+ * flip per theme) -> markup, which uses roles only (text-ink, border-rule, ...).
+ * Each faded role is ink at a strength set per theme by an --alpha-* variable, so
+ * a strength is tuned in one place for the whole site.
+ */
 @theme {
     /*
      * --font-inter / --font-source-serif / --font-playfair-display come from the
@@ -19,80 +24,178 @@
     --font-serif: var(--font-source-serif, ui-serif, Georgia, Cambria, Times, serif);
     --font-playfair: var(--font-playfair-display, ui-serif, Georgia, Cambria, Times, serif);
 
+    /* Palette. Use these directly only for a color that must not flip. */
     --color-primary: #2a231b;
     --color-secondary: #e5e2da;
     --color-primary-dark: #e5e2da;
-    /* Alternate: #242521, lighter and greyer. It pairs with soft ink at 92%, dark
-       rules one step up (/11 -> /12, /15 -> /16, /47 -> /48, /52 -> /53), the
-       blog-entry rule at 12% and the Lessons <hr> at opacity-16. */
+    /* Alternate: #242521, lighter and greyer. It pairs with --alpha-ink-soft 92% and
+       rules one step up: --alpha-rule 12%, --alpha-rule-strong 16%, --alpha-field
+       48%, --alpha-control-hover 53%. */
     --color-secondary-dark: #21211b;
 
-    /* Faded ink for secondary text, both at or above WCAG AA on the paper:
-       soft (85%, 7.9:1) for ledes and excerpts, muted (70%, 5.1:1) for meta and
-       small text. Redefined for dark mode below. */
-    --color-ink-soft: color-mix(in srgb, var(--color-primary) 85%, transparent);
-    --color-ink-muted: color-mix(in srgb, var(--color-primary) 70%, transparent);
+    /* Roles. */
+    --color-ink: var(--color-primary);
+    --color-page: var(--color-secondary);
+    /* Text: soft for ledes and excerpts, muted for meta and small text, faint for
+       labels in the font specimen. */
+    --color-ink-soft: color-mix(in srgb, var(--color-ink) var(--alpha-ink-soft), transparent);
+    --color-ink-muted: color-mix(in srgb, var(--color-ink) var(--alpha-ink-muted), transparent);
+    --color-ink-faint: color-mix(in srgb, var(--color-ink) var(--alpha-ink-faint), transparent);
+    /* Lines: hairline separators, stronger separators, outline-button borders and
+       their hover, form-field borders, link underlines. */
+    --color-rule: color-mix(in srgb, var(--color-ink) var(--alpha-rule), transparent);
+    --color-rule-strong: color-mix(in srgb, var(--color-ink) var(--alpha-rule-strong), transparent);
+    --color-control: color-mix(in srgb, var(--color-ink) var(--alpha-control), transparent);
+    --color-control-hover: color-mix(in srgb, var(--color-ink) var(--alpha-control-hover), transparent);
+    --color-field: color-mix(in srgb, var(--color-ink) var(--alpha-field), transparent);
+    --color-underline: color-mix(in srgb, var(--color-ink) var(--alpha-underline), transparent);
+    /* Fills: hover and selection tints. */
+    --color-tint: color-mix(in srgb, var(--color-ink) var(--alpha-tint), transparent);
+    --color-tint-strong: color-mix(in srgb, var(--color-ink) var(--alpha-tint-strong), transparent);
 
     /* Display-size headings only; smaller headings use the fonts' own spacing. */
     --tracking-display: -0.01em;
 }
 
 /*
- * Site-wide layout and accent tokens, consumed by Layout.astro and component
- * styles. Not in @theme: they back no utility class.
+ * Token values live in the theme layer, with Tailwind's own, so any unlayered
+ * stylesheet (a live color editor, a page override) wins regardless of load order.
  */
-:root {
-    color-scheme: light;
-    /* One frame on every page: nav column + the home page's max-w-6xl, so the
-       nav never moves between pages. The footer shares it to line up. */
-    --site-max-width: 82rem;
-    /* Single source for content edges; also the home page's --page-inset. */
-    --site-gutter: 1.25rem;
-    /* Nav-to-content separation, applied by .site-gap (Layout.astro). */
-    --site-nav-gap: 2rem;
-    /* Plate: shared framed-image treatment (blog cards, article covers) — hairline
-       on the image plus a hard zero-blur offset shadow. */
-    --plate-rule: rgb(42 35 27 / 0.45);
-    /* --plate-accent: #284334; */
-    --plate-accent: #302d17;
-    /* Gold frame line, blended over paper or images. --accent-gold-dark is the flat
-       version for frames that sit on the dark page. */
-    --accent-gold: #887928;
-    --accent-gold-dark: #d6c896;
-    /* Home hero panel: paper, ink for the headline and buttons, deep ink for body
-       copy and rules, and light for button labels and the secondary button. */
-    --hero-paper: #d7cfbe;
-    --hero-ink: var(--color-primary);
-    --hero-ink-deep: var(--color-primary);
-    --hero-light: var(--color-secondary);
-}
-
-@media (min-width: 640px) {
+@layer theme {
+    /*
+     * Role strengths, layout and accent tokens, consumed by the roles above,
+     * Layout.astro and component styles. Not in @theme: they back no utility class.
+     */
     :root {
-        --site-gutter: 1rem;
+        color-scheme: light;
+        /* Text strengths, at or above WCAG AA on the paper: soft 7.9:1, muted 5.1:1. */
+        --alpha-ink-soft: 85%;
+        --alpha-ink-muted: 70%;
+        --alpha-ink-faint: 60%;
+        --alpha-rule: 15%;
+        --alpha-rule-strong: 20%;
+        --alpha-control: 25%;
+        --alpha-control-hover: 60%;
+        --alpha-field: 55%;
+        --alpha-underline: 40%;
+        --alpha-tint: 5%;
+        --alpha-tint-strong: 10%;
+        /* Dark-mode art thumbnails sit slightly dimmed until hovered. */
+        --thumb-dim: 0.9;
+        /* One frame on every page: nav column + the home page's max-w-6xl, so the
+           nav never moves between pages. The footer shares it to line up. */
+        --site-max-width: 82rem;
+        /* Single source for content edges; also the home page's --page-inset. */
+        --site-gutter: 1.25rem;
+        /* Nav-to-content separation, applied by .site-gap (Layout.astro). */
+        --site-nav-gap: 2rem;
+        /* Plate: shared framed-image treatment (blog cards, article covers) — hairline
+           on the image plus a hard zero-blur offset shadow. Does not flip: it reads
+           against the image's edge rather than the page, and a light rule would
+           outline dark images that light mode leaves unframed. */
+        --plate-rule: color-mix(in srgb, var(--color-primary) 45%, transparent);
+        /* --plate-accent: #284334; */
+        --plate-accent: #302d17;
+        /* Gold frame line, blended over paper or images. --accent-gold-dark is the flat
+           version for frames that sit on the dark page. */
+        --accent-gold: #887928;
+        --accent-gold-dark: #d6c896;
+        /* Home hero panel: paper, ink for the headline and buttons, deep ink for body
+           copy and rules, and light for button labels and the secondary button. */
+        --hero-paper: #d7cfbe;
+        --hero-ink: var(--color-primary);
+        --hero-ink-deep: var(--color-primary);
+        --hero-light: var(--color-secondary);
+        /* Derived hero colors: computed from the roles above by default, and each
+           can be set to a custom value instead. Body copy and the frame rule; the
+           headline's difference-blend source is paper + ink per channel (the 50% mix
+           doubled, clamped at white), so the headline lands on the ink over the paper
+           and inverts over the artwork. The hex is for browsers without relative
+           color syntax. */
+        --hero-body: var(--color-ink-soft);
+        /* Topbar text while it sits over the hero (heroNav): wordmark and current link,
+           then the other links. */
+        --hero-nav-ink: var(--hero-ink);
+        --hero-nav-ink-muted: color-mix(in srgb, var(--hero-ink) 78%, transparent);
+        --hero-rule: color-mix(in srgb, var(--hero-ink-deep) 15%, transparent);
+        --hero-headline-source: #ffffcc;
+    }
+
+    @supports (color: rgb(from red r g b)) {
+        :root {
+            --hero-headline-source: rgb(
+                from color-mix(in srgb, var(--hero-paper), var(--hero-ink)) calc(r * 2) calc(g * 2)
+                    calc(b * 2)
+            );
+        }
+    }
+
+    @media (min-width: 640px) {
+        :root {
+            --site-gutter: 1rem;
+        }
+    }
+
+    /*
+     * Dark values match light-mode contrast. Text strengths are matched by APCA, since
+     * light text on dark reads weaker than its WCAG 2 ratio says, so they run higher.
+     * Line and fill strengths are matched by OKLab lightness step and run lower.
+     */
+    html.dark {
+        color-scheme: dark;
+        --color-ink: var(--color-primary-dark);
+        --color-page: var(--color-secondary-dark);
+        --alpha-ink-soft: 91%;
+        --alpha-ink-muted: 82%;
+        --alpha-ink-faint: 74%;
+        --alpha-rule: 11%;
+        --alpha-rule-strong: 15%;
+        --alpha-control: 20%;
+        --alpha-control-hover: 52%;
+        --alpha-field: 47%;
+        --alpha-underline: 29%;
+        --alpha-tint: 4%;
+        --alpha-tint-strong: 7%;
+        --plate-accent: #ddd8b7;
+        /* One warm-olive family (OKLCH hue 90-100) stepping by value: deep ink 0.27,
+           ink 0.42, paper 0.77, light 0.93; the page sits at 0.245, hue 110. Ink is as
+           light as contrast allows on the paper: headline APCA 45, button labels 4.5:1. */
+        --hero-paper: #bcb49f;
+        --hero-ink: #534e2d;
+        --hero-ink-deep: #2b2616;
+        --hero-light: #ebe8dd;
+        /* The paper is dimmer than in light mode, so body copy takes deep ink at full
+           strength. */
+        --hero-body: var(--hero-ink-deep);
+        /* The hero ink is tuned for the headline and buttons; small nav text takes the
+           same olive a step darker, enough to reach 4.5:1 on the paper. */
+        --hero-nav-ink: #403b1b;
+        --hero-nav-ink-muted: #4c4726;
     }
 }
 
 /*
- * Dark values match light-mode contrast. Text is matched by APCA, since light text
- * on dark reads weaker than its WCAG 2 ratio says, so text alphas run higher
- * (85% -> 91%, 70% -> 82%, 60% -> 74%). Rules are matched by OKLab lightness
- * step and run lower: /15 -> /11, /20 -> /15, /25 -> /20, /55 -> /47, /60 -> /52.
- * --plate-rule does not flip: it reads against the image's edge rather than the
- * page, and a light rule outlines dark images that light mode leaves unframed.
+ * The typography plugin's colors, mapped onto roles so long-form prose follows the
+ * theme and the Color Lab instead of the plugin's cool grays. Unlayered, to win
+ * over the plugin's own .prose rule; no prose-invert needed, since the roles flip.
  */
-html.dark {
-    color-scheme: dark;
-    --color-ink-soft: color-mix(in srgb, var(--color-primary-dark) 91%, transparent);
-    --color-ink-muted: color-mix(in srgb, var(--color-primary-dark) 82%, transparent);
-    --plate-accent: #ddd8b7;
-    /* One warm-olive family (OKLCH hue 90-100) stepping by value: deep ink 0.27,
-       ink 0.42, paper 0.77, light 0.93; the page sits at 0.245, hue 110. Ink is as
-       light as contrast allows on the paper: headline APCA 45, button labels 4.5:1. */
-    --hero-paper: #bcb49f;
-    --hero-ink: #534e2d;
-    --hero-ink-deep: #2b2616;
-    --hero-light: #ebe8dd;
+.prose {
+    --tw-prose-body: var(--color-ink-soft);
+    --tw-prose-headings: var(--color-ink);
+    --tw-prose-lead: var(--color-ink-soft);
+    --tw-prose-links: var(--color-ink);
+    --tw-prose-bold: var(--color-ink);
+    --tw-prose-counters: var(--color-ink-muted);
+    --tw-prose-bullets: var(--color-ink-muted);
+    --tw-prose-hr: var(--color-rule);
+    --tw-prose-quotes: var(--color-ink);
+    --tw-prose-quote-borders: var(--color-rule-strong);
+    --tw-prose-captions: var(--color-ink-muted);
+    --tw-prose-code: var(--color-ink);
+    --tw-prose-pre-code: var(--color-ink);
+    --tw-prose-pre-bg: var(--color-tint-strong);
+    --tw-prose-th-borders: var(--color-rule-strong);
+    --tw-prose-td-borders: var(--color-rule);
 }
 
 /* Ported from the inline plugin in the old tailwind.config.mjs. */

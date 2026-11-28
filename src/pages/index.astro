@@ -7,7 +7,7 @@ import Layout from "../layouts/Layout.astro";
 import { imageSize } from "../utils/originals";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
-const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 110vw";
+const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 190vw";
 
 const HERO_BODY =
     "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
@@ -78,13 +78,13 @@ const galleryLayouts = [
 ];
 ---
 
-<Layout title="JacobLDraws">
+<Layout title="JacobLDraws" heroNav>
     <!-- No .site-main: the hero is full-bleed and --page-inset sets the text's left
          edge. The max-w-6xl cap only applies above 1152px. -->
-    <main class="site-gap mx-auto w-full max-w-6xl overflow-hidden">
+    <main class="site-gap mx-auto w-full max-w-6xl overflow-clip">
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
-            <section class="hero-section relative isolate overflow-hidden bg-(--hero-paper)">
+            <section data-hero class="hero-section relative isolate overflow-clip bg-(--hero-paper)">
                 <Picture
                     src={heroImage}
                     alt="Person reclining beside a green office chair while using a telephone"
@@ -94,10 +94,10 @@ const galleryLayouts = [
                     sizes={HERO_SIZES}
                     quality={80}
                     priority
-                    class="absolute z-10 aspect-2693/2773 max-w-none top-[5.25rem] left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
+                    class="absolute z-10 aspect-2693/2773 max-w-none -bottom-8 left-[calc(var(--hero-art-w)*-0.0316)] w-(--hero-art-w) sm:bottom-0 sm:left-auto sm:-right-24 sm:w-(--hero-art-w) sm:translate-x-0 md:-right-20 lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
-                <h1 class="hero-heading hero-heading-source absolute z-20 font-playfair font-bold leading-[1.1] tracking-display mix-blend-difference">
+                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display text-(--hero-headline-source) mix-blend-difference">
                     Contact me for <br/> art lessons or to commission work.
                 </h1>
                 <!-- mix-blend-color duplicate over the difference layer: keeps the luminosity
@@ -109,15 +109,15 @@ const galleryLayouts = [
                     Contact me for <br/> art lessons or to commission work.
                 </div>
 
-                <!-- bottom-6 is larger than the headline's top inset to clear the frame edge.
-                     right is only pinned below sm, where the buttons span full width. -->
-                <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
+                <!-- Under the headline below sm, following the reader down the hero; at the
+                     frame's foot from sm. -->
+                <div class="hero-actions z-30 sm:absolute sm:bottom-8 sm:left-(--hero-inline-inset) lg:bottom-10">
                     <!-- Hidden below sm, where the frame is too short for body copy. -->
-                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-ink-soft lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
+                    <p class="max-sm:hidden mb-6 max-w-[min(23rem,46vw)] text-[1rem] leading-[1.6] font-serif text-(--hero-body) lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
                         {HERO_BODY}
                     </p>
                     <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
-                    <div class="flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
+                    <div class="hero-buttons flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
                         <a
                             href="/contact"
                             class:list={[
@@ -141,13 +141,13 @@ const galleryLayouts = [
             <section aria-labelledby="selected-work-heading" class="pb-2">
                 <div class="section-header max-w-xl pt-5 sm:pt-6">
                     <div class="flex flex-wrap items-baseline gap-x-4">
-                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-primary sm:text-4xl dark:text-primary-dark">
+                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-ink sm:text-4xl">
                             What I can make.
                         </h2>
                         <!-- Negative margin cancels the padding so the tap target grows without moving the row. -->
                         <a
                             href="/art"
-                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-ink-muted underline underline-offset-4 hover:text-primary dark:hover:text-primary-dark">
+                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-ink-muted underline underline-offset-4 hover:text-ink">
                             See more
                         </a>
                     </div>
@@ -238,17 +238,43 @@ const galleryLayouts = [
            viewport widths (a percentage width would shift them). */
         --hero-heading-ratio: 6.75;
         --hero-heading-size: min(13vw, 3.4rem);
-        --hero-heading-top: var(--page-inset);
+        /* Below lg the topbar sits over the hero (heroNav in Layout.astro); its height
+           comes from Layout's script, with an estimate until that runs. */
+        --hero-top-offset: var(--topbar-h, 3.125rem);
+        --hero-heading-top: calc(var(--page-inset) + var(--hero-top-offset));
         /* Full bleed with a bottom hairline below lg, where only the inner rule
            frames it; the outer border joins it at lg. */
         --hero-frame-border: 0px;
-        --hero-frame-line: color-mix(in srgb, var(--hero-ink-deep) 15%, transparent);
         /* Absolutely-positioned children measure from the padding box; subtract the
            frame border so text stays on --page-inset. */
         --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
-        border: var(--hero-frame-border) solid var(--hero-frame-line);
+        border: var(--hero-frame-border) solid var(--hero-rule);
         border-bottom-width: 1px;
-        min-height: 41.25rem;
+        /* Below sm the artwork is cropped around the figure and scales with the screen
+           until the headline stops growing (about 430px wide); past that the figure
+           holds its size and the extra width shows more of the chair. The frame
+           follows the artwork. */
+        --hero-art-w: min(190vw, 51rem);
+        min-height: calc(max(36rem, var(--hero-art-w) * 0.937) + var(--hero-top-offset));
+    }
+
+    /*
+     * Below sm the actions are the hero's only in-flow child. The headline always
+     * breaks into four lines (its width scales with its size), so they start a fixed
+     * distance under it; once scrolled past, they stick under the topbar and follow
+     * until the hero ends. The hero and <main> clip with overflow: clip, since hidden
+     * would make them the sticky scroll container and the actions would never stick.
+     */
+    @media (max-width: 639.98px) {
+        /* Capped at the headline's width, so on wide phones the buttons line up with
+           the headline instead of stretching edge to edge. */
+        .hero-actions {
+            position: sticky;
+            top: calc(var(--hero-top-offset) + 0.75rem);
+            max-width: calc(var(--hero-heading-size) * var(--hero-heading-ratio));
+            margin: calc(var(--hero-heading-top) + var(--hero-heading-size) * 1.1 * 4 + 1.5rem)
+                var(--hero-inline-inset) 1.25rem;
+        }
     }
 
     /* Inner rule of the frame: above the artwork (z-15), under the text. The
@@ -257,7 +283,7 @@ const galleryLayouts = [
         position: absolute;
         z-index: 15;
         inset: 0.25rem;
-        border: 1px solid var(--hero-frame-line);
+        border: 1px solid var(--hero-rule);
         border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
         pointer-events: none;
         content: "";
@@ -278,7 +304,38 @@ const galleryLayouts = [
             --hero-heading-size: min(11.2vw, 6.25rem);
             /* The 44.75rem floor keeps the bottom-anchored copy clear of the headline
                on short viewports (worst case 860-1023px wide). */
-            min-height: clamp(44.75rem, calc(78vh - 1.75rem), 45.75rem);
+            min-height: calc(clamp(44.75rem, calc(78vh - 1.75rem), 45.75rem) + var(--hero-top-offset));
+            --hero-art-w: min(72vw, 34rem);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .hero-section {
+            --hero-art-w: min(66vw, 36rem);
+        }
+    }
+
+    /*
+     * Short landscape screens below lg (a phone or foldable on its side): the hero
+     * fits one screen, the headline and artwork also scale with the height, and the
+     * buttons sit in a row; the shortest drop the body copy, as phones do.
+     */
+    @media (min-width: 640px) and (max-width: 1023.98px) and (max-height: 720px) {
+        .hero-section {
+            --hero-heading-size: min(11.2vw, 6.25rem, 12.5svh);
+            --hero-art-w: min(66vw, 36rem, 92svh);
+            min-height: max(26rem, 100svh);
+        }
+
+        .hero-buttons {
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+
+    @media (min-width: 640px) and (max-width: 1023.98px) and (max-height: 560px) {
+        .hero-actions p {
+            display: none;
         }
     }
 
@@ -286,29 +343,9 @@ const galleryLayouts = [
         .hero-section {
             /* The sidebar nav narrows the section, so the heading cap shrinks. */
             --hero-heading-size: min(9vw, 7rem);
+            --hero-top-offset: 0px;
             --hero-frame-border: 1px;
             min-height: clamp(44.25rem, calc(88vh - 1.75rem), 50.25rem);
         }
-    }
-
-    /*
-     * Difference source = --hero-paper + --hero-ink per channel (the 50% mix doubled,
-     * clamped at white), so the headline lands on the ink over the paper and inverts
-     * over the artwork. The colour layer above restores the ink's hue where the clamp
-     * shifts it. The hex is the fallback for browsers without relative colour syntax.
-     */
-    .hero-heading-source {
-        color: #ffffcc;
-        color: rgb(
-            from color-mix(in srgb, var(--hero-paper), var(--hero-ink)) calc(r * 2) calc(g * 2)
-                calc(b * 2)
-        );
-    }
-
-    /* The artwork and the headline are painted for a light ground, so in dark mode the
-       hero stays a dimmed paper panel (--hero-paper in global.css), with body copy in
-       full-strength deep ink to make up for the dimmer paper. */
-    :global(html.dark) .hero-section {
-        --color-ink-soft: var(--hero-ink-deep);
     }
 </style>

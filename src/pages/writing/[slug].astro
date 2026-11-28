@@ -30,7 +30,7 @@ const cover = imageSize(entry.data.image);
 const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})` : undefined;
 
 const NOTE_LINK_CLASS =
-    "underline decoration-primary/40 underline-offset-4 hover:decoration-primary dark:decoration-primary-dark/29 dark:hover:decoration-primary-dark";
+    "underline decoration-underline underline-offset-4 hover:decoration-ink";
 ---
 
 <Layout
@@ -87,7 +87,7 @@ const NOTE_LINK_CLASS =
         </div>
         <!-- Search and social visitors land on posts without seeing the home pitch. -->
         <aside
-            class="mt-14 border-t border-primary/15 pt-6 text-base leading-7 text-ink-soft dark:border-primary-dark/11">
+            class="mt-14 border-t border-rule pt-6 text-base leading-7 text-ink-soft">
             <p>
                 I teach drawing and painting, online or locally in NYC. If you’d like{" "}
                 <a href="/art-lessons" class={NOTE_LINK_CLASS}>a lesson</a> or a commission,{" "}
