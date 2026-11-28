@@ -53,6 +53,11 @@
     --color-tint: color-mix(in srgb, var(--color-ink) var(--alpha-tint), transparent);
     --color-tint-strong: color-mix(in srgb, var(--color-ink) var(--alpha-tint-strong), transparent);
 
+    /* Framed-image hairline (blog cards, article covers, carousels). Does not flip:
+       it reads against the image's edge rather than the page, and a light rule
+       would outline dark images that light mode leaves unframed. */
+    --color-plate: color-mix(in srgb, var(--color-primary) 45%, transparent);
+
     /* Display-size headings only; smaller headings use the fonts' own spacing. */
     --tracking-display: -0.01em;
 }
@@ -89,12 +94,6 @@
         --site-gutter: 1.25rem;
         /* Nav-to-content separation, applied by .site-gap (Layout.astro). */
         --site-nav-gap: 2rem;
-        /* Plate: shared framed-image treatment (blog cards, article covers) — hairline
-           on the image plus a hard zero-blur offset shadow. Does not flip: it reads
-           against the image's edge rather than the page, and a light rule would
-           outline dark images that light mode leaves unframed. */
-        --plate-rule: color-mix(in srgb, var(--color-primary) 45%, transparent);
-        /* --plate-accent: #284334; */
         --plate-accent: #302d17;
         /* Gold frame line, blended over paper or images. --accent-gold-dark is the flat
            version for frames that sit on the dark page. */
@@ -113,12 +112,12 @@
            and inverts over the artwork. The hex is for browsers without relative
            color syntax. */
         --hero-body: var(--color-ink-soft);
+        --hero-rule: color-mix(in srgb, var(--hero-ink-deep) 15%, transparent);
+        --hero-headline-source: #ffffcc;
         /* Topbar text while it sits over the hero (heroNav): wordmark and current link,
            then the other links. */
         --hero-nav-ink: var(--hero-ink);
         --hero-nav-ink-muted: color-mix(in srgb, var(--hero-ink) 78%, transparent);
-        --hero-rule: color-mix(in srgb, var(--hero-ink-deep) 15%, transparent);
-        --hero-headline-source: #ffffcc;
     }
 
     @supports (color: rgb(from red r g b)) {
@@ -130,7 +129,7 @@
         }
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         :root {
             --site-gutter: 1rem;
         }
@@ -196,6 +195,15 @@
     --tw-prose-pre-bg: var(--color-tint-strong);
     --tw-prose-th-borders: var(--color-rule-strong);
     --tw-prose-td-borders: var(--color-rule);
+}
+
+/* Uppercase meta line: datelines, image captions, book footers. */
+@utility meta-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
 }
 
 /* Ported from the inline plugin in the old tailwind.config.mjs. */

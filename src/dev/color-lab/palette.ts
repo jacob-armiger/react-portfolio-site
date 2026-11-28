@@ -154,7 +154,6 @@ export interface ApplyOptions {
     neutralTint: number;
 }
 
-/** A role's new color from a palette swatch. */
 /** The swatch in a row whose lightness is closest to a colour's. */
 export const nearestInRow = (row: Color[], current: Color) => {
     const [cl] = oklch(current);
@@ -163,6 +162,7 @@ export const nearestInRow = (row: Color[], current: Color) => {
     );
 };
 
+/** A role's new color from a palette swatch. */
 export const recolor = (swatch: Color, current: Color, neutral: boolean, opts: ApplyOptions) => {
     const [sl, sc, sh] = oklch(swatch);
     const [cl, cc] = oklch(current);

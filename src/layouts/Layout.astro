@@ -4,12 +4,12 @@ import { Font } from "astro:assets";
 import "../styles/global.css";
 // Fonts: Inter (sans/UI), Source Serif 4 (body), Playfair Display (headings).
 // Registered in astro.config.mjs and rendered by the <Font> tags below.
-import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Footer from "../components/Footer.astro";
 import InstagramGlyph from "../components/InstagramGlyph.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import ColorLab from "../dev/color-lab/ColorLab.astro";
 import { backgroundTexture, type TextureSettings } from "../config/backgroundTexture";
+import { PAPER } from "../config/colors";
 import defaultShareImage from "../assets/share/default.jpeg";
 import { DEFAULT_DESCRIPTION, SITE_NAME, shareImage, type SharePosition } from "../utils/share";
 import { CARD_HEIGHT, CARD_WIDTH } from "../utils/shareCard";
@@ -65,7 +65,7 @@ const navLinks = [
     { href: "/directory", label: "Directory", visibility: "hidden sm:block" },
 ];
 // Active nav state is the full-ink color alone; resting links sit at /70.
-const NAV_LINK_CLASS = "font-sans hover:underline lg:font-medium";
+const NAV_LINK_CLASS = "hover:underline lg:font-medium";
 const NAV_INK_REST = "text-ink-muted";
 const NAV_INK_CURRENT = "text-ink";
 // Texture dials live in backgroundTexture.ts; emitted as raw CSS because only the
@@ -74,7 +74,9 @@ const NAV_INK_CURRENT = "text-ink";
 const textureRule = ({ asset, blendMode, size, repeat }: TextureSettings) =>
     `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode};`;
 const { light: lightTexture, dark: darkTexture } = backgroundTexture;
-const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opacity}; } html.dark { --texture-opacity: ${darkTexture.opacity}; } } body::before { ${textureRule(lightTexture)} } html.dark body::before { ${textureRule(darkTexture)} }`;
+const lightRule = textureRule(lightTexture);
+const darkRule = textureRule(darkTexture);
+const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opacity}; } html.dark { --texture-opacity: ${darkTexture.opacity}; } } body::before { ${lightRule} }${darkRule === lightRule ? "" : ` html.dark body::before { ${darkRule} }`}`;
 ---
 
 <!doctype html>
@@ -84,7 +86,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
         <meta name="viewport" content="width=device-width" />
         <!-- Browser UI color. ThemeToggle.astro sets it from the page background once
              styles load; this is only the first-paint value. -->
-        <meta name="theme-color" content="#e5e2da" />
+        <meta name="theme-color" content={PAPER} />
         <!-- Early in <head> so the theme is set before anything paints. The stored
              choice wins; otherwise follow the system. ThemeToggle.astro writes it. -->
         <script is:inline>
@@ -132,14 +134,8 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
         <Analytics />
         <style set:html={textureCss}></style>
     </head>
-    <body
-        class="bg-page font-serif text-ink antialiased">
-        <!-- <div
-            aria-hidden="true"
-            class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-page to-transparent lg:hidden">
-        </div> -->
+    <body class="bg-page font-serif text-ink antialiased">
         <div class="site-shell relative z-10" data-hero-nav={heroNav ? "" : undefined}>
-            <!-- <BreakpointIndicator /> -->
             <!-- items-baseline, not items-center: the 20px Playfair wordmark and the 15px
                  Inter links have different ascent ratios, so centering their line boxes
                  leaves the links ~2.7px above the wordmark's baseline. The glyph opts out
@@ -153,7 +149,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
                      it stays the loudest thing in the bar. -->
                 <a
                     href="/"
-                    class="font-playfair font-semibold hover:underline sm:text-xl lg:mb-6 lg:text-[20px] lg:leading-12"
+                    class="font-playfair font-semibold hover:underline sm:text-xl lg:mb-6 lg:leading-12"
                     >JacobLDraws</a
                 >
                 {
@@ -212,12 +208,6 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
 </html>
 
 <style is:global>
-    /*
-     * Shared site container: nav track + gutter + content inside one capped, centred
-     * frame. Tokens (--site-max-width, --site-gutter, --site-nav-gap, --plate-*) live
-     * in global.css.
-     */
-
     /* Sticky footer. position: relative anchors the body::before texture layer,
        whose values are emitted from backgroundTexture.ts in <head>. */
     body {
@@ -227,6 +217,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
         flex-direction: column;
     }
 
+    /* Shared site container: nav track + gutter + content in one capped, centred frame. */
     .site-shell {
         display: grid;
         width: 100%;
@@ -237,7 +228,31 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
         grid-template-rows: auto 1fr;
     }
 
-    @media (min-width: 1024px) {
+    /* Stops one long word in a large heading from pushing <main> wider than its track. */
+    .site-shell > * {
+        min-width: 0;
+    }
+
+    /*
+     * Insets: the topbar carries its own gutter so its background spans the viewport;
+     * .site-main insets a whole page, .site-inset a child of a full-bleed page. All
+     * go to zero at lg, where the shell's padding takes over. Home uses neither.
+     * Every <main> pairs mx-auto with w-full: auto inline margins on an auto-width
+     * grid item mean shrink-to-fit, so without w-full the page width tracks content.
+     */
+    .site-nav,
+    .site-main,
+    .site-inset {
+        padding-inline: var(--site-gutter);
+    }
+
+    /* anywhere, not break-word: only anywhere counts soft wraps toward min-content. */
+    .site-main,
+    .site-inset {
+        overflow-wrap: anywhere;
+    }
+
+    @media (width >= 1024px) {
         .site-shell {
             /* max-content keeps the nav column exactly as wide as its longest link. */
             grid-template-columns: max-content minmax(0, 1fr);
@@ -247,46 +262,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
             column-gap: var(--site-gutter);
             padding-inline: var(--site-gutter);
         }
-    }
 
-    /* Below lg the shell has no padding, so the topbar carries its own gutter and
-       its background/border span the full viewport. */
-    .site-nav {
-        padding-inline: var(--site-gutter);
-    }
-
-    /*
-     * Page insets:
-     *   .site-main  - on <main>, insets the whole page.
-     *   .site-inset - on children of a full-bleed page that still need the gutter.
-     * Both go to zero at lg, where the shell's padding takes over. Home uses neither.
-     */
-    .site-main,
-    .site-inset {
-        padding-inline: var(--site-gutter);
-    }
-
-    /*
-     * Every <main> pairs mx-auto with w-full: auto inline margins on an auto-width
-     * grid item mean shrink-to-fit, so without w-full the page width tracks content.
-     */
-
-    /*
-     * min-width: 0 stops one long word in a large heading from pushing <main> wider
-     * than its track. overflow-wrap: anywhere (not break-word) because only
-     * `anywhere` counts soft wraps toward min-content width.
-     */
-    .site-shell > * {
-        min-width: 0;
-    }
-
-    .site-main,
-    .site-inset {
-        overflow-wrap: anywhere;
-    }
-
-    /* At lg the shell's padding replaces the insets above. */
-    @media (min-width: 1024px) {
         .site-nav,
         .site-main,
         .site-inset {
@@ -313,7 +289,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
      * "hero" gives it the hero's paper, so hero content scrolls under it legibly
      * without a seam; "page" returns it to the page's colours past the hero.
      */
-    @media (max-width: 1023.98px) {
+    @media (width < 1024px) {
         .site-shell[data-hero-nav] > * {
             grid-area: 1 / 1;
         }

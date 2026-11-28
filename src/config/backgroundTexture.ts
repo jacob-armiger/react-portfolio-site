@@ -1,6 +1,5 @@
 import type { ImageMetadata } from "astro";
-import darkTexture from "../assets/textures/scanlines.webp";
-import lightTexture from "../assets/textures/scanlines.webp";
+import scanlines from "../assets/textures/scanlines.webp";
 
 export interface TextureSettings {
     asset: ImageMetadata;
@@ -10,24 +9,15 @@ export interface TextureSettings {
     repeat: "repeat" | "repeat-x" | "repeat-y" | "no-repeat";
 }
 
-interface BackgroundTextureSettings {
-    light: TextureSettings;
-    dark: TextureSettings;
-}
+const light: TextureSettings = {
+    asset: scanlines,
+    opacity: 0.1,
+    blendMode: "overlay",
+    size: "1024px auto",
+    repeat: "repeat",
+};
 
 export const backgroundTexture = {
-    light: {
-        asset: lightTexture,
-        opacity: 0.1,
-        blendMode: "overlay",
-        size: "1024px auto",
-        repeat: "repeat",
-    },
-    dark: {
-        asset: darkTexture,
-        opacity: 0.05,
-        blendMode: "overlay",
-        size: "1024px auto",
-        repeat: "repeat",
-    },
-} satisfies BackgroundTextureSettings;
+    light,
+    dark: { ...light, opacity: 0.05 },
+} satisfies Record<"light" | "dark", TextureSettings>;

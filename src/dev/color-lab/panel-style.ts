@@ -70,7 +70,6 @@ select { background: #121212; border: 1px solid #363636; border-radius: 6px; pad
 .swatch { flex: 1; height: 28px; min-width: 0; padding: 0; border-radius: 4px; border: 1px solid rgb(255 255 255 / .12);
   color: #fff; font-weight: 700; text-shadow: 0 0 3px #000; }
 .swatch.on { outline: 2px solid #e7e7e7; outline-offset: 1px; }
-.active { padding: 6px 8px; background: #1e1e1e; border-radius: 6px; }
 .result { margin: 6px 0; }
 .card { background: #1e1e1e; border: 1px solid #323232; border-radius: 8px; padding: 8px; display: grid; gap: 3px; }
 textarea { width: 100%; height: 140px; background: #121212; border: 1px solid #363636; border-radius: 6px; padding: 6px;
@@ -90,7 +89,7 @@ button:disabled { opacity: .4; cursor: default; }
 .summary { margin: 0 0 8px; }
 .cell { background: none; border: 0; padding: 0; display: inline-flex; align-items: center; color: inherit; }
 .cell:hover { text-decoration: underline; background: none; }
-.active { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.active { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; background: #1e1e1e; border-radius: 6px; }
 .quick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; width: 100%; }
 .quick label { display: flex; align-items: center; gap: 4px; }
 .slots { display: grid; gap: 6px; margin-bottom: 6px; }

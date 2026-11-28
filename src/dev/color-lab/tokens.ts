@@ -70,7 +70,7 @@ export const TOKENS: Token[] = [
     { id: "accent-gold", label: "Gold", group: "Accents", kind: "color", vars: both("--accent-gold"), note: "Blended frames" },
     { id: "accent-gold-dark", label: "Gold on dark", group: "Accents", kind: "color", vars: both("--accent-gold-dark") },
     { id: "plate-accent", label: "Plate accent", group: "Accents", kind: "color", vars: both("--plate-accent"), note: "Dateline bullet" },
-    { id: "plate-rule", label: "Image frame", group: "Accents", kind: "color", vars: both("--plate-rule"), derived: true },
+    { id: "plate-rule", label: "Image frame", group: "Accents", kind: "color", vars: both("--color-plate"), derived: true },
 
     ...(
         [

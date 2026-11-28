@@ -31,7 +31,7 @@ const readingTime = readingMinutes(excerpt);
     }
     <article class="blog-entry__grid">
         <!-- 1px rule directly on the image, no mat, so the edge stays crisp at any zoom. -->
-        <figure class="blog-entry__plate">
+        <figure class="blog-entry__plate border border-plate">
             <Image
                 src={art.data.image}
                 alt=""
@@ -97,7 +97,7 @@ const readingTime = readingMinutes(excerpt);
         inset: 0 0 var(--entry-gap);
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .blog-entry {
             --entry-gap: 2.5rem;
         }
@@ -123,7 +123,6 @@ const readingTime = readingMinutes(excerpt);
 
     .blog-entry__plate {
         grid-area: plate;
-        border: 1px solid var(--plate-rule);
         line-height: 0;
     }
 
@@ -137,7 +136,7 @@ const readingTime = readingMinutes(excerpt);
         grid-area: body;
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         /* Plate beside a full-height text column. */
         .blog-entry:not(.blog-entry--featured) .blog-entry__grid {
             grid-template-areas:
@@ -177,7 +176,7 @@ const readingTime = readingMinutes(excerpt);
         }
     }
 
-    @media (min-width: 768px) {
+    @media (width >= 768px) {
         .blog-entry:not(.blog-entry--featured) .blog-entry__grid {
             grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
         }

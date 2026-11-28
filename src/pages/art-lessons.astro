@@ -234,7 +234,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                     format="webp"
                     quality={80}
                     loading="lazy"
-                    class="profile-plate w-30 shrink-0 object-cover object-top max-sm:float-right max-sm:mt-9 max-sm:mb-2 max-sm:ml-4 sm:order-2 sm:w-36 sm:self-start"
+                    class="aspect-4/5 w-30 shrink-0 border border-plate object-cover object-top max-sm:float-right max-sm:mt-9 max-sm:mb-2 max-sm:ml-4 sm:order-2 sm:w-36 sm:self-start"
                 />
                 <div>
                 <h2 class="mb-2 font-sans text-ink-soft text-lg font-semibold">
@@ -268,11 +268,3 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
     </main>
 </Layout>
 
-<style>
-    /* Same hairline the blog cards and carousel use (--plate-rule in global.css). */
-    .profile-plate {
-        aspect-ratio: 4 / 5;
-        border: 1px solid var(--plate-rule);
-    }
-
-</style>

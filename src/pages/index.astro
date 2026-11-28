@@ -4,6 +4,7 @@ import { Picture } from "astro:assets";
 import heroImage from "../assets/contactr_final.webp";
 import SelectedWorkTile from "../components/SelectedWorkTile.astro";
 import Layout from "../layouts/Layout.astro";
+import { ACTION_BASE } from "../config/actionClass";
 import { imageSize } from "../utils/originals";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
@@ -12,9 +13,12 @@ const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 190vw";
 const HERO_BODY =
     "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
 
-// Hero button classes. ACTION_CLASS in actionClass.ts mirrors this; keep them in step.
-const HERO_ACTION_CLASS =
-    "inline-flex items-center justify-center rounded-xs font-sans font-semibold uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
+// Drawn twice, once per blend layer, so both copies share text and geometry.
+const HEADLINE = ["Contact me for", "art lessons or to commission work."];
+const HEADLINE_CLASS =
+    "hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display";
+
+const HERO_ACTION_CLASS = `${ACTION_BASE} min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]`;
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg,webp}",
@@ -94,29 +98,26 @@ const galleryLayouts = [
                     sizes={HERO_SIZES}
                     quality={80}
                     priority
-                    class="absolute z-10 aspect-2693/2773 max-w-none -bottom-8 left-[calc(var(--hero-art-w)*-0.0316)] w-(--hero-art-w) sm:bottom-0 sm:left-auto sm:-right-24 sm:w-(--hero-art-w) sm:translate-x-0 md:-right-20 lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
+                    class="absolute z-10 aspect-2693/2773 max-w-none -bottom-8 left-[calc(var(--hero-art-w)*-0.0316)] w-(--hero-art-w) sm:bottom-0 sm:left-auto sm:-right-24 md:-right-20 lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
-                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display text-(--hero-headline-source) mix-blend-difference">
-                    Contact me for <br/> art lessons or to commission work.
+                <h1 class:list={[HEADLINE_CLASS, "text-(--hero-headline-source) mix-blend-difference"]}>
+                    {HEADLINE[0]} <br /> {HEADLINE[1]}
                 </h1>
                 <!-- mix-blend-color duplicate over the difference layer: keeps the luminosity
                      inversion but pins hue/saturation to the ink, preventing magenta fringing
-                     over the green chair. Must keep .hero-heading geometry and the same z. -->
+                     over the green chair. -->
                 <div
                     aria-hidden="true"
-                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-bold leading-[1.1] tracking-display text-(--hero-ink) mix-blend-color">
-                    Contact me for <br/> art lessons or to commission work.
+                    class:list={[HEADLINE_CLASS, "pointer-events-none select-none text-(--hero-ink) mix-blend-color"]}>
+                    {HEADLINE[0]} <br /> {HEADLINE[1]}
                 </div>
 
-                <!-- Under the headline below sm, following the reader down the hero; at the
-                     frame's foot from sm. -->
                 <div class="hero-actions z-30 sm:absolute sm:bottom-8 sm:left-(--hero-inline-inset) lg:bottom-10">
                     <!-- Hidden below sm, where the frame is too short for body copy. -->
                     <p class="max-sm:hidden mb-6 max-w-[min(23rem,46vw)] text-[1rem] leading-[1.6] font-serif text-(--hero-body) lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
                         {HERO_BODY}
                     </p>
-                    <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
                     <div class="hero-buttons flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
                         <a
                             href="/contact"
@@ -184,7 +185,7 @@ const galleryLayouts = [
         --eyebrow-tracking: 0.26em;
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .page-sections {
             --eyebrow-size: 0.625rem;
             --eyebrow-tracking: 0.24em;
@@ -217,13 +218,13 @@ const galleryLayouts = [
         gap: var(--gap);
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .selected-work-grid {
             --gap: 0.5rem;
         }
     }
 
-    @media (min-width: 1024px) {
+    @media (width >= 1024px) {
         .selected-work-grid {
             --gap: 0.75rem;
         }
@@ -265,7 +266,7 @@ const galleryLayouts = [
      * until the hero ends. The hero and <main> clip with overflow: clip, since hidden
      * would make them the sticky scroll container and the actions would never stick.
      */
-    @media (max-width: 639.98px) {
+    @media (width < 640px) {
         /* Capped at the headline's width, so on wide phones the buttons line up with
            the headline instead of stretching edge to edge. */
         .hero-actions {
@@ -298,7 +299,7 @@ const galleryLayouts = [
         font-size: var(--hero-heading-size);
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .hero-section {
             --hero-heading-ratio: 8.35;
             --hero-heading-size: min(11.2vw, 6.25rem);
@@ -309,7 +310,7 @@ const galleryLayouts = [
         }
     }
 
-    @media (min-width: 768px) {
+    @media (width >= 768px) {
         .hero-section {
             --hero-art-w: min(66vw, 36rem);
         }
@@ -320,7 +321,7 @@ const galleryLayouts = [
      * fits one screen, the headline and artwork also scale with the height, and the
      * buttons sit in a row; the shortest drop the body copy, as phones do.
      */
-    @media (min-width: 640px) and (max-width: 1023.98px) and (max-height: 720px) {
+    @media (640px <= width < 1024px) and (height <= 720px) {
         .hero-section {
             --hero-heading-size: min(11.2vw, 6.25rem, 12.5svh);
             --hero-art-w: min(66vw, 36rem, 92svh);
@@ -331,15 +332,15 @@ const galleryLayouts = [
             flex-direction: row;
             align-items: center;
         }
-    }
 
-    @media (min-width: 640px) and (max-width: 1023.98px) and (max-height: 560px) {
-        .hero-actions p {
-            display: none;
+        @media (height <= 560px) {
+            .hero-actions p {
+                display: none;
+            }
         }
     }
 
-    @media (min-width: 1024px) {
+    @media (width >= 1024px) {
         .hero-section {
             /* The sidebar nav narrows the section, so the heading cap shrinks. */
             --hero-heading-size: min(9vw, 7rem);
