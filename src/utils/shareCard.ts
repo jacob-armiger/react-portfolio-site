@@ -1,9 +1,9 @@
 import type { ImageMetadata } from "astro";
 import sharp from "sharp";
+import { PAPER } from "../config/colors";
 
 export const CARD_WIDTH = 1200;
 export const CARD_HEIGHT = 630;
-const MATTE = "#e5e2da";
 const INSET = 40;
 
 type ImportedImage = ImageMetadata & { fsPath?: string };
@@ -19,7 +19,7 @@ export async function mattedCard(image: ImageMetadata) {
         .toBuffer({ resolveWithObject: true });
 
     return sharp({
-        create: { width: CARD_WIDTH, height: CARD_HEIGHT, channels: 3, background: MATTE },
+        create: { width: CARD_WIDTH, height: CARD_HEIGHT, channels: 3, background: PAPER },
     })
         .composite([
             {

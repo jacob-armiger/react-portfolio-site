@@ -30,7 +30,7 @@ const cover = imageSize(entry.data.image);
 const coverCap = cover ? `max-width: calc(75vh * ${cover.width / cover.height})` : undefined;
 
 const NOTE_LINK_CLASS =
-    "underline decoration-primary/40 underline-offset-4 hover:decoration-primary dark:decoration-primary-dark/40 dark:hover:decoration-primary-dark";
+    "underline decoration-underline underline-offset-4 hover:decoration-ink";
 ---
 
 <Layout
@@ -54,11 +54,11 @@ const NOTE_LINK_CLASS =
                     format="webp"
                     quality={82}
                     loading="eager"
-                    class="block h-auto w-full"
+                    class="block h-auto w-full border border-plate"
                     style={`aspect-ratio: ${cover.width} / ${cover.height}`}
                 />
                 {entry.data.reference ? (
-                    <figcaption class="article-cover__caption font-sans">
+                    <figcaption class="meta-label mt-[0.9rem] font-sans">
                         After{" "}
                         {entry.data.reference_url ? (
                             <a href={entry.data.reference_url} class="underline underline-offset-2">
@@ -87,7 +87,7 @@ const NOTE_LINK_CLASS =
         </div>
         <!-- Search and social visitors land on posts without seeing the home pitch. -->
         <aside
-            class="mt-14 border-t border-primary/15 pt-6 text-base leading-7 text-ink-soft dark:border-primary-dark/15">
+            class="mt-14 border-t border-rule pt-6 text-base leading-7 text-ink-soft">
             <p>
                 I teach drawing and painting, online or locally in NYC. If you’d like{" "}
                 <a href="/art-lessons" class={NOTE_LINK_CLASS}>a lesson</a> or a commission,{" "}
@@ -97,19 +97,3 @@ const NOTE_LINK_CLASS =
     </main>
 </Layout>
 
-<style>
-    /* No offset shadow: that is the blog card's clickable-hover affordance. */
-    .article-cover :global(img) {
-        border: 1px solid var(--plate-rule);
-    }
-
-    /* Shares the dateline's treatment. */
-    .article-cover__caption {
-        margin-top: 0.9rem;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        color: var(--color-ink-muted);
-        text-transform: uppercase;
-    }
-</style>

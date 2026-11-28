@@ -1,0 +1,24 @@
+---
+/*
+ * Dev only (Layout.astro renders this under import.meta.env.DEV). Re-applies the
+ * Color Lab's saved overrides before first paint, so they persist without a flash,
+ * then loads the lab. The module is fetched straight from the Vite dev server by
+ * URL, so no build ever bundles it.
+ */
+---
+
+<script is:inline>
+    (() => {
+        try {
+            const css = localStorage.getItem("color-lab:css");
+            if (!css) return;
+            const style = document.createElement("style");
+            style.id = "color-lab-overrides";
+            style.textContent = css;
+            document.head.appendChild(style);
+        } catch {}
+    })();
+</script>
+<script is:inline type="module">
+    import("/src/dev/color-lab/main.ts");
+</script>

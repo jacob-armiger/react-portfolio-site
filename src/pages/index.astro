@@ -4,17 +4,21 @@ import { Picture } from "astro:assets";
 import heroImage from "../assets/contactr_final.webp";
 import SelectedWorkTile from "../components/SelectedWorkTile.astro";
 import Layout from "../layouts/Layout.astro";
+import { ACTION_BASE } from "../config/actionClass";
 import { imageSize } from "../utils/originals";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
-const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 110vw";
+const HERO_SIZES = "(min-width: 1024px) 50vw, (min-width: 640px) 72vw, 190vw";
 
 const HERO_BODY =
     "I've followed the training of 19th-century masters to rapidly improve my skills and build an empowering foundation of knowledge. I can help you do the same.";
 
-// Hero button classes. ACTION_CLASS in actionClass.ts mirrors this; keep them in step.
-const HERO_ACTION_CLASS =
-    "inline-flex items-center justify-center rounded-xs font-sans font-semibold uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]";
+// Drawn twice, once per blend layer, so both copies share text and geometry.
+const HEADLINE = ["Contact me for", "art lessons or to commission work."];
+const HEADLINE_CLASS =
+    "hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display";
+
+const HERO_ACTION_CLASS = `${ACTION_BASE} min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]`;
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg,webp}",
@@ -78,13 +82,13 @@ const galleryLayouts = [
 ];
 ---
 
-<Layout title="JacobLDraws">
+<Layout title="JacobLDraws" heroNav>
     <!-- No .site-main: the hero is full-bleed and --page-inset sets the text's left
          edge. The max-w-6xl cap only applies above 1152px. -->
-    <main class="site-gap mx-auto w-full max-w-6xl overflow-hidden">
+    <main class="site-gap mx-auto w-full max-w-6xl overflow-clip">
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
-            <section class="hero-section relative isolate overflow-hidden bg-[#d7cfbe] dark:bg-[#2f2a25]">
+            <section data-hero class="hero-section relative isolate overflow-clip bg-(--hero-paper)">
                 <Picture
                     src={heroImage}
                     alt="Person reclining beside a green office chair while using a telephone"
@@ -94,35 +98,32 @@ const galleryLayouts = [
                     sizes={HERO_SIZES}
                     quality={80}
                     priority
-                    class="absolute z-10 aspect-2693/2773 max-w-none top-[5.25rem] left-[60%] w-116 translate-x-[-48%] sm:top-auto sm:bottom-0 sm:left-auto sm:-right-24 sm:w-[min(72vw,34rem)] sm:translate-x-0 md:-right-20 md:w-[min(66vw,36rem)] lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
+                    class="absolute z-10 aspect-2693/2773 max-w-none -bottom-8 left-[calc(var(--hero-art-w)*-0.0316)] w-(--hero-art-w) sm:bottom-0 sm:left-auto sm:-right-24 md:-right-20 lg:w-[min(60%,44rem)] xl:-bottom-8 xl:-right-40 xl:w-[min(75%,50rem)] 2xl:w-[50rem]"
                 />
 
-                <h1 class="hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display text-orange-100 mix-blend-difference">
-                    Contact me for <br/> art lessons or to commission work.
+                <h1 class:list={[HEADLINE_CLASS, "text-(--hero-headline-source) mix-blend-difference"]}>
+                    {HEADLINE[0]} <br /> {HEADLINE[1]}
                 </h1>
                 <!-- mix-blend-color duplicate over the difference layer: keeps the luminosity
                      inversion but pins hue/saturation to the ink, preventing magenta fringing
-                     over the green chair. Must keep .hero-heading geometry and the same z. -->
+                     over the green chair. -->
                 <div
                     aria-hidden="true"
-                    class="hero-heading pointer-events-none absolute z-20 select-none font-playfair font-bold leading-[1.1] tracking-display text-primary mix-blend-color dark:text-primary-dark">
-                    Contact me for <br/> art lessons or to commission work.
+                    class:list={[HEADLINE_CLASS, "pointer-events-none select-none text-(--hero-ink) mix-blend-color"]}>
+                    {HEADLINE[0]} <br /> {HEADLINE[1]}
                 </div>
 
-                <!-- bottom-6 is larger than the headline's top inset to clear the frame edge.
-                     right is only pinned below sm, where the buttons span full width. -->
-                <div class="absolute z-30 bottom-6 left-(--hero-inline-inset) max-sm:right-(--hero-inline-inset) sm:bottom-8 lg:bottom-10">
+                <div class="hero-actions z-30 sm:absolute sm:bottom-8 sm:left-(--hero-inline-inset) lg:bottom-10">
                     <!-- Hidden below sm, where the frame is too short for body copy. -->
-                    <p class="max-sm:hidden mb-6 max-w-92 text-[1rem] leading-[1.6] font-serif text-ink-soft lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
+                    <p class="max-sm:hidden mb-6 max-w-[min(23rem,46vw)] text-[1rem] leading-[1.6] font-serif text-(--hero-body) lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
                         {HERO_BODY}
                     </p>
-                    <!-- Buttons: 2-col grid below sm, stacked column from sm, row at lg. -->
-                    <div class="flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
+                    <div class="hero-buttons flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
                         <a
                             href="/contact"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "bg-primary text-secondary hover:bg-primary/85 focus-visible:outline-primary dark:bg-primary-dark dark:hover:bg-primary-dark/85 dark:text-secondary-dark dark:focus-visible:outline-primary-dark",
+                                "bg-(--hero-ink) text-(--hero-light) hover:bg-(--hero-ink)/85 focus-visible:outline-(--hero-ink)",
                             ]}>
                             Contact
                         </a>
@@ -130,7 +131,7 @@ const galleryLayouts = [
                             href="/art-lessons"
                             class:list={[
                                 HERO_ACTION_CLASS,
-                                "border border-primary/25 bg-secondary/70 text-primary backdrop-blur-md hover:border-primary/60 focus-visible:outline-primary dark:border-primary-dark/25 dark:hover:border-primary-dark/60 dark:bg-secondary-dark/70 dark:text-primary-dark dark:focus-visible:outline-primary-dark",
+                                "border border-(--hero-ink)/25 bg-(--hero-light)/70 text-(--hero-ink) backdrop-blur-md hover:border-(--hero-ink)/60 focus-visible:outline-(--hero-ink)",
                             ]}>
                             Learn to Draw
                         </a>
@@ -141,13 +142,13 @@ const galleryLayouts = [
             <section aria-labelledby="selected-work-heading" class="pb-2">
                 <div class="section-header max-w-xl pt-5 sm:pt-6">
                     <div class="flex flex-wrap items-baseline gap-x-4">
-                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-primary sm:text-4xl dark:text-primary-dark">
+                        <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-ink sm:text-4xl">
                             What I can make.
                         </h2>
                         <!-- Negative margin cancels the padding so the tap target grows without moving the row. -->
                         <a
                             href="/art"
-                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-ink-muted underline underline-offset-4 hover:text-primary dark:hover:text-primary-dark">
+                            class="eyebrow -my-4 shrink-0 py-4 font-sans uppercase text-ink-muted underline underline-offset-4 hover:text-ink">
                             See more
                         </a>
                     </div>
@@ -184,7 +185,7 @@ const galleryLayouts = [
         --eyebrow-tracking: 0.26em;
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .page-sections {
             --eyebrow-size: 0.625rem;
             --eyebrow-tracking: 0.24em;
@@ -217,13 +218,13 @@ const galleryLayouts = [
         gap: var(--gap);
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .selected-work-grid {
             --gap: 0.5rem;
         }
     }
 
-    @media (min-width: 1024px) {
+    @media (width >= 1024px) {
         .selected-work-grid {
             --gap: 0.75rem;
         }
@@ -238,17 +239,43 @@ const galleryLayouts = [
            viewport widths (a percentage width would shift them). */
         --hero-heading-ratio: 6.75;
         --hero-heading-size: min(13vw, 3.4rem);
-        --hero-heading-top: var(--page-inset);
+        /* Below lg the topbar sits over the hero (heroNav in Layout.astro); its height
+           comes from Layout's script, with an estimate until that runs. */
+        --hero-top-offset: var(--topbar-h, 3.125rem);
+        --hero-heading-top: calc(var(--page-inset) + var(--hero-top-offset));
         /* Full bleed with a bottom hairline below lg, where only the inner rule
            frames it; the outer border joins it at lg. */
         --hero-frame-border: 0px;
-        --hero-frame-line: rgba(42, 35, 27, 0.15);
         /* Absolutely-positioned children measure from the padding box; subtract the
            frame border so text stays on --page-inset. */
         --hero-inline-inset: calc(var(--page-inset) - var(--hero-frame-border));
-        border: var(--hero-frame-border) solid var(--hero-frame-line);
+        border: var(--hero-frame-border) solid var(--hero-rule);
         border-bottom-width: 1px;
-        min-height: 41.25rem;
+        /* Below sm the artwork is cropped around the figure and scales with the screen
+           until the headline stops growing (about 430px wide); past that the figure
+           holds its size and the extra width shows more of the chair. The frame
+           follows the artwork. */
+        --hero-art-w: min(190vw, 51rem);
+        min-height: calc(max(36rem, var(--hero-art-w) * 0.937) + var(--hero-top-offset));
+    }
+
+    /*
+     * Below sm the actions are the hero's only in-flow child. The headline always
+     * breaks into four lines (its width scales with its size), so they start a fixed
+     * distance under it; once scrolled past, they stick under the topbar and follow
+     * until the hero ends. The hero and <main> clip with overflow: clip, since hidden
+     * would make them the sticky scroll container and the actions would never stick.
+     */
+    @media (width < 640px) {
+        /* Capped at the headline's width, so on wide phones the buttons line up with
+           the headline instead of stretching edge to edge. */
+        .hero-actions {
+            position: sticky;
+            top: calc(var(--hero-top-offset) + 0.75rem);
+            max-width: calc(var(--hero-heading-size) * var(--hero-heading-ratio));
+            margin: calc(var(--hero-heading-top) + var(--hero-heading-size) * 1.1 * 4 + 1.5rem)
+                var(--hero-inline-inset) 1.25rem;
+        }
     }
 
     /* Inner rule of the frame: above the artwork (z-15), under the text. The
@@ -257,7 +284,7 @@ const galleryLayouts = [
         position: absolute;
         z-index: 15;
         inset: 0.25rem;
-        border: 1px solid var(--hero-frame-line);
+        border: 1px solid var(--hero-rule);
         border-radius: calc(1rem - var(--hero-frame-border) - 0.25rem);
         pointer-events: none;
         content: "";
@@ -272,27 +299,54 @@ const galleryLayouts = [
         font-size: var(--hero-heading-size);
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .hero-section {
             --hero-heading-ratio: 8.35;
             --hero-heading-size: min(11.2vw, 6.25rem);
             /* The 44.75rem floor keeps the bottom-anchored copy clear of the headline
                on short viewports (worst case 860-1023px wide). */
-            min-height: clamp(44.75rem, calc(78vh - 1.75rem), 45.75rem);
+            min-height: calc(clamp(44.75rem, calc(78vh - 1.75rem), 45.75rem) + var(--hero-top-offset));
+            --hero-art-w: min(72vw, 34rem);
         }
     }
 
-    @media (min-width: 1024px) {
+    @media (width >= 768px) {
+        .hero-section {
+            --hero-art-w: min(66vw, 36rem);
+        }
+    }
+
+    /*
+     * Short landscape screens below lg (a phone or foldable on its side): the hero
+     * fits one screen, the headline and artwork also scale with the height, and the
+     * buttons sit in a row; the shortest drop the body copy, as phones do.
+     */
+    @media (640px <= width < 1024px) and (height <= 720px) {
+        .hero-section {
+            --hero-heading-size: min(11.2vw, 6.25rem, 12.5svh);
+            --hero-art-w: min(66vw, 36rem, 92svh);
+            min-height: max(26rem, 100svh);
+        }
+
+        .hero-buttons {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        @media (height <= 560px) {
+            .hero-actions p {
+                display: none;
+            }
+        }
+    }
+
+    @media (width >= 1024px) {
         .hero-section {
             /* The sidebar nav narrows the section, so the heading cap shrinks. */
             --hero-heading-size: min(9vw, 7rem);
+            --hero-top-offset: 0px;
             --hero-frame-border: 1px;
             min-height: clamp(44.25rem, calc(88vh - 1.75rem), 50.25rem);
         }
-    }
-
-    /* Keyed to html.dark, not prefers-color-scheme: dark mode is class-based. */
-    :global(html.dark) .hero-section {
-        --hero-frame-line: rgba(229, 226, 218, 0.15);
     }
 </style>

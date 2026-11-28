@@ -4,10 +4,12 @@ import { Font } from "astro:assets";
 import "../styles/global.css";
 // Fonts: Inter (sans/UI), Source Serif 4 (body), Playfair Display (headings).
 // Registered in astro.config.mjs and rendered by the <Font> tags below.
-import BreakpointIndicator from "../components/BreakpointIndicator.astro";
 import Footer from "../components/Footer.astro";
 import InstagramGlyph from "../components/InstagramGlyph.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import ColorLab from "../dev/color-lab/ColorLab.astro";
 import { backgroundTexture, type TextureSettings } from "../config/backgroundTexture";
+import { PAPER } from "../config/colors";
 import defaultShareImage from "../assets/share/default.jpeg";
 import { DEFAULT_DESCRIPTION, SITE_NAME, shareImage, type SharePosition } from "../utils/share";
 import { CARD_HEIGHT, CARD_WIDTH } from "../utils/shareCard";
@@ -23,6 +25,8 @@ interface Props {
     type?: "website" | "article";
     publishedTime?: Date;
     noindex?: boolean;
+    /** The page opens with a hero that runs up behind the topbar (below lg). */
+    heroNav?: boolean;
 }
 
 const {
@@ -34,6 +38,7 @@ const {
     type = "website",
     publishedTime,
     noindex = false,
+    heroNav = false,
 } = Astro.props;
 
 // Normalize trailing slashes so /writing/ and /writing compare equal.
@@ -60,14 +65,18 @@ const navLinks = [
     { href: "/directory", label: "Directory", visibility: "hidden sm:block" },
 ];
 // Active nav state is the full-ink color alone; resting links sit at /70.
-const NAV_LINK_CLASS = "font-sans hover:underline lg:font-medium";
+const NAV_LINK_CLASS = "hover:underline lg:font-medium";
 const NAV_INK_REST = "text-ink-muted";
-const NAV_INK_CURRENT = "text-primary dark:text-primary-dark";
+const NAV_INK_CURRENT = "text-ink";
 // Texture dials live in backgroundTexture.ts; emitted as raw CSS because only the
-// hashed asset URLs are dynamic.
-const textureRule = ({ asset, opacity, blendMode, size, repeat }: TextureSettings) =>
-    `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode}; opacity: ${opacity};`;
-const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } html.dark body::before { ${textureRule(backgroundTexture.dark)} }`;
+// hashed asset URLs are dynamic. Opacity is a root variable so it can be tuned live
+// like the color roles.
+const textureRule = ({ asset, blendMode, size, repeat }: TextureSettings) =>
+    `background-image: url("${asset.src}"); background-repeat: ${repeat}; background-size: ${size}; mix-blend-mode: ${blendMode};`;
+const { light: lightTexture, dark: darkTexture } = backgroundTexture;
+const lightRule = textureRule(lightTexture);
+const darkRule = textureRule(darkTexture);
+const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opacity}; } html.dark { --texture-opacity: ${darkTexture.opacity}; } } body::before { ${lightRule} }${darkRule === lightRule ? "" : ` html.dark body::before { ${darkRule} }`}`;
 ---
 
 <!doctype html>
@@ -75,6 +84,22 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
+        <!-- Browser UI color. ThemeToggle.astro sets it from the page background once
+             styles load; this is only the first-paint value. -->
+        <meta name="theme-color" content={PAPER} />
+        <!-- Early in <head> so the theme is set before anything paints. The stored
+             choice wins; otherwise follow the system. ThemeToggle.astro writes it. -->
+        <script is:inline>
+            (() => {
+                let stored = null;
+                try {
+                    stored = localStorage.getItem("theme");
+                } catch {}
+                const dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+                document.documentElement.classList.toggle("dark", dark);
+            })();
+        </script>
+        {import.meta.env.DEV && <ColorLab />}
         <title>{documentTitle}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonicalUrl} />
@@ -109,28 +134,22 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         <Analytics />
         <style set:html={textureCss}></style>
     </head>
-    <body
-        class="bg-secondary font-serif text-primary antialiased dark:bg-secondary-dark dark:text-primary-dark">
-        <!-- <div
-            aria-hidden="true"
-            class="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-secondary to-transparent dark:from-secondary-dark lg:hidden">
-        </div> -->
-        <div class="site-shell relative z-10">
-            <!-- <BreakpointIndicator /> -->
+    <body class="bg-page font-serif text-ink antialiased">
+        <div class="site-shell relative z-10" data-hero-nav={heroNav ? "" : undefined}>
             <!-- items-baseline, not items-center: the 20px Playfair wordmark and the 15px
                  Inter links have different ascent ratios, so centering their line boxes
                  leaves the links ~2.7px above the wordmark's baseline. The glyph opts out
                  via self-center — it has no baseline of its own, and below sm it would
                  otherwise become the tallest item and drag the text down with it. -->
             <nav
-                class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-primary/15 bg-secondary py-3 font-sans underline-offset-4 sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:border-none lg:bg-transparent lg:pb-4 lg:pt-8 dark:border-primary-dark/15 dark:bg-secondary-dark">
+                class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-3 gap-y-2 py-3 font-sans max-sm:justify-between underline-offset-4 max-lg:bg-page sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:pb-4 lg:pt-8">
                 <!-- lg:leading-[48px] matches the page headings' text-5xl line box so both
                      columns start level at lg:pt-8. mb-6 separates the wordmark from the
                      link list below it. Sized independently of the links at every step so
                      it stays the loudest thing in the bar. -->
                 <a
                     href="/"
-                    class="font-playfair font-semibold hover:underline sm:text-xl lg:mb-6 lg:text-[20px] lg:leading-12"
+                    class="font-playfair font-semibold hover:underline sm:text-xl lg:mb-6 lg:leading-12"
                     >JacobLDraws</a
                 >
                 {
@@ -155,6 +174,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
                     class="inline-flex items-center self-center hover:opacity-70 lg:self-auto">
                     <InstagramGlyph />
                 </a>
+                <ThemeToggle />
             </nav>
             <!-- slot goes directly in grid so each page's root element can be a grid item -->
             <slot />
@@ -162,17 +182,32 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         <!-- Outside .site-shell: as a grid item it would share a stacking context with
              the sticky nav and paint underneath it. -->
         <Footer />
+        <!-- Topbar over the hero (heroNav): publish its height for the hero's offset,
+             and set data-nav for where it sits (see .site-nav[data-nav] above). -->
+        <script is:inline>
+            (() => {
+                const shell = document.querySelector(".site-shell[data-hero-nav]");
+                const nav = shell && shell.querySelector(".site-nav");
+                const hero = shell && shell.querySelector("[data-hero]");
+                if (!nav || !hero) return;
+                const update = () => {
+                    const pastHero = hero.getBoundingClientRect().bottom <= nav.offsetHeight;
+                    nav.dataset.nav = pastHero ? "page" : scrollY > 0 ? "hero" : "top";
+                };
+                const measure = () => {
+                    document.documentElement.style.setProperty("--topbar-h", nav.offsetHeight + "px");
+                    update();
+                };
+                measure();
+                new ResizeObserver(measure).observe(nav);
+                addEventListener("scroll", update, { passive: true });
+            })();
+        </script>
         <script is:inline type="module" src="/scripts/imageZoom.js"></script>
     </body>
 </html>
 
 <style is:global>
-    /*
-     * Shared site container: nav track + gutter + content inside one capped, centred
-     * frame. Tokens (--site-max-width, --site-gutter, --site-nav-gap, --plate-*) live
-     * in global.css.
-     */
-
     /* Sticky footer. position: relative anchors the body::before texture layer,
        whose values are emitted from backgroundTexture.ts in <head>. */
     body {
@@ -182,6 +217,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         flex-direction: column;
     }
 
+    /* Shared site container: nav track + gutter + content in one capped, centred frame. */
     .site-shell {
         display: grid;
         width: 100%;
@@ -192,7 +228,31 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         grid-template-rows: auto 1fr;
     }
 
-    @media (min-width: 1024px) {
+    /* Stops one long word in a large heading from pushing <main> wider than its track. */
+    .site-shell > * {
+        min-width: 0;
+    }
+
+    /*
+     * Insets: the topbar carries its own gutter so its background spans the viewport;
+     * .site-main insets a whole page, .site-inset a child of a full-bleed page. All
+     * go to zero at lg, where the shell's padding takes over. Home uses neither.
+     * Every <main> pairs mx-auto with w-full: auto inline margins on an auto-width
+     * grid item mean shrink-to-fit, so without w-full the page width tracks content.
+     */
+    .site-nav,
+    .site-main,
+    .site-inset {
+        padding-inline: var(--site-gutter);
+    }
+
+    /* anywhere, not break-word: only anywhere counts soft wraps toward min-content. */
+    .site-main,
+    .site-inset {
+        overflow-wrap: anywhere;
+    }
+
+    @media (width >= 1024px) {
         .site-shell {
             /* max-content keeps the nav column exactly as wide as its longest link. */
             grid-template-columns: max-content minmax(0, 1fr);
@@ -202,46 +262,7 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
             column-gap: var(--site-gutter);
             padding-inline: var(--site-gutter);
         }
-    }
 
-    /* Below lg the shell has no padding, so the topbar carries its own gutter and
-       its background/border span the full viewport. */
-    .site-nav {
-        padding-inline: var(--site-gutter);
-    }
-
-    /*
-     * Page insets:
-     *   .site-main  - on <main>, insets the whole page.
-     *   .site-inset - on children of a full-bleed page that still need the gutter.
-     * Both go to zero at lg, where the shell's padding takes over. Home uses neither.
-     */
-    .site-main,
-    .site-inset {
-        padding-inline: var(--site-gutter);
-    }
-
-    /*
-     * Every <main> pairs mx-auto with w-full: auto inline margins on an auto-width
-     * grid item mean shrink-to-fit, so without w-full the page width tracks content.
-     */
-
-    /*
-     * min-width: 0 stops one long word in a large heading from pushing <main> wider
-     * than its track. overflow-wrap: anywhere (not break-word) because only
-     * `anywhere` counts soft wraps toward min-content width.
-     */
-    .site-shell > * {
-        min-width: 0;
-    }
-
-    .site-main,
-    .site-inset {
-        overflow-wrap: anywhere;
-    }
-
-    /* At lg the shell's padding replaces the insets above. */
-    @media (min-width: 1024px) {
         .site-nav,
         .site-main,
         .site-inset {
@@ -261,11 +282,43 @@ const textureCss = `body::before { ${textureRule(backgroundTexture.light)} } htm
         }
     }
 
+    /*
+     * Below lg on a page with heroNav, the topbar shares the hero's grid row so the
+     * hero runs up behind it and takes the hero's ink. data-nav (set by the script at
+     * the foot of the body): "top" leaves it transparent inside the hero's frame;
+     * "hero" gives it the hero's paper, so hero content scrolls under it legibly
+     * without a seam; "page" returns it to the page's colours past the hero.
+     */
+    @media (width < 1024px) {
+        .site-shell[data-hero-nav] > * {
+            grid-area: 1 / 1;
+        }
+
+        .site-shell[data-hero-nav] > .site-nav {
+            align-self: start;
+            transition:
+                background-color 0.2s,
+                color 0.2s;
+        }
+
+        .site-shell[data-hero-nav] > .site-nav:not([data-nav="page"]) {
+            --color-ink: var(--hero-nav-ink);
+            --color-ink-muted: var(--hero-nav-ink-muted);
+            background-color: var(--hero-paper);
+            color: var(--hero-nav-ink);
+        }
+
+        .site-shell[data-hero-nav] > .site-nav[data-nav="top"] {
+            background-color: transparent;
+        }
+    }
+
     body::before {
         position: absolute;
         z-index: -20;
         inset: 0;
         pointer-events: none;
         content: "";
+        opacity: var(--texture-opacity);
     }
 </style>

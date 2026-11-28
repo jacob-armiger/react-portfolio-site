@@ -18,20 +18,20 @@ const readingTime = readingMinutes(excerpt);
 <a
     href={"/writing/" + art.id}
     class:list={[
-        "blog-entry group relative block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary dark:focus-visible:outline-primary-dark",
+        "blog-entry group relative block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink",
         featured && "blog-entry--featured",
     ]}>
     {
         featured && (
             <div
                 aria-hidden="true"
-                class="blog-entry__frame pointer-events-none absolute rounded-tr-[2rem] border border-[#887928]/80 mix-blend-overlay"
+                class="blog-entry__frame pointer-events-none absolute rounded-tr-[2rem] border border-(--accent-gold)/80 mix-blend-overlay dark:border-(--accent-gold-dark)/24 dark:mix-blend-normal"
             />
         )
     }
     <article class="blog-entry__grid">
         <!-- 1px rule directly on the image, no mat, so the edge stays crisp at any zoom. -->
-        <figure class="blog-entry__plate">
+        <figure class="blog-entry__plate border border-plate">
             <Image
                 src={art.data.image}
                 alt=""
@@ -83,7 +83,7 @@ const readingTime = readingMinutes(excerpt);
     .blog-entry {
         --entry-gap: 2rem;
         padding-block: var(--entry-gap);
-        border-bottom: 1px solid rgb(42 35 27 / 0.15);
+        border-bottom: 1px solid var(--color-rule);
     }
 
     /* The featured post's content sits in a gold frame, which stands where other
@@ -97,11 +97,7 @@ const readingTime = readingMinutes(excerpt);
         inset: 0 0 var(--entry-gap);
     }
 
-    :global(html.dark) .blog-entry {
-        border-color: rgb(229 226 218 / 0.15);
-    }
-
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         .blog-entry {
             --entry-gap: 2.5rem;
         }
@@ -127,7 +123,6 @@ const readingTime = readingMinutes(excerpt);
 
     .blog-entry__plate {
         grid-area: plate;
-        border: 1px solid var(--plate-rule);
         line-height: 0;
     }
 
@@ -141,7 +136,7 @@ const readingTime = readingMinutes(excerpt);
         grid-area: body;
     }
 
-    @media (min-width: 640px) {
+    @media (width >= 640px) {
         /* Plate beside a full-height text column. */
         .blog-entry:not(.blog-entry--featured) .blog-entry__grid {
             grid-template-areas:
@@ -181,7 +176,7 @@ const readingTime = readingMinutes(excerpt);
         }
     }
 
-    @media (min-width: 768px) {
+    @media (width >= 768px) {
         .blog-entry:not(.blog-entry--featured) .blog-entry__grid {
             grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
         }

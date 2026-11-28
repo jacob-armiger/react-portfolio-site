@@ -1,0 +1,93 @@
+---
+/*
+ * Light/dark switch. The theme is applied before first paint by the inline script
+ * in Layout.astro; this only flips it and remembers the choice.
+ */
+---
+
+<button
+    type="button"
+    data-theme-toggle
+    aria-label="Dark mode"
+    aria-pressed="false"
+    title="Toggle dark mode"
+    class="-my-2 -mr-2 inline-flex sm:ml-auto items-center self-center py-2 pr-2 pl-1 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ink lg:fixed lg:right-5 lg:bottom-5 lg:m-0 lg:rounded-full lg:border lg:border-rule lg:bg-page lg:p-2.5">
+    <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+        class="h-[1.15em] w-[1.15em] dark:hidden">
+        <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path>
+    </svg>
+    <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+        focusable="false"
+        class="hidden h-[1.15em] w-[1.15em] dark:block">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path
+            d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"
+        ></path>
+    </svg>
+</button>
+
+<script>
+    const KEY = "theme";
+    const root = document.documentElement;
+    const system = matchMedia("(prefers-color-scheme: dark)");
+    const button = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+
+    // Storage can throw when the browser blocks it; the toggle still works for the visit.
+    const read = () => {
+        try {
+            return localStorage.getItem(KEY);
+        } catch {
+            return null;
+        }
+    };
+    const write = (value: string | null) => {
+        try {
+            if (value) localStorage.setItem(KEY, value);
+            else localStorage.removeItem(KEY);
+        } catch {}
+    };
+
+    const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+
+    const apply = (dark: boolean) => {
+        root.classList.toggle("dark", dark);
+        button?.setAttribute("aria-pressed", String(dark));
+        if (themeColor) themeColor.content = getComputedStyle(document.body).backgroundColor;
+    };
+
+    apply(root.classList.contains("dark"));
+
+    button?.addEventListener("click", () => {
+        const dark = !root.classList.contains("dark");
+        apply(dark);
+        // Picking what the system already shows drops the override, so the site
+        // follows the system again from then on.
+        write(dark === system.matches ? null : dark ? "dark" : "light");
+    });
+
+    system.addEventListener("change", (event) => {
+        if (!read()) apply(event.matches);
+    });
+
+    window.addEventListener("storage", (event) => {
+        if (event.key === KEY) apply(event.newValue ? event.newValue === "dark" : system.matches);
+    });
+</script>
