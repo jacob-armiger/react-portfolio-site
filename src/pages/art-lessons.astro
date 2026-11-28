@@ -4,6 +4,7 @@ import { getImage, Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import heroSource from "../assets/lessons2_final.webp";
 import profileImg from "../assets/profile_img.jpeg";
+import { artPieceAlt } from "../utils/artPiece";
 
 type ArtModule = { default: ImageMetadata };
 type LessonGalleryEntry = {
@@ -54,20 +55,18 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
     [
         {
             path: "../assets/drawings/2026-06-15.jpeg",
-            alt: "Refined figure drawing",
             label: "Refine your Draftsmanship",
         },
         {
             path: "../assets/oilPaintings/2025-10-27.png",
-            alt: "Oil painting",
             label: "LEARN TO PAINT",
         },
         {
             path: "../assets/digitalStudies/2026-07-06.jpeg",
-            alt: "Digital painting of an athlete",
             label: "Flex your skills",
         },
     ].map(async (entry) => {
+        const [folder, file] = entry.path.split("/").slice(-2);
         const image = artModules[entry.path].default;
         const optimized = await getImage({
             src: image,
@@ -82,7 +81,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
             srcSet: optimized.srcSet.attribute || undefined,
             width: (optimized.attributes.width as number) ?? image.width,
             height: (optimized.attributes.height as number) ?? image.height,
-            alt: entry.alt,
+            alt: artPieceAlt(folder, file, 0),
             label: entry.label,
         };
     }),
@@ -108,7 +107,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
     />
     <!-- No .site-main: below lg the hero bleeds edge-to-edge and the rest takes the
          gutter via .site-inset; at lg the page is capped and centered. -->
-    <main class="site-gap lg:page-top mx-auto w-full lg:max-w-5xl">
+    <main id="main" class="site-gap lg:page-top mx-auto w-full lg:max-w-5xl">
         <!-- An <img> rather than a background so the preload scanner finds the LCP element
              without waiting on the stylesheet. left -120% recreates the original framing
              within the 260% zoom; no decoding="async", which would delay LCP by letting a

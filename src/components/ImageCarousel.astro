@@ -148,6 +148,7 @@ const figureWidth = (w?: number, h?: number) =>
                 if (thumbs.length === 0) return;
 
                 const srcs = thumbs.map((t) => t.getAttribute("data-carousel-src") || "");
+                const alts = thumbs.map((t) => t.getAttribute("data-carousel-alt") || "");
                 const previewSrcs = thumbs.map((t) => {
                     const previewImg = t.querySelector("img");
                     return previewImg?.currentSrc || previewImg?.src || "";
@@ -176,6 +177,7 @@ const figureWidth = (w?: number, h?: number) =>
                                 startIndex: i,
                                 previewSrc: previewSrcs[i],
                                 previewSrcs,
+                                alts,
                             });
                         }
                     });
@@ -189,6 +191,10 @@ const figureWidth = (w?: number, h?: number) =>
             init();
         }
     })();
+</script>
+
+<script>
+    import "../scripts/imageZoom.js";
 </script>
 
 <style is:inline>

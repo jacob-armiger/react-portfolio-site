@@ -5,6 +5,7 @@ import heroImage from "../assets/contactr_final.webp";
 import SelectedWorkTile from "../components/SelectedWorkTile.astro";
 import Layout from "../layouts/Layout.astro";
 import { ACTION_BASE } from "../config/actionClass";
+import { artPieceAlt } from "../utils/artPiece";
 import { imageSize } from "../utils/originals";
 
 const HERO_VARIANT_WIDTHS = [640, 760, 880, 920, 1140, 1320, 1520, 1760, 1840];
@@ -36,9 +37,10 @@ const selectedWorks = Object.entries(selectedWorkModules)
             sensitivity: "base",
         }),
     )
-    .map(([, image], index) => {
+    .map(([path, image], index) => {
         const { width, height } = imageSize(image);
-        return { image, alt: `Selected artwork ${index + 1}`, aspectRatio: width / height };
+        const alt = artPieceAlt("selectedWork", path.split("/").at(-1)!, index);
+        return { image, alt, aspectRatio: width / height };
     });
 
 // Splits the pieces into columns that end as level as possible, keeping the
@@ -85,7 +87,7 @@ const galleryLayouts = [
 <Layout title="JacobLDraws" heroNav>
     <!-- No .site-main: the hero is full-bleed and --page-inset sets the text's left
          edge. The max-w-6xl cap only applies above 1152px. -->
-    <main class="site-gap mx-auto w-full max-w-6xl overflow-clip">
+    <main id="main" class="site-gap mx-auto w-full max-w-6xl overflow-clip">
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
         <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
             <section data-hero class="hero-section relative isolate overflow-clip bg-(--hero-paper)">
@@ -93,7 +95,7 @@ const galleryLayouts = [
                     src={heroImage}
                     alt="Person reclining beside a green office chair while using a telephone"
                     formats={["avif", "webp"]}
-                    fallbackFormat="png"
+                    fallbackFormat="webp"
                     widths={HERO_VARIANT_WIDTHS}
                     sizes={HERO_SIZES}
                     quality={80}

@@ -11,7 +11,16 @@ export function preloadImageZoomSrc(src) {
   preloadImg.src = src;
 }
 
-const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChange, onClose } = {}) => {
+const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], alts = [], onIndexChange, onClose } = {}) => {
+  const opener = document.activeElement;
+  const inertedSiblings = [];
+
+  // Every part is position: fixed, so this wrapper only groups them for assistive tech.
+  const dialog = document.createElement('div');
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  dialog.setAttribute('aria-label', 'Image viewer');
+
   // Shared by every control surface; the artwork keeps its own softer radius.
   const CONTROL_RADIUS = '3px';
 
@@ -249,10 +258,11 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     -webkit-tap-highlight-color: transparent;
   `;
 
-  const makeBtn = (label) => {
+  const makeBtn = (glyph, name) => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = label;
+    btn.textContent = glyph;
+    btn.setAttribute('aria-label', name);
     btn.style.cssText = btnStyle;
     btn.addEventListener('mouseenter', () => {
       btn.style.background = 'rgba(255,255,255,0.3)';
@@ -263,9 +273,9 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     return btn;
   };
 
-  const btnZoomIn = makeBtn('+');
-  const btnZoomOut = makeBtn('−');
-  const btnClose = makeBtn('×');
+  const btnZoomIn = makeBtn('+', 'Zoom in');
+  const btnZoomOut = makeBtn('−', 'Zoom out');
+  const btnClose = makeBtn('×', 'Close');
   const isTouchUI = window.matchMedia('(pointer: coarse)').matches;
   // When there's more than one image, a thumbnail strip is pinned to the
   // bottom center; keep the toolbar at the top instead so they never overlap.
@@ -496,6 +506,8 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       thumbBtn.style.borderColor = isActive
         ? 'rgba(255,255,255,0.95)'
         : 'rgba(255,255,255,0.35)';
+      if (isActive) thumbBtn.setAttribute('aria-current', 'true');
+      else thumbBtn.removeAttribute('aria-current');
     });
   };
 
@@ -508,6 +520,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
   const setImageSourceForIndex = (index) => {
     const fullSrc = srcs[index];
     const previewSrc = previewSrcs[index] || fullSrc;
+    img.alt = alts[index] || `Image ${index + 1} of ${srcs.length}`;
 
     if (previewSrc) {
       img.src = previewSrc;
@@ -567,6 +580,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     btnPrev = document.createElement('button');
     btnPrev.type = 'button';
     btnPrev.textContent = '❮';
+    btnPrev.setAttribute('aria-label', 'Previous image');
     btnPrev.style.cssText = navBtnStyle + 'left: 8px;';
     btnPrev.addEventListener('mouseenter', () => {
       btnPrev.style.background = 'rgba(255,255,255,0.3)';
@@ -582,6 +596,7 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     btnNext = document.createElement('button');
     btnNext.type = 'button';
     btnNext.textContent = '❯';
+    btnNext.setAttribute('aria-label', 'Next image');
     btnNext.style.cssText = navBtnStyle + 'right: 8px;';
     btnNext.addEventListener('mouseenter', () => {
       btnNext.style.background = 'rgba(255,255,255,0.3)';
@@ -633,7 +648,8 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
       // downloading every full image just for a 42px thumbnail was the main
       // thing making the modal feel slow to open.
       thumbImg.src = previewSrcs[i] || src;
-      thumbImg.alt = `Preview ${i + 1}`;
+      thumbImg.alt = '';
+      thumbBtn.setAttribute('aria-label', `Show image ${i + 1} of ${srcs.length}`);
       thumbImg.loading = 'lazy';
       thumbImg.decoding = 'async';
       thumbImg.style.cssText = `
@@ -878,6 +894,9 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
     document.body.style.overflow = '';
     toolbar.remove();
     modal.remove();
+    dialog.remove();
+    inertedSiblings.forEach((el) => { el.inert = false; });
+    opener?.focus?.({ preventScroll: true });
 
     onClose?.();
   };
@@ -1059,12 +1078,22 @@ const createModal = ({ srcs = [], startIndex = 0, previewSrcs = [], onIndexChang
   setCurrentIndex(currentIndex);
 
   if (hasNav) {
-    document.body.appendChild(btnPrev);
-    document.body.appendChild(btnNext);
-    document.body.appendChild(thumbStrip);
+    dialog.append(btnPrev, btnNext, thumbStrip);
   }
+  dialog.append(toolbar, loadingIndicator, modal);
 
-  return { modal, toolbar, loadingIndicator };
+  // inert keeps Tab and screen readers inside the viewer, which aria-modal alone doesn't.
+  const show = () => {
+    document.body.appendChild(dialog);
+    for (const el of document.body.children) {
+      if (el === dialog || el.inert) continue;
+      el.inert = true;
+      inertedSiblings.push(el);
+    }
+    btnClose.focus({ preventScroll: true });
+  };
+
+  return { show };
 };
 
 export function openImageZoom(src, {
@@ -1072,6 +1101,7 @@ export function openImageZoom(src, {
   startIndex = 0,
   previewSrc,
   previewSrcs = [],
+  alts = [],
   onIndexChange,
   onClose,
 } = {}) {
@@ -1080,16 +1110,15 @@ export function openImageZoom(src, {
   const allPreviewSrcs = srcs.length > 0
     ? previewSrcs
     : [previewSrc || src];
-  const { modal, toolbar, loadingIndicator } = createModal({
+  const { show } = createModal({
     srcs: allSrcs,
     startIndex: idx,
     previewSrcs: allPreviewSrcs,
+    alts,
     onIndexChange,
     onClose,
   });
-  document.body.appendChild(toolbar);
-  document.body.appendChild(loadingIndicator);
-  document.body.appendChild(modal);
+  show();
 }
 
 export function initImageZoom() {
@@ -1121,6 +1150,7 @@ export function initImageZoom() {
     if (!el) return;
     openImageZoom(el.dataset.zoomSrc || el.currentSrc || el.src, {
       previewSrc: el.currentSrc || el.src,
+      alts: [el.alt],
     });
   });
 }

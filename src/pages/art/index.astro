@@ -4,17 +4,13 @@ import { getImage } from "astro:assets";
 import ArtMasonryGrid from "../../components/ArtMasonryGrid.tsx";
 import RssFeedButton from "../../components/RssFeedButton.astro";
 import { originalUrl } from "../../utils/originals";
+import { artPieceAlt, CATEGORY_LABELS } from "../../utils/artPiece";
 import type { OptimizedImage } from "../../components/ArtMasonryGrid.tsx";
 
 type RawModule = { default: ImageMetadata };
 type GroupedEntry = { path: string; mod: RawModule };
 
-const CATEGORY_ORDER: Array<[string, string]> = [
-    ['selectedWork', 'Selected Work'],
-    ['drawings', 'Drawings'],
-    ['oilPaintings', 'Oil Paintings'],
-    ['digitalStudies', 'Digital Studies'],
-];
+const CATEGORY_ORDER = ["selectedWork", "drawings", "oilPaintings", "digitalStudies"];
 
 // Single glob call — module map is built once and grouped by folder
 const allModules = import.meta.glob<RawModule>([
@@ -63,9 +59,9 @@ for (const entry of sortedEntries) {
 
 const images: OptimizedImage[] = await Promise.all(
     // Flatten categories in explicit display order while preserving per-category sort.
-    CATEGORY_ORDER.flatMap(([folder, label]) =>
+    CATEGORY_ORDER.flatMap((folder) =>
         [...(grouped.get(folder) ?? [])]
-            .map(async ({ path, mod }) => {
+            .map(async ({ path, mod }, index) => {
             const img = mod.default;
             const optimized = await getImage({ src: img, format: "webp", width: 560 });
             // Wide pieces can fill a whole row, past what the 560px preview covers.
@@ -76,8 +72,9 @@ const images: OptimizedImage[] = await Promise.all(
                 width: (optimized.attributes.width as number) ?? img.width,
                 height: (optimized.attributes.height as number) ?? img.height,
                 originalSrc: originalUrl(img),
-                category: label,
+                category: CATEGORY_LABELS[folder],
                 date: getDateFromPath(path),
+                alt: artPieceAlt(folder, path.split("/").at(-1)!, index),
             };
             })
     )
@@ -91,7 +88,7 @@ const images: OptimizedImage[] = await Promise.all(
     imageAlt="Oil portrait of an elderly man with a white beard">
     <!-- No .site-main: the grid runs edge-to-edge. The heading takes the gutter on its
          own so only the artwork is full-bleed. -->
-    <main class="site-gap pt-6 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:content-start lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
+    <main id="main" class="site-gap pt-6 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:content-start lg:items-baseline lg:gap-x-4 lg:gap-y-4 lg:pt-8">
         <div class="site-inset mb-4 flex flex-wrap items-end gap-x-3 gap-y-2 lg:mb-0 lg:items-baseline">
             <h1
                 class="text-left font-playfair text-4xl font-semibold leading-none tracking-display sm:text-5xl xl:text-nowrap">
@@ -102,3 +99,7 @@ const images: OptimizedImage[] = await Promise.all(
         <ArtMasonryGrid artEntries={images} client:load />
     </main>
 </Layout>
+
+<script>
+    import "../../scripts/imageZoom.js";
+</script>

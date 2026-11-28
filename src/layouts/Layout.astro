@@ -83,7 +83,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <!-- Browser UI color. ThemeToggle.astro sets it from the page background once
              styles load; this is only the first-paint value. -->
         <meta name="theme-color" content={PAPER} />
@@ -135,6 +135,11 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
         <style set:html={textureCss}></style>
     </head>
     <body class="bg-page font-serif text-ink antialiased">
+        <a
+            href="#main"
+            class="sr-only z-100 bg-page px-4 py-3 font-sans text-sm font-semibold text-ink underline focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+            >Skip to content</a
+        >
         <div class="site-shell relative z-10" data-hero-nav={heroNav ? "" : undefined}>
             <!-- items-baseline, not items-center: the 20px Playfair wordmark and the 15px
                  Inter links have different ascent ratios, so centering their line boxes
@@ -142,6 +147,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
                  via self-center — it has no baseline of its own, and below sm it would
                  otherwise become the tallest item and drag the text down with it. -->
             <nav
+                aria-label="Main"
                 class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-3 gap-y-2 py-3 font-sans max-sm:justify-between underline-offset-4 max-lg:bg-page sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:pb-4 lg:pt-8">
                 <!-- lg:leading-[48px] matches the page headings' text-5xl line box so both
                      columns start level at lg:pt-8. mb-6 separates the wordmark from the
@@ -203,7 +209,6 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
                 addEventListener("scroll", update, { passive: true });
             })();
         </script>
-        <script is:inline type="module" src="/scripts/imageZoom.js"></script>
     </body>
 </html>
 

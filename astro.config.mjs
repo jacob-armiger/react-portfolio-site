@@ -6,10 +6,24 @@ import react from '@astrojs/react';
 import vercel from '@astrojs/vercel';
 
 import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-    integrations: [react(), mdx()],
+    integrations: [
+        react(),
+        mdx(),
+        sitemap({
+            // Keep in step with the pages that set noindex.
+            filter: (page) => !/\/(submit|projects|font-specimen)(\/|$)/.test(new URL(page).pathname),
+            // Match Layout's canonical URLs, which drop the trailing slash.
+            serialize: (item) => {
+                const url = new URL(item.url);
+                if (url.pathname !== '/') url.pathname = url.pathname.replace(/\/$/, '');
+                return { ...item, url: url.toString() };
+            },
+        }),
+    ],
     vite: {
         plugins: [tailwindcss()],
     },

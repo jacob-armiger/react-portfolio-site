@@ -19,10 +19,9 @@ const feedUrl = new URL("/feed/rss.xml", Astro.site).toString();
 
     <span
         data-rss-copy-message
+        role="status"
         class="pointer-events-none absolute top-full left-0 z-10 mt-2 w-max rounded bg-ink px-2 py-1 text-xs text-page opacity-0 transition-opacity sm:top-1/2 sm:left-full sm:mt-0 sm:ml-2 sm:-translate-y-1/2"
-    >
-        Copied — paste into your RSS reader
-    </span>
+    ></span>
 </div>
 <script>
     document.querySelectorAll("[data-rss-copy-root]").forEach((root) => {
@@ -61,15 +60,21 @@ const feedUrl = new URL("/feed/rss.xml", Astro.site).toString();
                 }
             };
 
+            const show = (text: string) => {
+                msg.textContent = text;
+                positionMessage();
+                msg.style.opacity = "1";
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    msg.style.opacity = "0";
+                }, 2500);
+            };
+
             btn.addEventListener("click", () => {
-                navigator.clipboard.writeText(feedUrl).then(() => {
-                    positionMessage();
-                    msg.style.opacity = "1";
-                    clearTimeout(timer);
-                    timer = setTimeout(() => {
-                        msg.style.opacity = "0";
-                    }, 2500);
-                });
+                navigator.clipboard.writeText(feedUrl).then(
+                    () => show("Copied — paste into your RSS reader"),
+                    () => show(`Couldn't copy. The feed is ${feedUrl}`),
+                );
             });
         }
     });
