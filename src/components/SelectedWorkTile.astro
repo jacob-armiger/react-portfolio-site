@@ -17,6 +17,7 @@ const { image, alt, aspectRatio, sizes } = Astro.props;
         src={image}
         alt={alt}
         formats={["avif", "webp"]}
+        fallbackFormat="webp"
         widths={[320, 480, 640, 768, 960, 1280]}
         sizes={sizes}
         quality={78}

@@ -2,6 +2,12 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { FEED_XMLNS, feedCustomData } from '../utils/feed';
 
+// "YYYY/MM/DD" at UTC midnight; new Date() would read it in the build machine's time zone.
+const readDate = (value) => {
+    const [y, m, d] = value.split('/').map(Number);
+    return new Date(Date.UTC(y, m - 1, d));
+};
+
 export async function GET(context) {
     const books = await getCollection('books');
     return rss({
@@ -19,7 +25,7 @@ export async function GET(context) {
             .sort((a, b) => b.data['Date Read'].localeCompare(a.data['Date Read']))
             .map((post) => ({
             title: post.data.Title,
-            pubDate: post.data['Date Read'],
+            pubDate: readDate(post.data['Date Read']),
             description: `Rated ${post.data['My Rating']}/5.\n` + post.data['My Review'],
             link: `/books#book-${post.data.id}`,
         })),

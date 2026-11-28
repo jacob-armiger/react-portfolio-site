@@ -1,22 +1,9 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { articleExcerpt } from '../../utils/article';
-import { FEED_XMLNS, feedCustomData } from '../../utils/feed';
+import { categorySingular, CATEGORY_LABELS, parseArtPieceDate, slugify } from '../../utils/artPiece';
+import { escapeHtml, FEED_XMLNS, feedCustomData } from '../../utils/feed';
 import { originalUrl } from '../../utils/originals';
-
-const CATEGORY_LABELS = {
-    selectedWork: 'Selected Work',
-    drawings: 'Drawings',
-    oilPaintings: 'Oil Paintings',
-    digitalStudies: 'Digital Studies',
-};
-
-const CATEGORY_TITLE_LABELS = {
-    selectedWork: 'Selected Work',
-    drawings: 'Drawing',
-    oilPaintings: 'Oil Painting',
-    digitalStudies: 'Digital Study',
-};
 
 // Manual publish dates for art feed entries. Only needed to override the date
 // baked into the filename (e.g. for Selected Work pieces, which aren't named
@@ -27,34 +14,11 @@ const ART_PUBLISH_DATES = {
     // 'selectedWork/1.png': '2026-05-01',
 };
 
-const slugify = (value) => value.toLowerCase().replace(/\s+/g, '-');
-
 const toDisplayName = (filename) =>
     filename
         .replace(/[-_]+/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-
-// Filenames are named by creation date: YYYY-MM-DD, with an optional -1/-2
-// suffix to disambiguate same-day duplicates. Turns "2026-01-24-1" into a
-// readable "January 24, 2026 (1)" title and a real Date for pubDate.
-const DATE_FILENAME_PATTERN = /^(\d{4})-(\d{2})-(\d{2})(?:-(\d+))?$/;
-
-const parseArtPieceDate = (filename) => {
-    const match = filename.match(DATE_FILENAME_PATTERN);
-    if (!match) return null;
-
-    const [, year, month, day, suffix] = match;
-    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-    const label = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timeZone: 'UTC',
-    });
-
-    return { date, label: suffix ? `${label} (${suffix})` : label };
-};
 
 const toTime = (value) => {
     if (!value) {
@@ -74,11 +38,12 @@ export async function GET(context) {
         const articleUrl = new URL(`/writing/${article.id}`, context.site).toString();
         const coverImageUrl = new URL(originalUrl(article.data.image), context.site).toString();
         const articleTitle = article.data.title ?? article.id;
+        const href = escapeHtml(articleUrl);
         return {
             title: articleTitle,
             pubDate: article.data.date,
             description: articleExcerpt(article.body, 300),
-            content: `<p><a href="${articleUrl}"><img src="${coverImageUrl}" alt="${articleTitle}" /></a></p><p><a href="${articleUrl}">Read article</a></p>`,
+            content: `<p><a href="${href}"><img src="${escapeHtml(coverImageUrl)}" alt="${escapeHtml(articleTitle)}" /></a></p><p><a href="${href}">Read article</a></p>`,
             link: `/writing/${article.id}`,
         };
     });
@@ -93,7 +58,7 @@ export async function GET(context) {
         const [category, file] = path.split('/').slice(-2);
         const filename = file.replace(/\.[^.]+$/, '');
         const categoryLabel = CATEGORY_LABELS[category] ?? 'Art';
-        const categoryTitleLabel = CATEGORY_TITLE_LABELS[category] ?? 'Art';
+        const categoryTitleLabel = categorySingular(category);
         const dateKey = `${category}/${file}`;
         const parsed = parseArtPieceDate(filename);
         const pubDate = ART_PUBLISH_DATES[dateKey] ? new Date(ART_PUBLISH_DATES[dateKey]) : parsed?.date;
@@ -104,7 +69,7 @@ export async function GET(context) {
             title: parsed ? `${categoryTitleLabel}: ${parsed.label}` : `${categoryTitleLabel} ${toDisplayName(filename)}`,
             pubDate,
             description: `New artwork in ${categoryLabel}.`,
-            content: `<p><a href="${artUrl}">Click to view art</a></p>`,
+            content: `<p><a href="${escapeHtml(artUrl)}">Click to view art</a></p>`,
             link: artLink,
         };
     });
