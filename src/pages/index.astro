@@ -19,7 +19,7 @@ const HEADLINE = ["Contact me for", "art lessons or to commission work."];
 const HEADLINE_CLASS =
     "hero-heading absolute z-20 font-playfair font-bold leading-[1.1] tracking-display";
 
-const HERO_ACTION_CLASS = `${ACTION_BASE} min-h-14 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]`;
+const HERO_ACTION_CLASS = `${ACTION_BASE} min-h-13 px-[0.8rem] py-3 text-[0.6875rem] tracking-[0.12em] sm:min-h-14 sm:w-56 sm:px-6 sm:text-[0.75rem] sm:tracking-[0.15em] lg:min-h-[3.6rem] lg:w-auto lg:px-7 lg:text-[0.875rem] lg:tracking-[0.16em]`;
 
 const selectedWorkModules = import.meta.glob<ImageMetadata>(
     "/src/assets/selectedWork/*.{png,jpg,jpeg,webp}",
@@ -89,7 +89,7 @@ const galleryLayouts = [
          edge. The max-w-6xl cap only applies above 1152px. -->
     <main id="main" class="site-gap mx-auto w-full max-w-6xl overflow-clip">
         <!-- lg:pt-8 matches the nav's lg:pt-8 so the hero starts level with the wordmark. -->
-        <div class="page-sections flex w-full flex-col gap-8 sm:gap-10 lg:gap-12 lg:pt-8">
+        <div class="page-sections flex w-full flex-col gap-8 sm:gap-16 lg:gap-18 lg:pt-8">
             <section data-hero class="hero-section relative isolate overflow-clip bg-(--hero-paper)">
                 <Picture
                     src={heroImage}
@@ -120,7 +120,7 @@ const galleryLayouts = [
                     <p class="max-sm:hidden mb-6 max-w-[min(23rem,46vw)] text-[1rem] leading-[1.6] font-serif text-(--hero-body) lg:mb-7 lg:max-w-98 lg:text-[1.0625rem] lg:leading-[1.65]">
                         {HERO_BODY}
                     </p>
-                    <div class="hero-buttons flex flex-wrap gap-3 max-sm:grid max-sm:w-full max-sm:grid-cols-2 sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
+                    <div class="hero-buttons flex flex-wrap gap-2 max-sm:grid max-sm:w-[calc(50%-0.375rem)] sm:flex-col sm:items-start sm:gap-4 lg:flex-row lg:items-center lg:gap-5">
                         <a
                             href="/contact"
                             class:list={[
@@ -142,7 +142,7 @@ const galleryLayouts = [
             </section>
 
             <section aria-labelledby="selected-work-heading" class="pb-2">
-                <div class="section-header max-w-xl pt-5 sm:pt-6">
+                <div class="section-header max-w-xl">
                     <div class="flex flex-wrap items-baseline gap-x-4">
                         <h2 id="selected-work-heading" class="font-playfair text-[1.75rem] font-semibold tracking-display text-ink sm:text-4xl">
                             What I can make.
@@ -158,7 +158,7 @@ const galleryLayouts = [
 
                 {
                     galleryLayouts.map((layout) => (
-                        <div class:list={["selected-work-grid mt-6 items-start", layout.class]}>
+                        <div class:list={["selected-work-grid mt-4 items-start sm:mt-6", layout.class]}>
                             {layout.columns.map((works) => (
                                 <div class="selected-work-column">
                                     {works.map((work) => (
@@ -258,7 +258,8 @@ const galleryLayouts = [
            holds its size and the extra width shows more of the chair. The frame
            follows the artwork. */
         --hero-art-w: min(190vw, 51rem);
-        min-height: calc(max(36rem, var(--hero-art-w) * 0.937) + var(--hero-top-offset));
+        /* The extra 2.5rem keeps the stacked buttons clear of the figure's hand. */
+        min-height: calc(max(36rem, var(--hero-art-w) * 0.937) + var(--hero-top-offset) + 2.5rem);
     }
 
     /*
@@ -275,7 +276,7 @@ const galleryLayouts = [
             position: sticky;
             top: calc(var(--hero-top-offset) + 0.75rem);
             max-width: calc(var(--hero-heading-size) * var(--hero-heading-ratio));
-            margin: calc(var(--hero-heading-top) + var(--hero-heading-size) * 1.1 * 4 + 1.5rem)
+            margin: calc(var(--hero-heading-top) + var(--hero-heading-size) * 1.1 * 4 + 1.75rem)
                 var(--hero-inline-inset) 1.25rem;
         }
     }

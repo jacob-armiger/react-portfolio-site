@@ -143,9 +143,9 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
         <div class="site-shell relative z-10" data-hero-nav={heroNav ? "" : undefined}>
             <!-- items-baseline, not items-center: the 20px Playfair wordmark and the 15px
                  Inter links have different ascent ratios, so centering their line boxes
-                 leaves the links ~2.7px above the wordmark's baseline. The glyph opts out
-                 via self-center — it has no baseline of its own, and below sm it would
-                 otherwise become the tallest item and drag the text down with it. -->
+                 leaves the links ~2.7px above the wordmark's baseline. The icons sit on the
+                 baseline, then drop so their centre lands 0.3em above it, the optical middle
+                 of mostly lowercase links. -->
             <nav
                 aria-label="Main"
                 class="site-nav sticky top-0 z-50 flex flex-wrap items-baseline gap-x-3 gap-y-2 py-3 font-sans max-sm:justify-between underline-offset-4 max-lg:bg-page sm:gap-x-6 sm:py-2 sm:text-[15px] lg:flex-col lg:items-start lg:self-start lg:pb-4 lg:pt-8">
@@ -177,7 +177,7 @@ const textureCss = `@layer theme { :root { --texture-opacity: ${lightTexture.opa
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="JacobLDraws on Instagram"
-                    class="inline-flex items-center self-center hover:opacity-70 lg:self-auto">
+                    class="inline-flex items-center self-baseline translate-y-[calc(50%-0.3em)] hover:opacity-70 lg:self-auto lg:translate-y-0">
                     <InstagramGlyph />
                 </a>
                 <ThemeToggle />

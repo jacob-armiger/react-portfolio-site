@@ -3,7 +3,9 @@
 const feedUrl = new URL("/feed/rss.xml", Astro.site).toString();
 ---
 
-<div class="relative mb-[4px] inline-block" data-rss-copy-root data-feed-url={feedUrl}>
+<!-- Lifted by the border's 6px drop below the label's baseline, so the box's bottom edge
+     sits on a title's baseline beside it. -->
+<div class="relative mb-[4px] inline-block -translate-y-1.5" data-rss-copy-root data-feed-url={feedUrl}>
     <button
         type="button"
         data-rss-copy-button
@@ -14,7 +16,9 @@ const feedUrl = new URL("/feed/rss.xml", Astro.site).toString();
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="block shrink-0">
             <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
         </svg>
-        <span class="block leading-none">RSS</span>
+        <!-- Baseline-aligned so the button's baseline is the label's, and lines up with a
+             title's; the line box matches the icon's height, so the two stay centred. -->
+        <span class="block self-baseline leading-[14px]">RSS</span>
     </button>
 
     <span

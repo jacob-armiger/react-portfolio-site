@@ -167,7 +167,7 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
         </p>
 
         <section class="mb-20 px-1 max-w-3xl mx-auto">
-            <div class="mx-0 sm:m-auto grid w-full grid-cols-2 sm:grid-cols-3 gap-x-1 sm:gap-x-4 gap-y-4 sm:gap-y-2">
+            <div class="mx-0 sm:m-auto grid w-full grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-8 sm:gap-y-2">
                 <!-- self-start below sm: the caption is the taller grid item, and a stretched
                      figure would leave the inset-1 rule framing empty background. At sm+ the
                      img takes h-full, so stretching is what keeps the three frames level. -->
@@ -187,11 +187,11 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
                             <div class="pointer-events-none absolute inset-1 border border-(--accent-gold)/60 mix-blend-color-dodge rounded-t-full"/>
 
                         </figure>
-                        <div class="sm:hidden text-left mx-2 place-self-center">
-                            <h2 class="sm:text-nowrap mb-4 mt-0 sm:mt-2 font-medium uppercase tracking-[0.16em] text-xs">
+                        <div class="sm:hidden self-start">
+                            <h2 class="mb-2 font-medium uppercase tracking-[0.16em] text-xs">
                                 {piece.label}
                             </h2>
-                            <p class="font-sans text-balance text-ink-muted">{steps.at(i)}</p>
+                            <p class="font-sans text-[15px] leading-relaxed text-pretty text-ink-muted">{steps.at(i)}</p>
                         </div>
 
                     ))
@@ -199,11 +199,11 @@ const lessonGallery: LessonGalleryEntry[] = await Promise.all(
 
                 {
                     steps.map((step, i) => (
-                        <div class="h-fit hidden sm:block">
-                            <h2 class="md:text-nowrap mb-4 mt-2 font-medium uppercase tracking-[0.16em] text-xs">
+                        <div class="hidden sm:row-span-2 sm:grid sm:grid-rows-subgrid">
+                            <h2 class="mt-2 font-medium uppercase tracking-[0.16em] text-xs md:text-nowrap">
                                 {lessonGallery.at(i)?.label}
                             </h2>
-                            <p class="font-sans text-ink-muted">{step}</p>
+                            <p class="font-sans text-pretty text-ink-muted">{step}</p>
                         </div>
                     ))
                 }
